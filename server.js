@@ -5,10 +5,21 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { OpenAI } = require('openai');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'faculnext_super_secret';
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || 'fake_key', 
+});
+
+// Configuração do Carteiro SMTP (E-mail de Produção)
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // ou smtp.resend.com
+    auth: {
+        user: process.env.EMAIL_USER || 'seuemail@gmail.com',
+        pass: process.env.EMAIL_PASS || 'senha-de-app-16-digitos'
+    }
 });
 
 // Inicializando o Motor 🚀
@@ -22,12 +33,22 @@ app.use(express.static(path.join(__dirname)));
 console.log("-----------------------------------------");
 console.log("Incializando Inteligência do FaculNext...");
 
-// Banco de Dados embutido no projeto (Perfeito para Founders não-técnicos testarem localmente!)
-const db = new sqlite3.Database('./database.sqlite', (err) => {
+// Adaptação para Banco de Dados Permanente no Glitch (.data)
+const isGlitch = process.env.PROJECT_DOMAIN !== undefined;
+const dbFolder = isGlitch ? '.data' : '.';
+const dbPath = `${dbFolder}/database.sqlite`;
+
+if (isGlitch) {
+    const fs = require('fs');
+    if (!fs.existsSync('.data')) fs.mkdirSync('.data');
+}
+
+// Banco de Dados embutido no projeto
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Falha crítica ao montar o Banco de Dados:', err.message);
     } else {
-        console.log('✅ Conexão com o Banco de Dados (SQLite) estabelecida com sucesso!');
+        console.log(`✅ Conexão com o Banco de Dados (SQLite em ${dbPath}) estabelecida com sucesso!`);
     }
 });
 
@@ -44,15 +65,23 @@ db.serialize(() => {
         cashback_saldo REAL DEFAULT 0.0,
         idade INTEGER DEFAULT 17,
         senha_hash TEXT,
+        cpf TEXT,
+        celular TEXT,
+        verification_token TEXT,
+        verificado BOOLEAN DEFAULT 0,
         plano_ativo TEXT DEFAULT 'FREE',
         assinatura_id TEXT,
         stripe_customer_id TEXT,
         criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
     )`, () => {
-        // Garantindo que a coluna cashback_saldo e senha_hash existam em bases antigas
+        // Garantindo que as colunas existam em bases antigas
         db.run("ALTER TABLE users ADD COLUMN cashback_saldo REAL DEFAULT 0.0", (err) => {});
         db.run("ALTER TABLE users ADD COLUMN idade INTEGER DEFAULT 17", (err) => {});
         db.run("ALTER TABLE users ADD COLUMN senha_hash TEXT", (err) => {});
+        db.run("ALTER TABLE users ADD COLUMN cpf TEXT", (err) => {});
+        db.run("ALTER TABLE users ADD COLUMN celular TEXT", (err) => {});
+        db.run("ALTER TABLE users ADD COLUMN verification_token TEXT", (err) => {});
+        db.run("ALTER TABLE users ADD COLUMN verificado BOOLEAN DEFAULT 0", (err) => {});
         db.run("ALTER TABLE users ADD COLUMN plano_ativo TEXT DEFAULT 'FREE'", (err) => {});
         db.run("ALTER TABLE users ADD COLUMN assinatura_id TEXT", (err) => {});
         db.run("ALTER TABLE users ADD COLUMN stripe_customer_id TEXT", (err) => {});
@@ -275,30 +304,96 @@ app.post('/api/dev/reload-fixtures', (req, res) => {
     res.json({ sucesso: true, mensagem: 'Fixtures recarregadas!' });
 });
 
-// Rota 1: Cadastrar Aluno Localmente
+// Rota 1: Cadastrar Aluno Localmente (Gerando Email de Confirmação com Token Seguro)
 app.post('/api/users/register', async (req, res) => {
-    const { nome, email, cep, estado, senha } = req.body;
+    const { nome, email, cep, estado, cpf, celular } = req.body;
     
-    if (!senha) return res.status(400).json({ sucesso: false, erro: 'Senha é obrigatória' });
+    if (!cpf || !celular) return res.status(400).json({ sucesso: false, erro: 'Dados Pessoais (CPF e Celular) são obrigatórios para a matrícula.' });
     
     try {
-        const senha_hash = await bcrypt.hash(senha, 10);
+        const tokenAtivacao = crypto.randomBytes(32).toString('hex');
         
-        db.run("INSERT INTO users (nome, email, cep, estado, senha_hash) VALUES (?, ?, ?, ?, ?)", [nome, email, cep, estado, senha_hash], function(err) {
-            if (err) return res.status(400).json({ sucesso: false, erro: err.message });
+        // Cadastra parcialmente no Banco de Dados (sem senha ainda) e verificado = falso
+        db.run("INSERT INTO users (nome, email, cep, estado, cpf, celular, verification_token, verificado) VALUES (?, ?, ?, ?, ?, ?, ?, 0)", 
+        [nome, email, cep, estado, cpf, celular, tokenAtivacao], async function(err) {
             
-            const token = jwt.sign({ id: this.lastID, email }, JWT_SECRET, { expiresIn: '7d' });
+            if (err) {
+                if (err.message.includes('UNIQUE')) {
+                    return res.status(400).json({ sucesso: false, erro: 'Este e-mail ou CPF já está registrado na plataforma.' });
+                }
+                return res.status(400).json({ sucesso: false, erro: err.message });
+            }
             
-            // FASE 6: Simulação de Disparo de E-mail de Boas-Vindas
-            console.log(`\n📧 [EMAIL SERVICE]: Enviando boas-vindas para ${email}...`);
-            console.log(`🔗 Template utilizado: email_welcome.html`);
-            console.log(`✨ Status: E-mail enfileirado com sucesso!\n`);
+            const novoUserId = this.lastID;
+            
+            // FASE 6: Transporter de E-mail (NODEMAILER)
+            const URL_CRIAR_SENHA = `https://faculnext.onrender.com/setup-senha.html?token=${tokenAtivacao}`;
+            
+            const mailOptions = {
+                from: `"FaculNext" <${process.env.EMAIL_USER || 'nao-responda@faculnext.com'}>`,
+                to: email,
+                subject: 'Sua vaga no FaculNext está quase garantida! 🚀',
+                html: `
+                    <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                        <h2>Bem-vindo, ${nome.split(' ')[0]}!</h2>
+                        <p>O seu Perfil Vocacional foi mapeado para a região de <strong>${estado}</strong> e nossa IA já começou a moldar seus simulados privados.</p>
+                        <p>Para ativar a sua conta, criar a sua senha definitiva de acesso e entrar na plataforma, clique no botão de segurança abaixo:</p>
+                        <br>
+                        <a href="${URL_CRIAR_SENHA}" style="background-color: #E50914; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Criar Senha e Acessar Plataforma</a>
+                        <br><br>
+                        <p>Se o botão não funcionar, copie este link e cole no seu navegador:</p>
+                        <p style="color: grey; font-size: 12px;">${URL_CRIAR_SENHA}</p>
+                    </div>
+                `
+            };
 
-            res.json({ sucesso: true, userId: this.lastID, token, mensagem: 'Usuário gravado e e-mail de boas-vindas enviado!' });
+            console.log(`\n📧 [EMAIL SERVICE]: Tentando enviar e-mail Real para ${email}...`);
+            
+            // Se as variáveis de ambiente existirem, tentará o envio de fato. Em dev sem vars, só loga:
+            if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+                try {
+                    await transporter.sendMail(mailOptions);
+                    console.log(`✨ E-mail Real enfileirado no SMTP com sucesso para ${email}!\n`);
+                } catch (envioErr) {
+                    console.error('❌ Erro no envio SMTP (A conta de email pode não estar configurada corretamente):', envioErr);
+                }
+            } else {
+                console.log(`⚠️ SMTP não configurado com EMAIL_USER/PASS. O link de confirmação virtual é:`);
+                console.log(`🔗 ${URL_CRIAR_SENHA}\n`);
+            }
+
+            res.json({ 
+                sucesso: true, 
+                userId: novoUserId, 
+                mensagem: 'Cadastro recebido! Enviamos um e-mail de acesso exclusivo para você criar sua senha.' 
+            });
         });
     } catch (err) {
-        res.status(500).json({ sucesso: false, erro: 'Erro ao processar as credenciais' });
+        res.status(500).json({ sucesso: false, erro: 'Erro ao processar o servidor de e-mail.' });
     }
+});
+
+// NOVA ROTA FASE 6: Validar Token do Email e Criar a Senha
+app.post('/api/users/confirm-password', async (req, res) => {
+    const { token, senha } = req.body;
+    
+    if (!token || !senha || senha.length < 6) return res.status(400).json({ sucesso: false, erro: 'Token inválido ou senha muito curta.' });
+
+    db.get("SELECT id, email FROM users WHERE verification_token = ? AND verificado = 0", [token], async (err, user) => {
+        if (err || !user) {
+            return res.status(404).json({ sucesso: false, erro: 'Link de verificação inválido ou já utilizado. Tente se cadastrar novamente.' });
+        }
+
+        // Token achou o usuário: Vamos fixar a senha e ativá-lo!
+        const senha_hash = await bcrypt.hash(senha, 10);
+        
+        db.run("UPDATE users SET senha_hash = ?, verification_token = NULL, verificado = 1 WHERE id = ?", [senha_hash, user.id], function(err) {
+            if (err) return res.status(500).json({ sucesso: false, erro: 'Falha ao criptografar sua conta.' });
+            
+            const jwtToken = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+            res.json({ sucesso: true, userId: user.id, token: jwtToken, mensagem: 'Conta Validadíssima!' });
+        });
+    });
 });
 
 // NOVA ROTA: Login

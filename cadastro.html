@@ -51,12 +51,18 @@
                 Nossos simulados vão se moldar para você!
             </div>
 
-            <div class="input-group">
-                <label>Crie uma Senha Forte</label>
-                <input type="password" id="senha-input" placeholder="••••••••" required>
+            <div class="input-row">
+                <div class="input-group half">
+                    <label>CPF do Estudante</label>
+                    <input type="text" id="cpf-input" placeholder="000.000.000-00" maxlength="14" required autocomplete="off">
+                </div>
+                <div class="input-group half">
+                    <label>Celular / WhatsApp</label>
+                    <input type="text" id="celular-input" placeholder="(11) 99999-9999" maxlength="15" required autocomplete="tel">
+                </div>
             </div>
 
-            <button type="submit" class="btn-primary btn-block" id="submit-btn" disabled>Criar Minha Conta 🚀</button>
+            <button type="submit" class="btn-primary btn-block" id="submit-btn" disabled>Continuar Cadastro 🚀</button>
             <p class="login-link">Já tem uma conta? <a href="login.html">Acesse aqui</a></p>
         </form>
     </div>
@@ -110,8 +116,8 @@
         <div id="vocacional-resultado" class="text-center" style="display: none; padding-top:20px;">
             <div class="vocacional-icon" style="font-size: 5.5rem; margin-bottom: 25px;">🧬</div>
             <h2 style="font-size: 2.2rem; margin-bottom: 15px; font-weight:900;">Match de Carreira Encontrado!</h2>
-            <p style="font-size: 1.15rem; color: #e0e0e0; margin-bottom: 35px; line-height: 1.6;">Nossa IA uniu suas decisões e determinou que a sua Trilha base deve focar pesado em Matemática e Natureza voltada ao eixo <strong class="primary-text" style="font-size:1.3rem;">Tecnológico de Exatas</strong>.</p>
-            <button class="btn-primary" onclick="window.location.href='dashboard.html'" style="font-size: 1.15rem; padding: 18px 45px;">Liberar Meu Dashboard Customizado ➔</button>
+            <p style="font-size: 1.15rem; color: #e0e0e0; margin-bottom: 35px; line-height: 1.6;">O seu Perfil Vocacional foi gravado com sucesso. Para sua segurança e para definir sua nova senha temporária, enviamos um <strong>E-mail de Acesso Exclusivo</strong> para a sua caixa de entrada agora mesmo.</p>
+            <button class="btn-primary" onclick="alert('Abra o seu e-mail (Gmail/Outlook) e clique no link de Confirmação Seguro recebido na caixa de entrada!')" style="font-size: 1.15rem; padding: 18px 45px;">Abrir meu E-mail ➔</button>
         </div>
     </div>
 

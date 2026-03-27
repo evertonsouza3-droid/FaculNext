@@ -8,6 +8,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('cadastro-form');
 
     let isCepValid = false;
+    const cpfInput = document.getElementById('cpf-input');
+    const celularInput = document.getElementById('celular-input');
+
+    // Mascara simples de CPF
+    cpfInput.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '');
+        if (val.length > 3) val = val.replace(/^(\d{3})(\d)/, '$1.$2');
+        if (val.length > 6) val = val.replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+        if (val.length > 9) val = val.replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
+        e.target.value = val;
+    });
+
+    // Mascara simples de Celular
+    celularInput.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '');
+        if (val.length > 0) val = val.replace(/^(\d)/, '($1');
+        if (val.length > 2) val = val.replace(/^\((\d{2})(\d)/, '($1) $2');
+        if (val.length > 7) val = val.replace(/^\((\d{2})\)\s(\d{5})(\d)/, '($1) $2-$3');
+        e.target.value = val;
+    });
 
     // Mascara simples de CEP
     cepInput.addEventListener('input', (e) => {
@@ -82,25 +102,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const nome = document.getElementById('nome-input').value;
             const email = document.getElementById('email-input').value;
-            const senha = document.getElementById('senha-input').value;
             const cep = cepInput.value;
             const estado = estadoInput.value;
+            const cpf = cpfInput.value;
+            const celular = celularInput.value;
 
             try {
                 const res = await fetch('/api/users/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, email, cep, estado, senha })
+                    body: JSON.stringify({ nome, email, cep, estado, cpf, celular })
                 });
                 
                 const data = await res.json();
                 
                 if (data.sucesso) {
                     localStorage.setItem('faculnext_user_id', data.userId);
-                    if (data.token) {
-                        localStorage.setItem('faculnext_token', data.token);
-                    }
-                    submitBtn.innerText = "Quase pronto... Transição Rápida 🚀";
+                    submitBtn.innerText = "Sincronizando I.A... 🚀";
                     
                     setTimeout(() => {
                         document.getElementById('cadastro-box').style.display = 'none';
