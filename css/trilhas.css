@@ -1,0 +1,164 @@
+/* --- Página de Trilhas --- */
+.trilhas-main::before {
+    background: var(--primary-red); /* Glow Vermelho no fundo */
+    right: 15%;
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-glass);
+    border-radius: 100px;
+    padding: 0.6rem 1.2rem;
+    align-items: center;
+    width: 380px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+}
+
+.search-bar:focus-within {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.3);
+    background: rgba(255,255,255,0.08);
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    flex: 1;
+    font-size: 1rem;
+    font-family: var(--font-stack);
+    outline: none;
+    padding: 0.5rem;
+}
+
+.search-bar input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-bar button {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.search-bar button:hover {
+    transform: scale(1.1);
+}
+
+/* Trilhas Grid */
+.trilhas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding-bottom: 2rem;
+    align-items: stretch;
+}
+
+.trilha-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+    overflow: hidden;
+    gap: 0;
+    transition: transform 0.4s, box-shadow 0.4s;
+    background: rgba(255,255,255,0.02);
+    height: 100%;
+}
+
+.trilha-card:hover {
+    transform: translateY(-8px);
+}
+
+.trilha-header {
+    width: 100%;
+    padding: 2.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.trilha-header h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 100px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.badge-red { background: var(--primary-red); color: #fff; }
+.badge-grey { background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+
+.trilha-body {
+    padding: 1.8rem;
+    width: 100%;
+}
+
+.trilha-body p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+}
+
+.trilha-stats {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(0,0,0,0.3);
+    padding: 1.2rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+
+.trilha-stats span {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.trilha-stats strong {
+    color: var(--text-main);
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-right: 5px;
+}
+
+.mt-2 {
+    margin-top: 1.5rem;
+}
+
+.btn-block {
+    width: calc(100% - 4.4rem);
+    margin: auto 2.2rem 2.2rem 2.2rem;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 16px;
+}
+
+@media (max-width: 900px) {
+    .dash-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+    .search-bar { width: 100%; max-width: none; }
+    .trilhas-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .trilha-header { padding: 1.5rem; }
+    .trilha-header h2 { font-size: 1.4rem; }
+    .trilha-body { padding: 1.5rem; }
+    .trilha-body p { font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .trilha-stats { padding: 1rem; flex-direction: column; gap: 0.8rem; }
+    .btn-block { width: calc(100% - 3rem); margin: auto 1.5rem 1.5rem 1.5rem; }
+}
