@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const estado = estadoInput.value;
 
             try {
-                const res = await fetch('http://api/users/register', {
+                const res = await fetch('/api/users/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nome, email, cep, estado, senha })
@@ -150,7 +150,7 @@ window.handleSwipe = function(isLiked) {
             const userId = localStorage.getItem('faculnext_user_id');
             const perfilDetectado = "Tecnológico de Exatas"; // Mock para MVP
             
-            fetch(`http://api/users/${userId}/vocational`, {
+            fetch(`/api/users/${userId}/vocational`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ perfil: perfilDetectado })
