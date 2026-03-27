@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaculNext | O atalho para a faculdade</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="noise-overlay"></div>
+
+    <nav class="navbar">
+        <div class="logo">FaculNext<span class="neon-dot"></span></div>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home" class="active">Início</a></li>
+            <li><a href="#simulados">Simulados</a></li>
+            <li><a href="#planos">Planos</a></li>
+            <li class="mobile-only"><a href="cadastro.html" class="btn-primary mobile-btn">Entrar na Plataforma</a></li>
+        </ul>
+        <button class="btn-primary desktop-only" onclick="window.location.href='cadastro.html'">Entrar na Plataforma</button>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <div class="badge">🚀 O ENEM TÁ LOGO AÍ</div>
+                <h1>O atalho<br>para a <span class="highlight">facul.</span></h1>
+                <p>Estude do seu jeito, no seu tempo. Esqueça métodos chatos: com o FaculNext você domina o ENEM e os vestibulares do Brasil de forma dinâmica e focada.</p>
+                <div class="cta-group">
+                    <button class="btn-primary btn-large" id="start-btn">Começar Agora</button>
+                    <button class="btn-secondary" id="tour-btn" onclick="document.getElementById('planos').scrollIntoView();">Ver Planos</button>
+                </div>
+            </div>
+            <div class="hero-visuals">
+                <div class="glass-card floating float-1">
+                    <div class="icon">📝</div>
+                    <div class="info">
+                        <strong>Simulado ENEM 2024</strong>
+                        <span class="primary-text">Status: Atualizado!</span>
+                    </div>
+                </div>
+                <div class="glass-card floating float-2">
+                    <div class="icon">🔥</div>
+                    <div class="info">
+                        <strong>Redação Nota 1000</strong>
+                        <span class="primary-text">Pratique Agora</span>
+                    </div>
+                </div>
+                <div class="circle-blob blob-1"></div>
+                <div class="circle-blob blob-2"></div>
+            </div>
+        </section>
+
+        <!-- Features Showcase -->
+        <section id="simulados" class="features">
+            <div class="section-header">
+                <h2>Seu arsenal de aprovação</h2>
+                <p>Tudo o que você precisa pra gabaritar, num só lugar e com o mínimo de enrolação.</p>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: var(--primary-red); color: #fff;">📚</div>
+                    <h3>Questões Inéditas</h3>
+                    <p>Milhares de questões dos últimos vestibulares, com resoluções comentadas linha a linha.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: var(--bg-surface); border: 1px solid var(--border-glass); color: #fff;">📅</div>
+                    <h3>Cronograma Smart</h3>
+                    <p>Seu planejamento adaptativo. Se perder um dia, o algoritmo recalcula sua rota automaticamente.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: var(--primary-red); color: #fff;">🎯</div>
+                    <h3>Guia de Carreiras</h3>
+                    <p>Dúvida do curso? Descubra a carreira perfeita para dar match no seu perfil e estilo de vida.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="planos" class="pricing features">
+            <div class="section-header">
+                <h2>Planos feitos para o seu futuro</h2>
+                <p>Experimente grátis e deixe o FaculNext evoluir com você até a faculdade.</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <!-- Trial -->
+                <div class="pricing-card">
+                    <h3>Passe Livre</h3>
+                    <div class="price">7 Dias</div>
+                    <p>Teste gratuito e sem compromisso para sentir a diferença visual e de ensino.</p>
+                    <ul class="plan-features">
+                        <li>✔️ Acesso ao Dashboard</li>
+                        <li>✔️ Aulas Demonstrativas (Trilhas)</li>
+                        <li>✔️ 1 Redação Corrigida</li>
+                    </ul>
+                    <button class="btn-secondary btn-block mt-2" onclick="window.location.href='cadastro.html'">Iniciar Trial</button>
+                </div>
+                
+                <!-- Starter -->
+                <div class="pricing-card popular">
+                    <div class="badge absolute-badge">Mais Escolhido</div>
+                    <h3>Starter</h3>
+                    <div class="price">R$ 39<span>/mês</span></div>
+                    <p>Ideal para alavancar seus estudos e focar intensamente nos principais Vestibulares.</p>
+                    <ul class="plan-features">
+                        <li>✔️ Trilhas e Cronograma Smart</li>
+                        <li>✔️ Banco de Questões Ilimitado</li>
+                        <li>✔️ 4 Redações Completas no mês</li>
+                    </ul>
+                    <button class="btn-primary btn-block mt-2" onclick="window.location.href='cadastro.html'">Assinar Starter</button>
+                </div>
+
+                <!-- Premium Universitário -->
+                <div class="pricing-card premium">
+                    <div class="badge absolute-badge">Até a Formatura</div>
+                    <h3>Premium Universitário</h3>
+                    <div class="price">R$ 69<span>/mês</span></div>
+                    <p>Do cursinho até o TCC. Você aprova e nós te acompanhamos na Faculdade Real.</p>
+                    <ul class="plan-features">
+                        <li>✔️ Tudo do Starter (Vitalício)</li>
+                        <li>✔️ Módulos Extras (Cálculo 1)</li>
+                        <li>✔️ Mentorias Inclusas de Carreira</li>
+                    </ul>
+                    <button class="btn-secondary btn-block mt-2" onclick="window.location.href='cadastro.html'">Assinar Premium</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

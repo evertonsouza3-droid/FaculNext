@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cadastro.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="cadastro-body">
+    <div id="noise-overlay"></div>
+    <div class="cadastro-bg-glow" id="glow-bg"></div>
+
+    <div class="cadastro-container glass-card" id="cadastro-box">
+        <!-- HEADER -->
+        <div class="cadastro-header">
+            <a href="index.html" class="logo">FaculNext<span class="neon-dot">.</span></a>
+            <p>Sua jornada começa agora. Preencha os dados e descubra seu caminho.</p>
+        </div>
+
+        <!-- FORMULARIO INICIAL -->
+        <form id="cadastro-form" class="cadastro-form">
+            <div class="input-group">
+                <label>Nome Completo</label>
+                <input type="text" id="nome-input" placeholder="Ex: Machado de Assis" required>
+            </div>
+
+            <div class="input-group">
+                <label>E-mail de Acesso</label>
+                <input type="email" id="email-input" placeholder="seuemail@futuro.com" required>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group half">
+                    <label>CEP (Sua Região)</label>
+                    <input type="text" id="cep-input" placeholder="00000-000" maxlength="9" required>
+                    <span class="feedback-msg" id="cep-feedback">Buscando inteligência local...</span>
+                </div>
+                <!-- Preenchido pela API ViaCEP -->
+                <div class="input-group half">
+                    <label>Estado Sede</label>
+                    <input type="text" id="estado-input" placeholder="UF" disabled>
+                </div>
+            </div>
+            
+            <div class="regiao-detectada" id="regiao-box" style="display: none;">
+                🎯 Mapeamos que seu foco será na <strong id="nome-regiao" class="primary-text">Região</strong>. 
+                Nossos simulados vão se moldar para você!
+            </div>
+
+            <div class="input-group">
+                <label>Crie uma Senha Forte</label>
+                <input type="password" id="senha-input" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-primary btn-block" id="submit-btn" disabled>Criar Minha Conta 🚀</button>
+            <p class="login-link">Já tem uma conta? <a href="login.html">Acesse aqui</a></p>
+        </form>
+    </div>
+
+    <!-- TESTE VOCACIONAL (TINDER UI) ESCONDIDO INICIALMENTE -->
+    <div class="vocacional-container" id="vocacional-box" style="display: none;">
+        <div class="vocacional-header text-center">
+            <span class="badge uppercase">Etapa 2/2 Vocacional</span>
+            <h2 style="font-size: 2.2rem; margin-top: 15px; font-weight: 900;">Mapeando seu DNA...</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px; font-size:1.1rem;">Sem testes demorados! Use os botões abaixo para dizer se você se identifica ou não com o cenário.</p>
+        </div>
+
+        <div class="tinder-card glass-card" id="t-card-1">
+            <div class="t-image" style="background: linear-gradient(135deg, var(--bg-dark), var(--primary-red)); opacity: 0.8;">
+                💻
+            </div>
+            <div class="t-content">
+                <h3>Tecnologia e Lógica</h3>
+                <p>Você se imagina programando o futuro, trabalhando com Inteligência Artificial e debruçado em desafios analíticos mundiais?</p>
+            </div>
+        </div>
+        
+        <div class="tinder-card glass-card" id="t-card-2" style="display: none;">
+            <div class="t-image" style="background: linear-gradient(135deg, var(--bg-dark), var(--bg-surface)); opacity: 0.8;">
+                🩺
+            </div>
+            <div class="t-content">
+                <h3>Cuidado e Biológicas</h3>
+                <p>Salvar vidas diante de hospitais, estudar biologia avançada e ter amor à profissão mesmo em turnos médicos longos te brilha os olhos?</p>
+            </div>
+        </div>
+
+        <div class="tinder-card glass-card" id="t-card-3" style="display: none;">
+            <div class="t-image" style="background: linear-gradient(135deg, var(--bg-dark), var(--dark-red)); opacity: 0.8;">
+                ⚖️
+            </div>
+            <div class="t-content">
+                <h3>Leis e Argumentação</h3>
+                <p>Você é convicto e adora defender o que é certo? Ler grandes livros em nome da justiça é para você?</p>
+            </div>
+        </div>
+
+        <div class="tinder-actions" id="t-actions">
+            <!-- Botão Nao (Swipe Left) -->
+            <button class="btn-tinder btn-no" onclick="handleSwipe(0)">❌ Nope</button>
+            <!-- Botão Sim (Swipe Right) -->
+            <button class="btn-tinder btn-yes" onclick="handleSwipe(1)">✅ Curto</button>
+        </div>
+
+        <!-- TELA DE RESULTADO VOCACIONAL -->
+        <div id="vocacional-resultado" class="text-center" style="display: none; padding-top:20px;">
+            <div class="vocacional-icon" style="font-size: 5.5rem; margin-bottom: 25px;">🧬</div>
+            <h2 style="font-size: 2.2rem; margin-bottom: 15px; font-weight:900;">Match de Carreira Encontrado!</h2>
+            <p style="font-size: 1.15rem; color: #e0e0e0; margin-bottom: 35px; line-height: 1.6;">Nossa IA uniu suas decisões e determinou que a sua Trilha base deve focar pesado em Matemática e Natureza voltada ao eixo <strong class="primary-text" style="font-size:1.3rem;">Tecnológico de Exatas</strong>.</p>
+            <button class="btn-primary" onclick="window.location.href='dashboard.html'" style="font-size: 1.15rem; padding: 18px 45px;">Liberar Meu Dashboard Customizado ➔</button>
+        </div>
+    </div>
+
+    <script src="js/cadastro.js"></script>
+</body>
+</html>

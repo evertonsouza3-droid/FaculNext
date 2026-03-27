@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout Seguro | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cadastro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        .checkout-box { text-align: center; max-width: 500px; margin: 100px auto; padding: 40px; }
+        .secure-icon { font-size: 3rem; margin-bottom: 20px; }
+        .value-text { font-size: 2.5rem; font-weight: 800; margin: 20px 0; color: #fff; }
+    </style>
+</head>
+<body class="cadastro-body">
+    <div id="noise-overlay"></div>
+    <div class="cadastro-bg-glow"></div>
+    
+    <div class="checkout-box glass-card">
+        <div class="secure-icon">🔒</div>
+        <h2>Finalizar Assinatura</h2>
+        <p>Você está adquirindo o plano <strong id="plan-name" class="primary-text">...</strong></p>
+        <div class="value-text" id="plan-price">R$ 0,00</div>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 30px;">(Gateway Sandbox Mode - MOCK) Nenhuma cobrança real efetuada.</p>
+        
+        <button id="pay-btn" class="btn-primary btn-block">Simular Pagamento Aprovado ✓</button>
+        <button class="btn-secondary btn-block mt-2" onclick="window.location.href='planos.html'">Cancelar</button>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const plan = urlParams.get('plan') || 'PREMIUM';
+        const userId = urlParams.get('userId');
+
+        document.getElementById('plan-name').innerText = plan;
+        document.getElementById('plan-price').innerText = plan === 'STARTER' ? 'R$ 29,90' : 'R$ 49,90';
+
+        document.getElementById('pay-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('pay-btn');
+            btn.innerText = "Processando...";
+            btn.disabled = true;
+
+            try {
+                // Chama nosso webhook mockado
+                const res = await fetch('/api/webhook/payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, plano: plan, status: 'PAID' })
+                });
+                
+                if (res.ok) {
+                    btn.innerText = "✅ Pagamento Confirmado!";
+                    btn.style.background = "var(--neon-lime)";
+                    btn.style.color = "#000";
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                }
+            } catch (e) {
+                alert("Erro ao debitar.");
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

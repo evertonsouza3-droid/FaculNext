@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: faculnext-web
+    runtime: node
+    plan: free
+    repo: "https://github.com/srv-d7o45j6tr6/FaculNext"
+    branch: main
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: OPENAI_API_KEY
+        sync: false
+    healthCheckPath: "/api/exams/dashboard"
+    autoDeploy: true
+    pullRequestPreviews: true

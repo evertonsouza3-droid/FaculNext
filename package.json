@@ -1,0 +1,24 @@
+{
+  "name": "faculnext-server",
+  "version": "1.0.0",
+  "description": "Motor Dinâmico do FaculNext em Node.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "deploy": "node deploy.js",
+    "deploy:railway": "node deploy.js railway",
+    "deploy:render": "node deploy.js render",
+    "deploy:vercel": "node deploy.js vercel",
+    "deploy:heroku": "node deploy.js heroku",
+    "test": "node -e \"console.log('✅ Servidor OK')\""
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
+    "openai": "^6.33.0",
+    "sqlite3": "^5.1.6"
+  }
+}

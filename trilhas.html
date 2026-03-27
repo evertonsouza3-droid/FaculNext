@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trilhas de Estudo | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/trilhas.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <script src="js/auth.js"></script>
+</head>
+<body class="dashboard-body">
+    <div id="noise-overlay"></div>
+
+    <aside class="sidebar">
+        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="white-dot">.</span></div>
+        <nav class="side-nav">
+            <a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a>
+            <a href="trilhas.html" class="active"><span class="icon">📚</span> Trilhas</a>
+            <a href="simulados.html"><span class="icon">📝</span> Simulados</a>
+            <a href="redacao.html"><span class="icon">🔥</span> Redação</a>
+            <a href="carreiras.html"><span class="icon">🎯</span> Carreiras</a>
+            <a href="ranking.html"><span class="icon">🏆</span> Ranking</a>
+            <a href="planos.html" style="margin-top:auto; color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
+        </nav>
+
+        <!-- Cashback Wallet Sidebar -->
+        <div class="wallet-card" id="sidebar-wallet">
+            <div class="wallet-info">
+                <span>CASHBACK ACUMULADO 🔥</span>
+                <h2 id="cashback-value">R$ 0,00</h2>
+                <p>Desconto na próxima fatura!</p>
+            </div>
+        </div>
+
+        <div class="user-profile">
+            <div class="avatar">👨‍🎓</div>
+            <div class="user-info">
+                <strong>Estudante</strong>
+                <span>Plano Premium</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="dashboard-main trilhas-main">
+        <header class="dash-header">
+            <div>
+                <h1>Trilhas de Conhecimento 🛣️</h1>
+                <p>Escolha sua próxima jornada rumo à <span class="primary-text">aprovação</span>.</p>
+            </div>
+            <!-- Barra de Busca -->
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar matéria ou assunto...">
+                <button>🔍</button>
+            </div>
+        </header>
+
+        <section class="trilhas-grid">
+            <!-- Trilha 1 -->
+            <div class="glass-card trilha-card">
+                <div class="trilha-header" style="background-image: linear-gradient(135deg, rgba(229, 9, 20, 0.15), transparent);">
+                    <h2>Matemática 📐</h2>
+                    <span class="badge badge-red">Em Andamento</span>
+                </div>
+                <div class="trilha-body">
+                    <p>Funções, Geometria e Probabilidade com foco exclusivo no estilo de questões do ENEM.</p>
+                    <div class="trilha-stats">
+                        <span><strong>24</strong> Aulas</span>
+                        <span><strong>150</strong> Exercícios</span>
+                    </div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress" style="width: 45%;"></div>
+                    </div>
+                </div>
+                <button class="btn-primary btn-block">Continuar</button>
+            </div>
+
+            <!-- Trilha 2 -->
+            <div class="glass-card trilha-card">
+                <div class="trilha-header" style="background-image: linear-gradient(135deg, rgba(229, 9, 20, 0.1), transparent);">
+                    <h2>Redação ✍️</h2>
+                    <span class="badge badge-grey">Recomendado</span>
+                </div>
+                <div class="trilha-body">
+                    <p>Domine as 5 competências da Redação nota 1000 com dezenas de correções guiadas.</p>
+                    <div class="trilha-stats">
+                        <span><strong>10</strong> Módulos</span>
+                        <span><strong>Prática</strong> Intensa</span>
+                    </div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress" style="width: 10%; background: var(--primary-red); box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);"></div>
+                    </div>
+                </div>
+                <button class="btn-secondary btn-block">Iniciar</button>
+            </div>
+
+            <!-- Trilha 3 -->
+            <div class="glass-card trilha-card">
+                <div class="trilha-header" style="background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);">
+                    <h2>Biologia 🧬</h2>
+                    <span class="badge badge-grey">Novo</span>
+                </div>
+                <div class="trilha-body">
+                    <p>Ecologia, Genética e Citologia explicadas de forma extrema e muito visual.</p>
+                    <div class="trilha-stats">
+                        <span><strong>18</strong> Aulas</span>
+                        <span><strong>80</strong> Exercícios</span>
+                    </div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress" style="width: 0%;"></div>
+                    </div>
+                </div>
+                <button class="btn-secondary btn-block">Iniciar</button>
+            </div>
+        </section>
+    </main>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/dashboard-firebase.js"></script>
+<script src="js/chat.js"></script>
+</body>
+</html>

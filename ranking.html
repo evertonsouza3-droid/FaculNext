@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        .ranking-main { max-width: 900px; margin: 0 auto; }
+        .league-banner {
+            background: linear-gradient(135deg, rgba(229,9,20,0.15), rgba(0,0,0,0.4));
+            border: 1px solid var(--primary-red);
+            border-radius: 4px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .league-banner h2 { font-size: 2.5rem; margin-bottom: 10px; color: #fff;}
+        .league-icon { font-size: 4rem; line-height: 1; text-shadow: 0 0 20px var(--primary-red); }
+        
+        .ranking-list { list-style: none; padding: 0; }
+        .rank-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glass);
+            padding: 15px 25px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            transition: transform 0.2s, border 0.2s;
+        }
+        .rank-item:hover { transform: translateX(10px); border-color: rgba(255, 255, 255, 0.3); }
+        .rank-item.is-me { border-color: var(--primary-red); background: rgba(229, 9, 20, 0.05); }
+        
+        .r-position { font-size: 1.5rem; font-weight: 800; width: 50px; color: var(--text-muted); }
+        .r-position.top1 { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+        .r-position.top2 { color: var(--silver); }
+        .r-position.top3 { color: #cd7f32; }
+
+        .r-user { flex: 1; display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 1.1rem; }
+        .r-avatar { width: 45px; height: 45px; background: var(--bg-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 1px solid var(--border-glass); }
+        .r-points { font-size: 1.2rem; font-weight: 900; color: var(--primary-red); }
+        .r-region { font-size: 0.85rem; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); margin-left: 10px; font-weight: 400; border: 1px solid var(--border-glass);}
+    </style>
+    <script src="js/auth.js"></script>
+</head>
+<body class="dashboard-body">
+    <div id="noise-overlay"></div>
+
+    <aside class="sidebar">
+        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="white-dot">.</span></div>
+        <nav class="side-nav">
+            <a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a>
+            <a href="trilhas.html"><span class="icon">📚</span> Trilhas</a>
+            <a href="simulados.html"><span class="icon">📝</span> Simulados</a>
+            <a href="redacao.html"><span class="icon">🔥</span> Redação</a>
+            <a href="carreiras.html"><span class="icon">🎯</span> Carreiras</a>
+            <a href="ranking.html" class="active"><span class="icon">🏆</span> Ranking</a>
+            <a href="planos.html" style="margin-top:auto; color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
+        </nav>
+
+        <div class="wallet-card">
+            <div class="wallet-info">
+                <span>CASHBACK ACUMULADO 🔥</span>
+                <h2 id="cashback-value">R$ 0,00</h2>
+                <p>Desconto na próxima fatura!</p>
+            </div>
+        </div>
+
+        <div class="user-profile">
+            <div class="avatar">👨‍🎓</div>
+            <div class="user-info">
+                <strong>Estudante</strong>
+                <span>Plano Premium</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="dashboard-main ranking-main">
+        <header class="dash-header" style="justify-content: center; text-align:center;">
+            <div>
+                <h1>Arena dos Campeões 🏅</h1>
+                <p>Nesta liga os maiores estudantes do país batalham por pontos de <span class="primary-text">Conhecimento TRI</span>.</p>
+            </div>
+        </header>
+
+        <section class="league-banner">
+            <div class="league-icon">💎</div>
+            <h2>Liga Diamante</h2>
+            <p>Você está no <strong>Top 5%</strong> da sua Região no momento. Focado em <strong>Tecnológico de Exatas</strong>.</p>
+        </section>
+
+        <section>
+            <h3 style="margin-bottom: 20px;">Top 10 Nacional <span style="color:var(--text-muted); font-size:1rem;">(Atualizado hoje)</span></h3>
+            <ul class="ranking-list" id="ranking-list">
+                <!-- Populado pela API /api/ranking -->
+                <p style="color:var(--text-muted); text-align:center;">Sincronizando placar online... 🛰️</p>
+            </ul>
+        </section>
+    </main>
+
+    <!-- Botão Flutuante IA -->
+    <div id="ai-chat-widget" class="ai-chat-closed" onclick="toggleChat()">
+        <span class="chat-icon">🤖</span>
+        <span class="chat-label">Dúvida? Chama a IA</span>
+    </div>
+
+    <!-- Janela de Chat -->
+    <div id="chat-window" class="chat-hidden">
+        <div class="chat-header">
+            <strong>FaculNext AI Tutor 🪄</strong>
+            <button onclick="toggleChat()">✖</button>
+        </div>
+        <div id="chat-messages" class="chat-body">
+            <div class="msg bot">O topo do ranking está logo ali! Em que posso te ajudar a subir hoje?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="user-msg-input" placeholder="Pergunte qualquer coisa...">
+            <button onclick="sendMessage()">➔</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/dashboard-firebase.js"></script>
+<script src="js/chat.js"></script>
+</body>
+</html>

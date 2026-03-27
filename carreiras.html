@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carreiras | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/carreiras.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <script src="js/auth.js"></script>
+</head>
+<body class="dashboard-body">
+    <div id="noise-overlay"></div>
+
+    <aside class="sidebar">
+        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="white-dot">.</span></div>
+        <nav class="side-nav">
+            <a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a>
+            <a href="trilhas.html"><span class="icon">📚</span> Trilhas</a>
+            <a href="simulados.html"><span class="icon">📝</span> Simulados</a>
+            <a href="redacao.html"><span class="icon">🔥</span> Redação</a>
+            <a href="carreiras.html" class="active"><span class="icon">🎯</span> Carreiras</a>
+            <a href="ranking.html"><span class="icon">🏆</span> Ranking</a>
+            <a href="planos.html" style="margin-top:auto; color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
+        </nav>
+
+        <div class="wallet-card">
+            <div class="wallet-info">
+                <span>CASHBACK ACUMULADO 🔥</span>
+                <h2 id="cashback-value">R$ 0,00</h2>
+                <p>Desconto na próxima fatura!</p>
+            </div>
+        </div>
+
+        <div class="user-profile">
+            <div class="avatar">👨‍🎓</div>
+            <div class="user-info">
+                <strong>Estudante</strong>
+                <span>Plano Premium</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="dashboard-main carreiras-main">
+        <header class="dash-header">
+            <div>
+                <h1>Descubra Seu Caminho 🎯</h1>
+                <p>Ainda em dúvida sobre qual rumo tomar? Dê um <span class="primary-text">match perfeito</span> com seu futuro.</p>
+            </div>
+        </header>
+
+        <!-- Teste Vocacional Destaque -->
+        <section class="glass-card vocacional-card">
+            <div class="vocacional-info">
+                <span class="badge uppercase">Novo Recurso com I.A.</span>
+                <h2>Teste Vocacional estilo "Tinder" das Profissões</h2>
+                <p>Responda perguntas dinâmicas e baseadas em imagens sobre o seu perfil ("curtir para sim", "deslizar para não"). Esqueça métodos baseados em gabaritos chatos dos anos 90, nosso motor vai traçar seu DNA de carreira atualizado!</p>
+                <button class="btn-primary mt-2" onclick="alert('Iniciando quiz estilo Tinder de carreiras! Swipe Right!')">Fazer Teste Vocacional</button>
+            </div>
+            <div class="vocacional-icon">
+                💡
+            </div>
+        </section>
+
+        <!-- Explorar Cursos Grid -->
+        <h3 class="section-title">Carreiras em Alta no País 🚀</h3>
+        <div class="carreiras-grid">
+            <!-- Inteligência Artificial / TI -->
+            <div class="glass-card proj-card">
+                <div class="proj-img tech-bg"></div>
+                <div class="proj-content">
+                    <span class="badge" style="align-self: flex-start; background: var(--primary-red); color: #fff;">Tecnologia</span>
+                    <h4>Ciência da Computação & IA</h4>
+                    <p>Dominando algoritmos e machine learning. Um dos mercados mais escassos e cobiçados, com salários imbatíveis de forma remota.</p>
+                    <div class="proj-footer">
+                        <span>Piso: R$ 6.000+</span>
+                        <a href="#">🔍 Notas de Corte</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medicina -->
+            <div class="glass-card proj-card">
+                <div class="proj-img med-bg"></div>
+                <div class="proj-content">
+                    <span class="badge" style="align-self: flex-start; background: #fff; color: var(--bg-dark);">Saúde</span>
+                    <h4>Medicina Cirúrgica/Clínica</h4>
+                    <p>O curso mais concorrido das federais. Estabilidade inigualável, peso social e o propósito prático de salvar vidas.</p>
+                    <div class="proj-footer">
+                        <span>Piso: R$ 9.000+</span>
+                        <a href="#">🔍 Notas de Corte</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Direito -->
+            <div class="glass-card proj-card">
+                <div class="proj-img law-bg"></div>
+                <div class="proj-content">
+                    <span class="badge" style="align-self: flex-start; background: rgba(255,255,255,0.1); color: #fff;">Humanas</span>
+                    <h4>Direito Moderno</h4>
+                    <p>As novas vertentes do Direito Digital e Tributação. Exige bastante leitura mas oferece autonomia gigantesca.</p>
+                    <div class="proj-footer">
+                        <span>Piso: R$ 4.500+</span>
+                        <a href="#">🔍 Notas de Corte</a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+    <!-- Botão Flutuante IA -->
+    <div id="ai-chat-widget" class="ai-chat-closed" onclick="toggleChat()">
+        <span class="chat-icon">🤖</span>
+        <span class="chat-label">Dúvida? Chama a IA</span>
+    </div>
+
+    <!-- Janela de Chat -->
+    <div id="chat-window" class="chat-hidden">
+        <div class="chat-header">
+            <strong>FaculNext AI Tutor 🪄</strong>
+            <button onclick="toggleChat()">✖</button>
+        </div>
+        <div id="chat-messages" class="chat-body">
+            <div class="msg bot">Escolher uma carreira é o primeiro passo para o sucesso. Vamos dar um "match" no seu futuro?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="user-msg-input" placeholder="Pergunte qualquer coisa...">
+            <button onclick="sendMessage()">➔</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/dashboard-firebase.js"></script>
+<script src="js/chat.js"></script>
+</body>
+</html>
