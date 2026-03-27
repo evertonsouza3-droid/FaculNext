@@ -13,12 +13,17 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || 'fake_key', 
 });
 
-// Configuração do Carteiro SMTP (E-mail de Produção)
+// Configuração do Carteiro SMTP (E-mail de Produção) - Ajustado para Porta 587 (STARTTLS) para evitar bloqueios no Render
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // ou smtp.resend.com
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // true para 465, false para outras portas
     auth: {
         user: process.env.EMAIL_USER || 'seuemail@gmail.com',
         pass: process.env.EMAIL_PASS || 'senha-de-app-16-digitos'
+    },
+    tls: {
+        rejectUnauthorized: false // Ajuda em alguns ambientes de rede restritos
     }
 });
 
@@ -392,6 +397,26 @@ app.post('/api/users/confirm-password', async (req, res) => {
             
             const jwtToken = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
             res.json({ sucesso: true, userId: user.id, token: jwtToken, mensagem: 'Conta Validadíssima!' });
+        });
+    });
+});
+
+// 🚨 ROTA DE EMERGÊNCIA: RESET DE BANCO DE DADOS (Zera todos os usuários para novos testes)
+app.get('/api/admin/reset-database-danger-zone', (req, res) => {
+    db.serialize(() => {
+        db.run("DELETE FROM users", (err) => {
+            if (err) return res.status(500).json({ sucesso: false, erro: 'Erro ao limpar banco: ' + err.message });
+            console.log("🛑 DATABASE RESET: Todos os usuários foram removidos pelo administrador.");
+            res.send(`
+                <body style="font-family: sans-serif; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh;">
+                    <div style="text-align: center; border: 2px solid #E50914; padding: 40px; border-radius: 15px;">
+                        <h1 style="color: #E50914;">Banco de Dados Zerado! 🧹</h1>
+                        <p>Todos os usuários, CPFs e e-mails foram removidos com sucesso.</p>
+                        <p>Você já pode fechar esta aba e tentar um novo cadastro no site.</p>
+                        <a href="/" style="color: #fff; text-decoration: underline;">Voltar para Home</a>
+                    </div>
+                </body>
+            `);
         });
     });
 });
