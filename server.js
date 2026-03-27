@@ -5,27 +5,46 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { OpenAI } = require('openai');
-const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'faculnext_super_secret';
+const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
+
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || 'fake_key', 
 });
 
-// Configuração do Carteiro SMTP (E-mail de Produção) - Ajustado para Porta 587 (STARTTLS) para evitar bloqueios no Render
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // true para 465, false para outras portas
-    auth: {
-        user: process.env.EMAIL_USER || 'seuemail@gmail.com',
-        pass: process.env.EMAIL_PASS || 'senha-de-app-16-digitos'
-    },
-    tls: {
-        rejectUnauthorized: false // Ajuda em alguns ambientes de rede restritos
+// Carteiro Moderno (VIA API HTTP - Porta 443)
+// Não trava no Render.com!
+async function enviarEmailViaResend(to, subject, htmlContent) {
+    if (!RESEND_API_KEY) {
+        console.log("⚠️ RESEND_API_KEY NÃO CONFIGURADA. E-mail não será enviado.");
+        return { sucesso: false, erro: 'Sem chave de API' };
     }
-});
+
+    try {
+        const response = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${RESEND_API_KEY}`
+            },
+            body: JSON.stringify({
+                from: 'FaculNext <onboarding@resend.dev>', 
+                to: [to],
+                subject: subject,
+                html: htmlContent
+            })
+        });
+
+        const data = await response.json();
+        console.log("📨 [RESEND API]:", data);
+        return { sucesso: true, data };
+    } catch (err) {
+        console.error("❌ [RESEND ERROR]:", err);
+        return { sucesso: false, erro: err.message };
+    }
+}
 
 // Inicializando o Motor 🚀
 const app = express();
@@ -330,47 +349,25 @@ app.post('/api/users/register', async (req, res) => {
             }
             
             const novoUserId = this.lastID;
-            
-            // FASE 6: Transporter de E-mail (NODEMAILER)
             const URL_CRIAR_SENHA = `https://faculnext.onrender.com/setup-senha.html?token=${tokenAtivacao}`;
             
-            const mailOptions = {
-                from: `"FaculNext" <${process.env.EMAIL_USER || 'nao-responda@faculnext.com'}>`,
-                to: email,
-                subject: 'Sua vaga no FaculNext está quase garantida! 🚀',
-                html: `
-                    <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-                        <h2>Bem-vindo, ${nome.split(' ')[0]}!</h2>
-                        <p>O seu Perfil Vocacional foi mapeado para a região de <strong>${estado}</strong> e nossa IA já começou a moldar seus simulados privados.</p>
-                        <p>Para ativar a sua conta, criar a sua senha definitiva de acesso e entrar na plataforma, clique no botão de segurança abaixo:</p>
-                        <br>
-                        <a href="${URL_CRIAR_SENHA}" style="background-color: #E50914; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Criar Senha e Acessar Plataforma</a>
-                        <br><br>
-                        <p>Se o botão não funcionar, copie este link e cole no seu navegador:</p>
-                        <p style="color: grey; font-size: 12px;">${URL_CRIAR_SENHA}</p>
-                    </div>
-                `
-            };
+            const htmlEmail = `
+                <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background: #000; color: #fff;">
+                    <h2 style="color: #E50914;">Bem-vindo, ${nome.split(' ')[0]}! 🚀</h2>
+                    <p>Sua jornada no <strong>FaculNext</strong> começou. Para ativar sua conta e definir sua senha, clique no botão abaixo:</p>
+                    <br>
+                    <a href="${URL_CRIAR_SENHA}" style="background-color: #E50914; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">DEFINIR MINHA SENHA</a>
+                    <p style="margin-top: 25px; font-size: 12px; color: #888;">Se o botão não funcionar, o seu link seguro é: <br>${URL_CRIAR_SENHA}</p>
+                </div>
+            `;
 
-            console.log(`\n📧 [EMAIL SERVICE]: Tentando enviar e-mail Real para ${email}...`);
-            
-            // Se as variáveis de ambiente existirem, tentará o envio de fato. Em dev sem vars, só loga:
-            if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-                try {
-                    await transporter.sendMail(mailOptions);
-                    console.log(`✨ E-mail Real enfileirado no SMTP com sucesso para ${email}!\n`);
-                } catch (envioErr) {
-                    console.error('❌ Erro no envio SMTP (A conta de email pode não estar configurada corretamente):', envioErr);
-                }
-            } else {
-                console.log(`⚠️ SMTP não configurado com EMAIL_USER/PASS. O link de confirmação virtual é:`);
-                console.log(`🔗 ${URL_CRIAR_SENHA}\n`);
-            }
+            console.log(`\n📧 [EMAIL SERVICE]: Disparando via API Resend para ${email}...`);
+            await enviarEmailViaResend(email, 'Sua vaga no FaculNext está garantida! 🎓', htmlEmail);
 
             res.json({ 
                 sucesso: true, 
                 userId: novoUserId, 
-                mensagem: 'Cadastro recebido! Enviamos um e-mail de acesso exclusivo para você criar sua senha.' 
+                mensagem: 'Cadastro recebido! O e-mail de ativação foi enviado via API segura.' 
             });
         });
     } catch (err) {
