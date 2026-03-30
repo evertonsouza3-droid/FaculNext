@@ -49,15 +49,9 @@ async function sendMessage() {
     } catch (e) {
         if(typingDiv.parentNode) messages.removeChild(typingDiv);
         
-        // MOCK CHAT FALLBACK (Quando o servidor está offline ou é demo)
-        const urlParams = new URLSearchParams(window.location.search);
-        const mockAge = parseInt(urlParams.get('age')) || 17;
-        const isJovem = mockAge <= 20;
-        
-        const reply = isJovem 
-            ? "Pode pá! Como seu tutor, eu diria que esse conteúdo é GG se você focar na TRI. Quer um speedrun de questões?"
-            : "Excelente observação. Analisando seu perfil, sugiro focar no núcleo TRI para otimizar seu tempo. Deseja auxílio?";
-            
+        // MOCK CHAT FALLBACK: Orientador Moderno e Sério 🎓
+        const reply = "Essa é uma excelente pergunta. Do ponto de vista da TRI, dominar esse tópico é estratégico para sua consistência. Vamos focar em resolver algumas questões sobre isso juntos?";
+                
         const botDiv = document.createElement('div');
         botDiv.className = 'msg bot';
         botDiv.innerText = reply;
@@ -90,8 +84,8 @@ let inactivityTimer;
 function resetInactivityTimer() {
     clearTimeout(inactivityTimer);
     inactivityTimer = setTimeout(() => {
-        sendProactiveMessage("Ainda por aí? Vi que sua produtividade caiu um pouco. Que tal focar em 5 questões rápidas agora?");
-    }, 30000); // 30 segundos de "vácuo"
+        sendProactiveMessage("Ainda focado? Vi que sua produtividade oscilou. Que tal retomar o ritmo com 5 questões rápidas agora? Bora!");
+    }, 45000); // 45 segundos de pausa
 }
 
 // Configurações Globais e Sincronização
@@ -119,19 +113,17 @@ async function initProactiveTutor() {
 
     setTimeout(async () => {
         try {
-            let idade = mockAge;
+            let idade = 0;
             if (idade === 0) {
                 const res = await fetch(`/api/users/${userId}/dashboard`);
                 const data = await res.json();
                 idade = data.idade || 17;
             }
-            const isJovem = idade <= 20;
-
             if(page === 'dashboard.html') {
-                const msg = isJovem ? "Bora rushar essa meta de hoje? O XP tá dobrado! 🔥" : "Identifiquei que você ainda tem 2 pendências hoje. Deseja otimizar sua rotina agora?";
+                const msg = "Bora bater a meta de hoje? Sua evolução constante é o que garante a vaga. Vamos revisar algum conteúdo?";
                 sendProactiveMessage(msg);
             } else if(page === 'ranking.html') {
-                const msg = isJovem ? "Tá no Top 5%! Se fizer uma redação GG agora, você vira MVP da semana! 🏆" : "Sua posição no ranking é sólida. Manter a consistência hoje garante sua liderança.";
+                const msg = "Sua posição no ranking está subindo! Se mantiver esse ritmo, a aprovação é consequência. Vamos para a próxima?";
                 sendProactiveMessage(msg);
             }
         } catch(e) {}

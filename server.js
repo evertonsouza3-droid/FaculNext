@@ -872,29 +872,30 @@ app.post('/api/ai/chat', (req, res) => {
         }
 
         if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'fake_key') {
-            // Fallback Mock se a chave não existir
-            let reply = "";
-            if (reflectsYouth) {
-                // TOM JOVEM/GAMER 🎮
-                reply = "Pode pá! Como seu tutor, eu diria que esse conteúdo é GG se você focar na TRI. Quer um speedrun de questões sobre isso?";
-                if(msgLower.includes("redação")) reply = "A redação é o boss final! Foque na Competência 3 pra não tiltar os corretores. Já viu o tema da semana?";
-                else if(msgLower.includes("matemática")) reply = "Matemática no ENEM é pura estratégia. Rushing de razão e proporção te coloca no Top 1% fácil!";
-                else if(msgLower.includes("oi") || msgLower.includes("olá")) reply = "Salve! Pronto pra farmar uns pontos pro ENEM hoje?";
-            } else {
-                // TOM ADULTO/CONSULTIVO 💼
-                reply = "Excelente observação. Analisando seu perfil, sugiro focar no núcleo TRI para otimizar seu tempo. Deseja uma bateria de exercícios direcionada?";
-                if(msgLower.includes("redação")) reply = "A redação exige planejamento estratégico. Recomendo focar na Competência 3 para garantir a progressão textual. O tema da semana já está disponível.";
-                else if(msgLower.includes("matemática")) reply = "Matemática exige raciocínio lógico focado em eficiência. Razão e proporção são as chaves para sua produtividade.";
-                else if(msgLower.includes("oi") || msgLower.includes("olá")) reply = "Bom dia. Estou pronto para auxiliá-lo na sua rotina de estudos de hoje. Como posso ser útil?";
+            // FALLBACK: ORIENTADOR MODERNO E SÉRIO 🎓
+            let reply = "Oi! Sou seu Tutor FaculNext. Estou aqui para garantir que sua jornada até a aprovação seja o mais eficiente possível. Como posso te orientar hoje?";
+            
+            if(msgLower.includes("redação")) {
+                reply = "A redação é o pilar da sua nota mil. Foque na estrutura dissertativo-argumentativa e na clareza da sua tese. Já conferiu o tema inédito da semana no portal?";
+            } else if(msgLower.includes("matemática")) {
+                reply = "Matemática no ENEM exige estratégia. Domine a TRI focando em questões de nível fácil e médio primeiro. Razão, proporção e porcentagem são essenciais para o seu sucesso.";
+            } else if(msgLower.includes("estudar") || msgLower.includes("dica")) {
+                reply = "A consistência vence o talento. Minha orientação é: siga seu Cronograma Smart e não deixe revisões para depois. Vamos bater as metas de hoje?";
+            } else if(msgLower.includes("oi") || msgLower.includes("olá") || msgLower.includes("bom dia")) {
+                reply = "Olá! Pronto para transformar esforço em aprovação? Vamos focar nos seus objetivos de hoje.";
             }
-            return setTimeout(() => res.json({ sucesso: true, reply }), 1200);
+            
+            return setTimeout(() => res.json({ sucesso: true, reply }), 1000);
         }
 
-        // Chamada real à OpenAI
+        // Chamada real à OpenAI com a nova Personalidade
         try {
-            const systemPrompt = reflectsYouth 
-                ? "Você é o tutor da FaculNext, focado em ENEM. Responda de forma extremamente jovem, objetiva e usando gírias gamer leves."
-                : "Você é um tutor educacional do FaculNext. Responda de forma consultiva, formal, concisa e altamente direcionada ao ENEM e Vestibulares.";
+            const systemPrompt = `Você é o Tutor FaculNext, um orientador educacional moderno, motivador e focado 100% no ENEM e vestibulares brasileiros. 
+            Seu tom de voz deve ser:
+            - Proativo e Moderno: 'Bora conquistar essa vaga!', 'Sua meta está logo ali.'
+            - Sério e Técnico: Dê orientações baseadas na TRI (Teoria de Resposta ao Item) e competências do ENEM.
+            - Conciso: Responda de forma direta, sem rodeios.
+            - Linguagem: Português do Brasil, evite gírias de nicho, prefira uma fala jovem mas profissional.`;
             
             const completion = await openai.chat.completions.create({
                 model: "gpt-4o-mini",
