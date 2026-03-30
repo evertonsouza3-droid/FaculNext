@@ -375,13 +375,14 @@ app.post('/api/users/register', async (req, res) => {
                             <div class="logo">Facul<span>Next</span>.</div>
                         </div>
                         <div class="content">
-                            <h1>Prepare a pipoca, ${nome.split(' ')[0]}. 🍿</h1>
-                            <p>Sua jornada para o ensino superior acaba de ganhar um roteiro digno de Oscar. No <strong>FaculNext</strong>, nós não apenas ensinamos; nós transformamos seu aprendizado em uma experiência épica.</p>
-                            <p>Estamos prontos para começar a sua produção. O próximo passo é definir sua chave de acesso segura:</p>
+                            <h1>Sua vaga foi reservada, ${nome.split(' ')[0]}. 🎓</h1>
+                            <p>Você deu o primeiro passo rumo a uma das conquistas mais importantes da sua vida. Bem-vindo ao <strong>FaculNext</strong> — a plataforma construída para transformar esforço em aprovação.</p>
+                            <p>Para garantir a segurança da sua conta e ativar o acesso completo à plataforma, clique no botão abaixo para criar sua senha:</p>
                             <div style="text-align: center; margin: 40px 0;">
-                                <a href="${URL_CRIAR_SENHA}" class="btn">ATIVAR MEU ACESSO PRIVADO</a>
+                                <a href="${URL_CRIAR_SENHA}" class="btn">CRIAR MINHA SENHA E ENTRAR</a>
                             </div>
-                            <p>Te vemos no topo do ranking,</p>
+                            <p>Este link expira em <strong>24 horas</strong>. Se você não realizou esse cadastro, ignore este e-mail.</p>
+                            <p>Estamos aqui para o seu sucesso,</p>
                             <p><strong>Equipe FaculNext</strong></p>
                         </div>
                         <div class="footer">
