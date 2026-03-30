@@ -11,6 +11,260 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <script src="js/auth.js"></script>
+    <style>
+        /* ===== ESTILOS DO MODAL DE PROVA ===== */
+        .exam-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: 9000;
+            background: rgba(0,0,0,0.97);
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .exam-header {
+            position: sticky; top: 0; z-index: 10;
+            background: rgba(20,20,20,0.98);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 16px 24px;
+            display: flex; align-items: center; justify-content: space-between; gap: 20px;
+            backdrop-filter: blur(20px);
+        }
+        .exam-progress-container { flex: 1; min-width: 0; }
+        .exam-progress-info { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .exam-progress-info span { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+        .exam-progress-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; }
+        .exam-progress-fill { height: 100%; background: var(--primary-red); border-radius: 10px; transition: width 0.5s ease; }
+        .exam-timer {
+            font-size: 1.6rem; font-weight: 900; letter-spacing: 2px;
+            font-variant-numeric: tabular-nums; white-space: nowrap;
+            color: #fff; min-width: 100px; text-align: center;
+        }
+        .exam-timer.warning { color: #FFD700; animation: pulse 1s infinite; }
+        .exam-timer.critical { color: #ff4444; animation: pulse 0.5s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .exam-body { max-width: 800px; margin: 0 auto; padding: 40px 24px; width: 100%; }
+        .exam-materia-tag {
+            display: inline-block; padding: 4px 14px;
+            background: rgba(229,9,20,0.15); border: 1px solid rgba(229,9,20,0.4);
+            color: var(--primary-red); border-radius: 20px; font-size: 0.78rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        .exam-enunciado {
+            font-size: 1.15rem; color: #fff; line-height: 1.8;
+            margin-bottom: 36px; font-weight: 400;
+        }
+        .alternativas { display: flex; flex-direction: column; gap: 12px; }
+        .alt-label {
+            display: flex; align-items: flex-start; gap: 14px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 16px 20px;
+            cursor: pointer; transition: all 0.2s; font-size: 1rem; color: #ccc;
+        }
+        .alt-label:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.25); }
+        .alt-label input[type=radio] { display: none; }
+        .alt-label.selected { background: rgba(229,9,20,0.1); border-color: var(--primary-red); color: #fff; }
+        .alt-letter { font-weight: 800; color: var(--primary-red); min-width: 22px; }
+        .exam-footer { display: flex; gap: 16px; justify-content: flex-end; margin-top: 40px; }
+
+        /* ===== TELA DE RESULTADO ===== */
+        .result-screen { display: none; max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+        .result-hero { text-align: center; margin-bottom: 50px; }
+        .result-nota { font-size: 6rem; font-weight: 900; line-height: 1; color: #fff; }
+        .result-nota span { color: var(--primary-red); }
+        .result-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 3px; color: var(--text-muted); margin-top: 8px; }
+        .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 30px 0; }
+        .result-stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; text-align: center; }
+        .result-stat-card strong { display: block; font-size: 2rem; font-weight: 900; color: #fff; }
+        .result-stat-card span { font-size: 0.8rem; color: var(--text-muted); }
+        .result-feedback { background: rgba(229,9,20,0.1); border: 1px solid rgba(229,9,20,0.3); border-radius: 16px; padding: 20px 24px; margin-bottom: 36px; font-size: 1rem; color: #fff; font-style: italic; text-align: center; }
+        .gabarito-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; color: #fff; }
+        .gabarito-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 10px; margin-bottom: 40px; }
+        .gabarito-item { border-radius: 10px; padding: 10px 6px; text-align: center; font-size: 0.75rem; font-weight: 700; border: 1px solid transparent; }
+        .gabarito-item.acerto { background: rgba(0,200,100,0.15); border-color: rgba(0,200,100,0.4); color: #00c864; }
+        .gabarito-item.erro { background: rgba(229,9,20,0.15); border-color: rgba(229,9,20,0.4); color: #ff5252; }
+        .gabarito-item.pulado { background: rgba(255,200,0,0.1); border-color: rgba(255,200,0,0.3); color: #ffc800; }
+        .gabarito-item .g-num { font-size: 1.1rem; font-weight: 900; display: block; margin-bottom: 3px; }
+        .result-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div id="noise-overlay"></div>
+
+    <aside class="sidebar">
+        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="white-dot">.</span></div>
+        <nav class="side-nav">
+            <a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a>
+            <a href="trilhas.html"><span class="icon">📚</span> Trilhas</a>
+            <a href="simulados.html" class="active"><span class="icon">📝</span> Simulados</a>
+            <a href="redacao.html"><span class="icon">🔥</span> Redação</a>
+            <a href="carreiras.html"><span class="icon">🎯</span> Carreiras</a>
+            <a href="ranking.html"><span class="icon">🏆</span> Ranking</a>
+            <a href="planos.html" style="margin-top:auto; color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
+        </nav>
+        <div class="wallet-card">
+            <div class="wallet-info">
+                <span>CASHBACK ACUMULADO 🔥</span>
+                <h2 id="cashback-value">R$ 0,00</h2>
+                <p>Desconto na próxima fatura!</p>
+            </div>
+        </div>
+        <div class="user-profile">
+            <div class="avatar">👨‍🎓</div>
+            <div class="user-info">
+                <strong>Estudante</strong>
+                <span>Plano Premium</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="dashboard-main simulados-main">
+        <header class="dash-header">
+            <div>
+                <h1>Arena de Provas 📝</h1>
+                <p>Treino difícil, jogo fácil. <span class="primary-text">Simule o grande dia</span> avaliando sua precisão na TRI.</p>
+            </div>
+        </header>
+
+        <!-- Destaque Nacional -->
+        <section class="glass-card spotlight-card">
+            <div class="spotlight-content">
+                <span class="badge uppercase">Simulado Nacional do Mês</span>
+                <h2>ENEM Modelo 2024 - 1º Dia (Linguagens e Humanas)</h2>
+                <p>8 questões inéditas baseadas no ranqueamento da TRI, cobrindo todas as áreas do ENEM. Descubra sua nota e posição no ranking!</p>
+                <div class="stats-row">
+                    <span>⏱️ Duração Alvo: 5h30</span>
+                    <span>📊 Dificuldade: Alta</span>
+                    <span>📚 8 Questões</span>
+                </div>
+                <button class="btn-primary mt-2" onclick="iniciarProva('nacional_123')">Dar Início à Prova Agora</button>
+            </div>
+            <div class="spotlight-visual">
+                <div class="timer-mock" id="timer-display-main">00:00</div>
+            </div>
+        </section>
+
+        <!-- Grade de Bateria Rápida -->
+        <h3 class="section-title">Baterias Rápidas (15 min)</h3>
+        <div class="simulados-grid">
+            <div class="glass-card mini-card">
+                <div class="mini-icon" style="background: var(--bg-surface); border: 1px solid var(--border-glass); color: #fff;">📐</div>
+                <h4>Sprint Matemática</h4>
+                <p>Questões focadas em Geometria, Razão e Proporcionalidade para dominar a TRI.</p>
+                <button class="btn-secondary btn-block" data-exam-id="math_01">Treinar Agora</button>
+            </div>
+            <div class="glass-card mini-card">
+                <div class="mini-icon" style="background: var(--primary-red); color: #fff;">🧬</div>
+                <h4>Natureza FUVEST</h4>
+                <p>Ecologia, Genética e Reações no estilo da Vunesp/Fuvest do ano passado.</p>
+                <button class="btn-secondary btn-block" data-exam-id="nat_02">Treinar Agora</button>
+            </div>
+            <div class="glass-card mini-card">
+                <div class="mini-icon" style="background: var(--bg-surface); border: 1px solid var(--border-glass); color: #fff;">📚</div>
+                <h4>Letras e Lógica</h4>
+                <p>Interpretação e Sociologia modernas com textos atualizados dessa semana.</p>
+                <button class="btn-secondary btn-block" data-exam-id="hum_03">Treinar Agora</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== MODAL PRINCIPAL DE APLICAÇÃO DA PROVA ===== -->
+    <div id="exam-modal" class="exam-modal-overlay">
+        <!-- HEADER com Timer e Progresso -->
+        <div class="exam-header">
+            <div style="display:flex; align-items:center; gap: 12px;">
+                <button id="btn-pausar" onclick="fecharProva()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#fff; padding: 8px 16px; border-radius:8px; cursor:pointer; font-size: 0.85rem;">⏸ Pausar</button>
+                <span id="exam-titulo-header" style="font-weight:700; font-size:0.95rem; color:var(--text-muted);"></span>
+            </div>
+            <div class="exam-progress-container">
+                <div class="exam-progress-info">
+                    <span id="progress-label">Questão 0 de 0</span>
+                    <span id="progress-pct">0%</span>
+                </div>
+                <div class="exam-progress-bar"><div class="exam-progress-fill" id="progress-fill" style="width:0%"></div></div>
+            </div>
+            <div class="exam-timer" id="exam-timer">00:00</div>
+        </div>
+
+        <!-- CORPO: Questão Ativa -->
+        <div class="exam-body" id="exam-questao-body">
+            <span class="exam-materia-tag" id="q-materia">Área</span>
+            <p class="exam-enunciado" id="q-enunciado">Carregando questão...</p>
+            <div class="alternativas" id="q-alternativas"></div>
+            <div class="exam-footer">
+                <button class="btn-secondary" onclick="pularQuestao()">Pular ➔</button>
+                <button class="btn-primary" id="btn-gravar" onclick="gravarResposta()">Gravar e Avançar ➔</button>
+            </div>
+        </div>
+
+        <!-- TELA DE RESULTADO (oculta inicialmente) -->
+        <div class="result-screen" id="result-screen">
+            <div class="result-hero">
+                <div class="result-nota" id="result-nota">000</div>
+                <div class="result-label">Sua Nota TRI Estimada</div>
+                <div class="result-stats">
+                    <div class="result-stat-card">
+                        <strong id="result-acertos">0</strong>
+                        <span>Acertos</span>
+                    </div>
+                    <div class="result-stat-card">
+                        <strong id="result-erros">0</strong>
+                        <span>Erros</span>
+                    </div>
+                    <div class="result-stat-card">
+                        <strong id="result-total">0</strong>
+                        <span>Total</span>
+                    </div>
+                </div>
+                <div class="result-feedback" id="result-feedback"></div>
+            </div>
+            <p class="gabarito-title">📋 Gabarito Detalhado</p>
+            <div class="gabarito-grid" id="gabarito-grid"></div>
+            <div class="result-actions">
+                <button class="btn-secondary" onclick="fecharResultado()">Fechar e Voltar</button>
+                <button class="btn-primary" onclick="iniciarProva(window._lastExamId)">🔄 Refazer Simulado</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão Flutuante IA -->
+    <div id="ai-chat-widget" class="ai-chat-closed" onclick="toggleChat()">
+        <span class="chat-icon">🤖</span>
+        <span class="chat-label">Dúvida? Chama a IA</span>
+    </div>
+
+    <!-- Janela de Chat -->
+    <div id="chat-window" class="chat-hidden">
+        <div class="chat-header">
+            <strong>FaculNext AI Tutor 🪄</strong>
+            <button onclick="toggleChat()">✖</button>
+        </div>
+        <div id="chat-messages" class="chat-body">
+            <div class="msg bot">Olá! Como sua jornada de simulados está indo hoje? Pronto para dominar a TRI?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="user-msg-input" placeholder="Pergunte qualquer coisa...">
+            <button onclick="sendMessage()">➔</button>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="js/simulados.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulados | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/simulados.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <script src="js/auth.js"></script>
 </head>
 <body class="dashboard-body">
     <div id="noise-overlay"></div>

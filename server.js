@@ -147,10 +147,12 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS exam_questions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         exam_id TEXT,
+        materia TEXT DEFAULT 'Geral',
         enunciado TEXT,
         correta TEXT,
         FOREIGN KEY (exam_id) REFERENCES exams (id)
     )`);
+    db.run("ALTER TABLE exam_questions ADD COLUMN materia TEXT DEFAULT 'Geral'", (err) => {});
     console.log('✅ Tabela de Questões [EXAM_QUESTIONS] verificada.');
 
     db.run(`CREATE TABLE IF NOT EXISTS exam_alternatives (
@@ -172,8 +174,8 @@ db.serialize(() => {
             db.run("INSERT INTO exams (id, titulo, duracao, dificuldade) VALUES (?, ?, ?, ?)", ['nacional_123', 'ENEM Modelo 2024 - 1º Dia', '5h30', 'Alta']);
             db.run("INSERT INTO exams (id, titulo, duracao, dificuldade) VALUES (?, ?, ?, ?)", ['math_01', 'Sprint Matemática', '15 min', 'Média']);
 
-            // Inserir questões para nacional_123
-            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['nacional_123', 'No contexto do ENEM, qual alternativa melhor define o fenômeno da polarização política no Brasil contemporâneo?', 'B'], function(err) {
+            // QUESTÕES DO NACIONAL_123 - ENEM Modelo 2024 (Área: Ciências Humanas)
+            db.run("INSERT INTO exam_questions (exam_id, materia, enunciado, correta) VALUES (?, ?, ?, ?)", ['nacional_123', 'Ciências Humanas', 'No contexto do ENEM, qual alternativa melhor define o fenômeno da polarização política no Brasil contemporâneo?', 'B'], function(err) {
                 if (!err) {
                     const qId = this.lastID;
                     db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Aumento de espaços públicos para debates face a face.']);
@@ -184,7 +186,7 @@ db.serialize(() => {
                 }
             });
 
-            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['nacional_123', 'Qual é a principal vantagem da economia circular frente ao modelo linear (extrair-produzir-descartar)?', 'B'], function(err) {
+            db.run("INSERT INTO exam_questions (exam_id, materia, enunciado, correta) VALUES (?, ?, ?, ?)", ['nacional_123', 'Ciências Humanas', 'Qual é a principal vantagem da economia circular frente ao modelo linear (extrair-produzir-descartar)?', 'B'], function(err) {
                 if (!err) {
                     const qId = this.lastID;
                     db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Aumenta o descarte rápido de materiais para maior geração de empregos.']);
@@ -195,7 +197,7 @@ db.serialize(() => {
                 }
             });
 
-            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['nacional_123', 'Na Teoria Geral do Estado, o poder constituinte originário é:', 'B'], function(err) {
+            db.run("INSERT INTO exam_questions (exam_id, materia, enunciado, correta) VALUES (?, ?, ?, ?)", ['nacional_123', 'Ciências Humanas', 'Na Teoria Geral do Estado, o poder constituinte originário é:', 'B'], function(err) {
                 if (!err) {
                     const qId = this.lastID;
                     db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Continuamente delegado por um parlamento específico.']);
@@ -203,6 +205,64 @@ db.serialize(() => {
                     db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'Um poder restrito ao Judiciário em casos excepcionais.']);
                     db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Exercido pela Administração Pública para legislar.']);
                     db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Um mecanismo exclusivo de governos militares.']);
+                }
+            });
+
+            // QUESTÕES DE LINGUAGENS
+            db.run("INSERT INTO exam_questions (exam_id, materia, enunciado, correta) VALUES (?, ?, ?, ?)", ['nacional_123', 'Linguagens', 'Em relação à intertextualidade, qual afirmação está CORRETA?', 'C'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'É um recurso usado apenas em textos literários do séc. XIX.']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'Ocorre quando o autor ignora os textos de outros escritores.']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'É o diálogo entre textos, em que um retoma, cita ou se opõe a outro.']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Representa a fidelidade total ao texto original sem modificações.']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'É válida somente em textos publicitários e de opinião.']);
+                }
+            });
+
+            db.run("INSERT INTO exam_questions (exam_id, materia, enunciado, correta) VALUES (?, ?, ?, ?)", ['nacional_123', 'Linguagens', 'O conectivo "embora" estabelece uma relação de:', 'A'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Concessão']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'Consequência']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'Causa']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Finalidade']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Adição']);
+                }
+            });
+
+            // QUESTÕES DE MATEMÁTICA
+            db.run("INSERT INTO exam_questions (exam_id, materia, enunciado, correta) VALUES (?, ?, ?, ?)", ['nacional_123', 'Matemática', 'Uma loja anuncia 20% de desconto em um produto que custa R$ 250,00. Qual é o valor com desconto?', 'C'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'R$ 240,00']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'R$ 210,00']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'R$ 200,00']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'R$ 180,00']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'R$ 230,00']);
+                }
+            });
+
+            db.run("INSERT INTO exam_questions (exam_id, materia, enunciado, correta) VALUES (?, ?, ?, ?)", ['nacional_123', 'Matemática', 'Qual é o valor de x na equação 2x² - 8 = 0?', 'B'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'x = ±1']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'x = ±2']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'x = ±3']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'x = ±4']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'x = ±8']);
+                }
+            });
+
+            // QUESTÃO DE CIÊNCIAS DA NATUREZA
+            db.run("INSERT INTO exam_questions (exam_id, materia, enunciado, correta) VALUES (?, ?, ?, ?)", ['nacional_123', 'Ciências da Natureza', 'A fotossíntese é o processo pelo qual as plantas produzem energia. Qual das alternativas descreve corretamente a equação geral?', 'D'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'O₂ + C₆H₁₂O₆ → CO₂ + H₂O + Energia']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'CO₂ + H₂O → O₂ + C₆H₁₂O₆ sem luz']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'H₂O + Luz → CO₂ + C₆H₁₂O₆']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'CO₂ + H₂O + Luz → C₆H₁₂O₆ + O₂']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'C₆H₁₂O₆ + Luz → CO₂ + H₂O']);
                 }
             });
 
