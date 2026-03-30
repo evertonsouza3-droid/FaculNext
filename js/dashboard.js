@@ -1,5 +1,15 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const userId = localStorage.getItem('faculnext_user_id') || 1;
+
+    // Mapa local de perfis RIASEC para exibir no dashboard sem depender do servidor
+    const PERFIS_RIASEC = {
+        'Prático e Construtivo':    { icone: '🛠️', desc: 'Engenharia, Tecnologia Aplicada e áreas que exigem precisão e resolução de problemas físicos.' },
+        'Explorador Investigativo': { icone: '🔬', desc: 'Medicina, Pesquisa Científica e Ciência de Dados são seus terrenos naturais.' },
+        'Criador Artístico':        { icone: '🎨', desc: 'Design, Comunicação, Arquitetura e áreas onde a originalidade é a moeda principal.' },
+        'Mestre Social':            { icone: '🤝', desc: 'Educação, Psicologia e Saúde Comunitária são onde você encontrará seu propósito.' },
+        'Líder Empreendedor':       { icone: '🚀', desc: 'Administração, Direito e Marketing: você nasceu para liderar e influenciar.' },
+        'Estrategista Convencional': { icone: '📊', desc: 'Contabilidade, Logística e TI: você é o pilar da organização em qualquer empresa.' },
+    };
     
     try {
         const res = await fetch(`/api/users/${userId}/dashboard`);
@@ -13,7 +23,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Mock de demonstração para o Fundador ver a solução de Cashback
         const mockData = {
             sucesso: true,
-            perfil: 'Medicina',
+            nome_usuario: 'Estudante',
+            perfil: 'Prático e Construtivo',
+            perfil_inicial: 'Prático e Construtivo',
             questoes_resolvidas: 1205,
             ranking_percentil: 5,
             dias_enem: 245,
@@ -40,6 +52,38 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function renderDashboard(data) {
         if (!data.sucesso) return;
+
+        // =============================================
+        // CARD DE PERFIL VOCACIONAL (topo do dashboard)
+        // =============================================
+        const perfilSection = document.getElementById('perfil-vocacional-section');
+        const perfilAtual = data.perfil;
+        const perfilInicial = data.perfil_inicial;
+
+        if (perfilSection && perfilAtual && perfilAtual !== 'Não Definido') {
+            const info = PERFIS_RIASEC[perfilAtual] || { icone: '🧬', desc: perfilAtual };
+            const primeiroNome = data.nome_usuario || 'Estudante';
+
+            document.getElementById('perfil-icone').innerText = info.icone;
+            document.getElementById('perfil-nome').innerText = perfilAtual;
+            document.getElementById('perfil-desc').innerText = info.desc;
+
+            // Mostrar perfil inicial apenas se for diferente do atual
+            if (perfilInicial && perfilInicial !== perfilAtual) {
+                const boxInicial = document.getElementById('perfil-inicial-box');
+                const nomeInicial = document.getElementById('perfil-inicial-nome');
+                if (boxInicial && nomeInicial) {
+                    nomeInicial.innerText = perfilInicial;
+                    boxInicial.style.display = 'block';
+                }
+            }
+
+            // Atualizar saudacao no header
+            const h1Header = document.querySelector('.dash-header h1');
+            if (h1Header) h1Header.innerText = `Olá, ${primeiroNome}! Hora de fazer história. 🚀`;
+
+            perfilSection.style.display = 'block';
+        }
 
         // Atualizar Stats
         const resolvedElems = document.querySelectorAll('.stat strong');

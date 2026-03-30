@@ -85,6 +85,7 @@ db.serialize(() => {
         cep TEXT,
         estado TEXT,
         perfil_vocacional TEXT,
+        perfil_inicial TEXT,
         nota_redacao_media INTEGER DEFAULT 0,
         cashback_saldo REAL DEFAULT 0.0,
         idade INTEGER DEFAULT 17,
@@ -478,12 +479,30 @@ app.post('/api/users/login', (req, res) => {
     });
 });
 
-// Rota 2: Salvar o Perfil Vocacional
+// Rota 2: Salvar o Perfil Vocacional (preserva sempre o perfil_inicial)
 app.post('/api/users/:id/vocational', (req, res) => {
     const { perfil } = req.body;
-    db.run("UPDATE users SET perfil_vocacional = ? WHERE id = ?", [perfil, req.params.id], function(err) {
+    const userId = req.params.id;
+
+    // Verifica se já tem um perfil inicial registrado
+    db.get("SELECT perfil_inicial FROM users WHERE id = ?", [userId], (err, row) => {
         if (err) return res.status(400).json({ sucesso: false, erro: err.message });
-        res.json({ sucesso: true, mensagem: `O perfil de carreira [${perfil}] foi fixado na conta do aluno.` });
+
+        const jaTemPerfilInicial = row && row.perfil_inicial;
+
+        if (jaTemPerfilInicial) {
+            // Já tem perfil inicial: atualiza só o perfil_vocacional (o atual)
+            db.run("UPDATE users SET perfil_vocacional = ? WHERE id = ?", [perfil, userId], function(err) {
+                if (err) return res.status(400).json({ sucesso: false, erro: err.message });
+                res.json({ sucesso: true, mensagem: `Perfil vocacional atualizado para [${perfil}]. Perfil original preservado.` });
+            });
+        } else {
+            // Primeiro teste: grava nos dois campos
+            db.run("UPDATE users SET perfil_vocacional = ?, perfil_inicial = ? WHERE id = ?", [perfil, perfil, userId], function(err) {
+                if (err) return res.status(400).json({ sucesso: false, erro: err.message });
+                res.json({ sucesso: true, mensagem: `Perfil vocacional [${perfil}] registrado com sucesso!` });
+            });
+        }
     });
 });
 
@@ -707,7 +726,9 @@ app.get('/api/users/:id/dashboard', (req, res) => {
             res.json({
                 sucesso: true,
                 plano_ativo: row.plano_ativo || 'FREE',
+                nome_usuario: row.nome ? row.nome.split(' ')[0] : 'Estudante',
                 perfil: row.perfil_vocacional || 'Não Definido',
+                perfil_inicial: row.perfil_inicial || null,
                 questoes_resolvidas: 1205,
                 ranking_percentil: 5,
                 dias_enem: 245,

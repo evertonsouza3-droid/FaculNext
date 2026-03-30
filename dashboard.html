@@ -57,7 +57,28 @@
         <div class="dash-grid">
             <!-- Coluna Principal -->
             <div class="main-column">
-                <section class="stats-cards">
+                <!-- CARD PERFIL VOCACIONAL (topo, dinâmico via JS) -->
+            <section id="perfil-vocacional-section" class="glass-card mb-2" style="display:none; padding: 25px; border-left: 4px solid var(--primary-red);">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <div id="perfil-icone" style="font-size: 3rem; line-height: 1;">🧬</div>
+                        <div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px;">Seu DNA de Carreira</p>
+                            <h2 id="perfil-nome" style="font-size: 1.6rem; font-weight: 900; color: #fff; margin-bottom: 4px;">Carregando...</h2>
+                            <p id="perfil-desc" style="font-size: 0.95rem; color: var(--text-muted); max-width: 500px; line-height: 1.5;">Analisando seu perfil...</p>
+                        </div>
+                    </div>
+                    <div style="text-align: right; flex-shrink: 0;">
+                        <div id="perfil-inicial-box" style="display:none; margin-bottom: 10px;">
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px;">Perfil Original (1º Teste)</p>
+                            <span id="perfil-inicial-nome" style="font-weight: 700; color: var(--primary-red); font-size: 0.9rem;"></span>
+                        </div>
+                        <a href="carreiras.html" class="btn-secondary" style="font-size: 0.85rem; padding: 10px 18px; border-radius: 8px; text-decoration: none; white-space: nowrap;">🔄 Refazer Teste</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats-cards">
                     <div class="glass-card stat">
                         <div class="icon" style="background: var(--bg-surface); border: 1px solid var(--border-glass); color: #fff;">📈</div>
                         <div class="info">
