@@ -416,12 +416,24 @@ app.post('/api/users/confirm-password', async (req, res) => {
     
     if (!token || !senha || senha.length < 6) return res.status(400).json({ sucesso: false, erro: 'Token inválido ou senha muito curta.' });
 
-    db.get("SELECT id, email FROM users WHERE verification_token = ? AND verificado = 0", [token], async (err, user) => {
-        if (err || !user) {
-            return res.status(404).json({ sucesso: false, erro: 'Link de verificação inválido ou já utilizado. Tente se cadastrar novamente.' });
+    // 1. Procurar o usuário pelo TOKEN primeiro para diagnóstico
+    db.get("SELECT id, email, verificado FROM users WHERE verification_token = ?", [token], async (err, user) => {
+        if (err) return res.status(500).json({ sucesso: false, erro: 'Erro interno no banco de dados.' });
+
+        if (!user) {
+            // Caso 1: Token não existe (banco zerado ou link antigo)
+            return res.status(404).json({ 
+                sucesso: false, 
+                erro: 'Este link expirou ou é inválido. Como você limpou o banco, por favor, realize um NOVO cadastro no site para gerar um link atualizado.' 
+            });
         }
 
-        // Token achou o usuário: Vamos fixar a senha e ativá-lo!
+        if (user.verificado === 1) {
+            // Caso 2: Já ativado
+            return res.status(400).json({ sucesso: false, erro: 'Esta conta já foi ativada anteriormente. Tente fazer login.' });
+        }
+
+        // Token válido e não utilizado: Vamos criar a senha!
         const senha_hash = await bcrypt.hash(senha, 10);
         
         db.run("UPDATE users SET senha_hash = ?, verification_token = NULL, verificado = 1 WHERE id = ?", [senha_hash, user.id], function(err) {
