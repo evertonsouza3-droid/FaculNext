@@ -294,8 +294,12 @@ button {
 .glass-card .info .lime-text { color: var(--neon-lime); font-size: 0.9rem; font-weight: 600;}
 .glass-card .info .purple-text { color: #f4b4ff; font-size: 0.9rem; font-weight: 600;}
 
-.float-1 { position: absolute; top: 15%; right: -30px; animation: float 6s infinite ease-in-out; }
-.float-2 { position: absolute; bottom: 20%; left: -20px; animation: float 8s infinite ease-in-out 1s; }
+.float-1 { position: absolute; top: 10%; right: -5%; animation: float 6s infinite ease-in-out; }
+.float-2 { position: absolute; bottom: 15%; left: -10%; animation: float 8s infinite ease-in-out 1s; }
+.float-3 { position: absolute; top: 70%; right: 15%; animation: float 7s infinite ease-in-out 0.5s; z-index: 5;}
+.float-4 { position: absolute; top: -5%; left: 20%; animation: float 9s infinite ease-in-out 2s; z-index: 5;}
+.float-5 { position: absolute; bottom: -10%; right: 25%; animation: float 10s infinite ease-in-out 1.5s; z-index: 5;}
+.float-6 { position: absolute; top: 40%; left: -15%; animation: float 11s infinite ease-in-out 0.3s; z-index: 5;}
 
 /* --- Features --- */
 .features {

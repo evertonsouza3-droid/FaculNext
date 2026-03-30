@@ -726,7 +726,13 @@ app.get('/api/users/:id/dashboard', (req, res) => {
             res.json({
                 sucesso: true,
                 plano_ativo: row.plano_ativo || 'FREE',
+                nome_completo: row.nome || 'Estudante',
                 nome_usuario: row.nome ? row.nome.split(' ')[0] : 'Estudante',
+                email_usuario: row.email || '-',
+                cpf_usuario: row.cpf || '-',
+                celular_usuario: row.celular || '-',
+                cep_usuario: row.cep || '-',
+                estado_usuario: row.estado || '-',
                 perfil: row.perfil_vocacional || 'Não Definido',
                 perfil_inicial: row.perfil_inicial || null,
                 questoes_resolvidas: 1205,

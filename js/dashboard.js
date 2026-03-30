@@ -14,7 +14,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const res = await fetch(`/api/users/${userId}/dashboard`);
         const data = await res.json();
+        
+        // Guardar dados globais para o modal de perfil
+        window.userData = data;
+        
         renderDashboard(data);
+        setupDashboardInteractions();
     } catch (e) {
         console.warn('Backend offline, carregando MOCK de demonstração...');
         const urlParams = new URLSearchParams(window.location.search);
@@ -100,8 +105,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (typeof syncCashback === 'function') syncCashback();
 
         // Atualizar Título Perfil na Header
-        const profileBadgeSpan = document.querySelector('.user-info span');
+        const profileBadgeSpan = document.getElementById('header-perfil-tag');
         if(profileBadgeSpan) profileBadgeSpan.innerText = `Plano ${data.plano_ativo || 'Premium'} • Foco: ${data.perfil}`;
+        
+        // Atualizar Dados do Modal de Perfil (se existirem)
+        if (data.nome_completo) {
+            document.getElementById('modal-nome-completo').innerText = data.nome_completo;
+            document.getElementById('modal-plano-badge').innerText = `Plano ${data.plano_ativo || 'Premium'}`;
+            document.getElementById('modal-email').innerText = data.email_usuario;
+            document.getElementById('modal-cpf').innerText = data.cpf_usuario;
+            document.getElementById('modal-celular').innerText = data.celular_usuario;
+            document.getElementById('modal-cep').innerText = data.cep_usuario;
+            document.getElementById('modal-estado').innerText = data.estado_usuario;
+        }
 
         // Atualizar Dias
         const diasSpan = document.querySelector('.countdown .days');
@@ -186,6 +202,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 });
+
+// Funções de Interação (Logout e Modal)
+function setupDashboardInteractions() {
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.onclick = (e) => {
+            e.preventDefault();
+            if (confirm('Deseja realmente sair do sistema?')) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        };
+    }
+
+    const profileBtn = document.getElementById('user-profile-btn');
+    if (profileBtn) {
+        profileBtn.onclick = toggleProfileModal;
+    }
+}
+
+function toggleProfileModal() {
+    const modal = document.getElementById('profile-modal');
+    if (!modal) return;
+    
+    if (modal.style.display === 'none' || modal.style.display === '') {
+        modal.style.display = 'flex';
+    } else {
+        modal.style.display = 'none';
+    }
+}
 
 function showToast(message) {
     const container = document.getElementById('toast-container');
