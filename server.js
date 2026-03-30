@@ -352,13 +352,46 @@ app.post('/api/users/register', async (req, res) => {
             const URL_CRIAR_SENHA = `https://faculnext.onrender.com/setup-senha.html?token=${tokenAtivacao}`;
             
             const htmlEmail = `
-                <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background: #000; color: #fff;">
-                    <h2 style="color: #E50914;">Bem-vindo, ${nome.split(' ')[0]}! 🚀</h2>
-                    <p>Sua jornada no <strong>FaculNext</strong> começou. Para ativar sua conta e definir sua senha, clique no botão abaixo:</p>
-                    <br>
-                    <a href="${URL_CRIAR_SENHA}" style="background-color: #E50914; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">DEFINIR MINHA SENHA</a>
-                    <p style="margin-top: 25px; font-size: 12px; color: #888;">Se o botão não funcionar, o seu link seguro é: <br>${URL_CRIAR_SENHA}</p>
-                </div>
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #000000; color: #ffffff; margin: 0; padding: 0; }
+                        .container { max-width: 600px; margin: 0 auto; background-color: #141414; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
+                        .header { padding: 40px 20px; text-align: center; border-bottom: 2px solid #E50914; }
+                        .logo { font-size: 32px; font-weight: 900; color: #E50914; letter-spacing: -1px; }
+                        .logo span { color: #ffffff; }
+                        .content { padding: 40px 30px; line-height: 1.6; }
+                        h1 { color: #ffffff; font-size: 24px; font-weight: 700; margin-bottom: 20px; }
+                        p { color: #cccccc; font-size: 16px; margin-bottom: 30px; }
+                        .btn { display: inline-block; background-color: #E50914; color: #ffffff !important; padding: 16px 32px; text-decoration: none; border-radius: 4px; font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: background-color 0.3s ease; }
+                        .footer { padding: 30px; text-align: center; color: #666666; font-size: 12px; background-color: #080808; }
+                        .link-apoio { color: #E50914; text-decoration: none; font-size: 11px; word-break: break-all; opacity: 0.6; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container" style="margin-top: 40px; margin-bottom: 40px;">
+                        <div class="header">
+                            <div class="logo">Facul<span>Next</span>.</div>
+                        </div>
+                        <div class="content">
+                            <h1>Prepare a pipoca, ${nome.split(' ')[0]}. 🍿</h1>
+                            <p>Sua jornada para o ensino superior acaba de ganhar um roteiro digno de Oscar. No <strong>FaculNext</strong>, nós não apenas ensinamos; nós transformamos seu aprendizado em uma experiência épica.</p>
+                            <p>Estamos prontos para começar a sua produção. O próximo passo é definir sua chave de acesso segura:</p>
+                            <div style="text-align: center; margin: 40px 0;">
+                                <a href="${URL_CRIAR_SENHA}" class="btn">ATIVAR MEU ACESSO PRIVADO</a>
+                            </div>
+                            <p>Te vemos no topo do ranking,</p>
+                            <p><strong>Equipe FaculNext</strong></p>
+                        </div>
+                        <div class="footer">
+                            <p>Você recebeu este e-mail porque se cadastrou na plataforma FaculNext.</p>
+                            <p style="margin-top: 10px;">Se o botão acima não funcionar, copie e cole o link abaixo no seu navegador:</p>
+                            <a href="${URL_CRIAR_SENHA}" class="link-apoio">${URL_CRIAR_SENHA}</a>
+                        </div>
+                    </div>
+                </body>
+                </html>
             `;
 
             console.log(`\n📧 [EMAIL SERVICE]: Disparando via API Resend para ${email}...`);

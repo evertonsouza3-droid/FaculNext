@@ -98,6 +98,23 @@
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 40px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    user-select: none;
+    transition: color 0.3s;
+    z-index: 5;
+}
+
+.toggle-password:hover {
+    color: #fff;
 }
 
 .input-group label, .form-group label {

@@ -118,12 +118,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (data.sucesso) {
                     localStorage.setItem('faculnext_user_id', data.userId);
-                    submitBtn.innerText = "Sincronizando I.A... 🚀";
+                    submitBtn.innerText = "Direcionando o teste";
                     
                     setTimeout(() => {
                         document.getElementById('cadastro-box').style.display = 'none';
                         document.getElementById('vocacional-box').style.display = 'flex';
                         document.getElementById('glow-bg').style.background = 'var(--neon-cyan)';
+                        atualizarCard(); // Inicializar primeiro card
                     }, 800);
                 } else {
                     alert('Erro no cadastro: ' + data.erro);
@@ -139,49 +140,64 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Lógica Global do Tinder Vocacional Simulado
-let currentCard = 1;
-const totalCards = 3;
+// LOGICA PROFISSIONAL RIASEC (USANDO SHARED) 🎓
+let indiceAtual = 0;
+const pontuacao = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
 
-window.handleSwipe = function(isLiked) {
-    const card = document.getElementById(`t-card-${currentCard}`);
-    
-    // Animação CSS de saída 
-    if (isLiked) {
-        card.style.transform = 'matrix(1, 0.2, -0.2, 1, 400, -100)'; // Rotação pra fora e cima-direita
-        card.style.opacity = '0';
-    } else {
-        card.style.transform = 'matrix(1, -0.2, 0.2, 1, -400, -100)'; // Rotação pra fora e esquerda
-        card.style.opacity = '0';
-    }
+window.handleRIASEC = function(sim) {
+    if (typeof questoesRIASEC === 'undefined') return;
 
-    // Espera The Fade Animations
+    // 1. Contabilizar pontos
+    const q = questoesRIASEC[indiceAtual];
+    if (sim) pontuacao[q.tipo]++;
+
+    // 2. Animar o card
+    const card = document.getElementById('main-card');
+    card.style.transform = sim ? 'translateX(400px) rotate(20deg)' : 'translateX(-400px) rotate(-20deg)';
+    card.style.opacity = '0';
+
     setTimeout(() => {
-        card.style.display = 'none';
-        currentCard++;
+        indiceAtual++;
 
-        if (currentCard <= totalCards) {
-            const nextCard = document.getElementById(`t-card-${currentCard}`);
-            nextCard.style.display = 'block';
+        if (indiceAtual < questoesRIASEC.length) {
+            // Próxima Pergunta
+            atualizarCard();
+            card.style.transform = 'translateX(0) rotate(0)';
+            card.style.opacity = '1';
         } else {
-            // Acabou o Quizz!
-            const userId = localStorage.getItem('faculnext_user_id');
-            const perfilDetectado = "Tecnológico de Exatas"; // Mock para MVP
-            
-            fetch(`/api/users/${userId}/vocational`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ perfil: perfilDetectado })
-            }).then(res => res.json()).then(data => {
-                document.getElementById('t-actions').style.display = 'none';
-                document.querySelector('.vocacional-header').style.display = 'none';
-                document.getElementById('vocacional-resultado').style.display = 'block';
-            }).catch(err => {
-                console.error("Erro ao salvar perfil vocacional", err);
-                document.getElementById('t-actions').style.display = 'none';
-                document.querySelector('.vocacional-header').style.display = 'none';
-                document.getElementById('vocacional-resultado').style.display = 'block';
-            });
+            // Final do Teste: Calcular Resultado
+            mostrarResultadoRIASEC();
         }
-    }, 300); // 300ms de smooth transition
+    }, 300);
+};
+
+function atualizarCard() {
+    if (typeof questoesRIASEC === 'undefined') return;
+    const q = questoesRIASEC[indiceAtual];
+    document.getElementById('vocacional-progress').style.width = ((indiceAtual + 1) / questoesRIASEC.length * 100) + '%';
+    document.getElementById('step-counter').innerText = `Etapa ${indiceAtual + 1}/12`;
+    document.getElementById('card-icon').innerText = q.icone;
+    document.getElementById('card-category-name').innerText = q.titulo;
+    document.getElementById('card-text').innerText = q.texto;
+}
+
+function mostrarResultadoRIASEC() {
+    const resultado = calcularResultadoRIASEC(pontuacao);
+    const userId = localStorage.getItem('faculnext_user_id');
+
+    // Salvar no servidor
+    fetch(`/api/users/${userId}/vocational`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ perfil: resultado.nome })
+    }).finally(() => {
+        document.getElementById('t-actions').style.display = 'none';
+        document.querySelector('.vocacional-header').style.display = 'none';
+        document.getElementById('main-card').style.display = 'none';
+        
+        const resBox = document.getElementById('vocacional-resultado');
+        resBox.style.display = 'block';
+        resBox.querySelector('h2').innerText = `Match: ${resultado.nome}`;
+        resBox.querySelector('p').innerText = resultado.desc;
+    });
 }

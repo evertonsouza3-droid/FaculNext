@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-primary btn-block" id="submit-btn" disabled>Continuar Cadastro 🚀</button>
+            <button type="submit" class="btn-primary btn-block" id="submit-btn" disabled>Faça o seu cadastro</button>
             <p class="login-link">Já tem uma conta? <a href="login.html">Acesse aqui</a></p>
         </form>
     </div>
@@ -70,46 +70,30 @@
     <!-- TESTE VOCACIONAL (TINDER UI) ESCONDIDO INICIALMENTE -->
     <div class="vocacional-container" id="vocacional-box" style="display: none;">
         <div class="vocacional-header text-center">
-            <span class="badge uppercase">Etapa 2/2 Vocacional</span>
-            <h2 style="font-size: 2.2rem; margin-top: 15px; font-weight: 900;">Mapeando seu DNA...</h2>
-            <p style="color: var(--text-muted); margin-bottom: 25px; font-size:1.1rem;">Sem testes demorados! Use os botões abaixo para dizer se você se identifica ou não com o cenário.</p>
+            <div class="progress-container" style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 20px; overflow: hidden;">
+                <div id="vocacional-progress" style="width: 8.33%; height: 100%; background: var(--primary-red); transition: width 0.4s ease;"></div>
+            </div>
+            <span class="badge uppercase" id="step-counter">Etapa 1/12</span>
+            <h2 id="pergunta-titulo" style="font-size: 2.2rem; margin-top: 15px; font-weight: 900;">Mapeando seu DNA...</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px; font-size:1.1rem;">Responda sinceramente: Você se identifica com essa atividade?</p>
         </div>
 
-        <div class="tinder-card glass-card" id="t-card-1">
-            <div class="t-image" style="background: linear-gradient(135deg, var(--bg-dark), var(--primary-red)); opacity: 0.8;">
-                💻
+        <!-- Card Dinâmico Único que será atualizado via JS -->
+        <div class="tinder-card glass-card" id="main-card">
+            <div class="t-image" id="card-icon" style="background: linear-gradient(135deg, var(--bg-dark), var(--primary-red)); opacity: 0.8; font-size: 5rem; display: flex; align-items: center; justify-content: center;">
+                🛠️
             </div>
             <div class="t-content">
-                <h3>Tecnologia e Lógica</h3>
-                <p>Você se imagina programando o futuro, trabalhando com Inteligência Artificial e debruçado em desafios analíticos mundiais?</p>
+                <h3 id="card-category-name">Prático e Técnico</h3>
+                <p id="card-text">Montar e consertar equipamentos ou objetos manuais.</p>
             </div>
         </div>
         
-        <div class="tinder-card glass-card" id="t-card-2" style="display: none;">
-            <div class="t-image" style="background: linear-gradient(135deg, var(--bg-dark), var(--bg-surface)); opacity: 0.8;">
-                🩺
-            </div>
-            <div class="t-content">
-                <h3>Cuidado e Biológicas</h3>
-                <p>Salvar vidas diante de hospitais, estudar biologia avançada e ter amor à profissão mesmo em turnos médicos longos te brilha os olhos?</p>
-            </div>
-        </div>
-
-        <div class="tinder-card glass-card" id="t-card-3" style="display: none;">
-            <div class="t-image" style="background: linear-gradient(135deg, var(--bg-dark), var(--dark-red)); opacity: 0.8;">
-                ⚖️
-            </div>
-            <div class="t-content">
-                <h3>Leis e Argumentação</h3>
-                <p>Você é convicto e adora defender o que é certo? Ler grandes livros em nome da justiça é para você?</p>
-            </div>
-        </div>
-
         <div class="tinder-actions" id="t-actions">
             <!-- Botão Nao (Swipe Left) -->
-            <button class="btn-tinder btn-no" onclick="handleSwipe(0)">❌ Nope</button>
+            <button class="btn-tinder btn-no" onclick="handleRIASEC(false)">❌ NÃO</button>
             <!-- Botão Sim (Swipe Right) -->
-            <button class="btn-tinder btn-yes" onclick="handleSwipe(1)">✅ Curto</button>
+            <button class="btn-tinder btn-yes" onclick="handleRIASEC(true)">✅ SIM</button>
         </div>
 
         <!-- TELA DE RESULTADO VOCACIONAL -->
@@ -121,6 +105,8 @@
         </div>
     </div>
 
-    <script src="js/cadastro.js?v=2"></script>
+    <script src="js/vocacional-shared.js?v=3"></script>
+    <script src="js/cadastro.js?v=3"></script>
+    <script src="js/carreiras.js?v=3"></script>
 </body>
 </html>
