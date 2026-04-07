@@ -14,6 +14,12 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || 'fake_key', 
 });
 
+// Inicializando Stripe (Gateway de Pagamentos)
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'fake_stripe_key');
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
+const STRIPE_PRICE_STARTER = process.env.STRIPE_PRICE_STARTER || 'price_starter_mock';
+const STRIPE_PRICE_PREMIUM = process.env.STRIPE_PRICE_PREMIUM || 'price_premium_mock';
+
 // Carteiro Moderno (VIA API HTTP - Porta 443)
 // Não trava no Render.com!
 async function enviarEmailViaResend(to, subject, htmlContent) {
@@ -49,7 +55,14 @@ async function enviarEmailViaResend(to, subject, htmlContent) {
 // Inicializando o Motor 🚀
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+// Configuração de Segurança de Acesso (CORS)
+// Em produção, você pode restringir apenas ao seu domínio
+app.use(cors({
+    origin: '*', // Permitir todos por enquanto, ou restringir para o domínio do Render
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Configura o Servidor para exibir as telas Front-end incríveis que fizemos
 app.use(express.static(path.join(__dirname)));
@@ -57,24 +70,117 @@ app.use(express.static(path.join(__dirname)));
 console.log("-----------------------------------------");
 console.log("Incializando Inteligência do FaculNext...");
 
-// Adaptação para Banco de Dados Permanente no Glitch (.data)
-const isGlitch = process.env.PROJECT_DOMAIN !== undefined;
-const dbFolder = isGlitch ? '.data' : '.';
-const dbPath = `${dbFolder}/database.sqlite`;
+// =====================================
+// SETUP DE BANCO DE DADOS HÍBRIDO (SQLite local / PostgreSQL cloud)
+// =====================================
+const isPg = !!process.env.DATABASE_URL;
+let db = {};
 
-if (isGlitch) {
-    const fs = require('fs');
-    if (!fs.existsSync('.data')) fs.mkdirSync('.data');
-}
-
-// Banco de Dados embutido no projeto
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('Falha crítica ao montar o Banco de Dados:', err.message);
-    } else {
-        console.log(`✅ Conexão com o Banco de Dados (SQLite em ${dbPath}) estabelecida com sucesso!`);
+if (!isPg) {
+    // -------------------------------------
+    // MODO LOCAL (SQLite Efêmero / Dev)
+    // -------------------------------------
+    const isGlitch = process.env.PROJECT_DOMAIN !== undefined;
+    const dbFolder = isGlitch ? '.data' : '.';
+    const dbPath = `${dbFolder}/database.sqlite`;
+    
+    if (isGlitch) {
+        const fs = require('fs');
+        if (!fs.existsSync('.data')) fs.mkdirSync('.data');
     }
-});
+    
+    db = new sqlite3.Database(dbPath, (err) => {
+        if (err) {
+            console.error('Falha crítica ao montar o Banco de Dados:', err.message);
+        } else {
+            console.log(`✅ Conexão com o Banco de Dados (SQLite em ${dbPath}) estabelecida com sucesso!`);
+        }
+    });
+
+} else {
+    // -------------------------------------
+    // MODO NUVEM DE PRODUÇÃO (PostgreSQL)
+    // -------------------------------------
+    const { Pool } = require('pg');
+    const pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false } 
+    });
+
+    console.log(`☁️ Conexão de Produção (PostgreSQL Cloud) ativada com sucesso!`);
+
+    function preparePgQuery(sql) {
+        let i = 1;
+        // Substitui ? por $1, $2...
+        return sql.replace(/\?/g, () => `$${i++}`);
+    }
+
+    // O PostgreSQL em pool não precisa serializar
+    db.serialize = (cb) => cb();
+
+    db.run = async function(sql, params, cb) {
+        if (typeof params === 'function') {
+            cb = params;
+            params = [];
+        }
+        let pgSql = preparePgQuery(sql);
+        
+        // Tradução de Sintaxe de Criação SQLite -> Postgres
+        pgSql = pgSql.replace(/AUTOINCREMENT/gi, '');
+        pgSql = pgSql.replace(/INTEGER PRIMARY KEY/gi, 'SERIAL PRIMARY KEY');
+        pgSql = pgSql.replace(/DATETIME DEFAULT CURRENT_TIMESTAMP/gi, 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP');
+        pgSql = pgSql.replace(/BOOLEAN DEFAULT 0/gi, 'BOOLEAN DEFAULT FALSE');
+
+        // Adiciona RETURNING id para INSERTs para imitar SQLite this.lastID
+        if (pgSql.trim().toUpperCase().startsWith('INSERT') && !pgSql.toUpperCase().includes('RETURNING')) {
+            pgSql += ' RETURNING id';
+        }
+
+        try {
+            const res = await pool.query(pgSql, params || []);
+            if (cb) {
+                // SQLite injeta lastID no `this`
+                const context = { lastID: res.rows[0] ? res.rows[0].id : null, changes: res.rowCount };
+                cb.call(context, null);
+            }
+        } catch (err) {
+            console.error("🔴 DB PG Error:", err.message, "em SQL:", pgSql);
+            if (cb) cb.call(this, err);
+        }
+        return this;
+    };
+
+    db.get = async function(sql, params, cb) {
+        if (typeof params === 'function') { cb = params; params = []; }
+        try {
+            const res = await pool.query(preparePgQuery(sql), params || []);
+            // Converter BOOLEAN na leitura (true/false) para 1/0 para manter a regra do SQLite
+            const r = res.rows[0];
+            if (r && r.verificado !== undefined) r.verificado = r.verificado ? 1 : 0;
+            if (cb) cb(null, r);
+        } catch (err) {
+            console.error("🔴 DB PG GET Error:", err.message);
+            if (cb) cb(err, null);
+        }
+        return this;
+    };
+
+    db.all = async function(sql, params, cb) {
+        if (typeof params === 'function') { cb = params; params = []; }
+        try {
+            const res = await pool.query(preparePgQuery(sql), params || []);
+            // Ajustar booleanos igual ao GET
+            res.rows.forEach(r => {
+                if (r.verificado !== undefined) r.verificado = r.verificado ? 1 : 0;
+            });
+            if (cb) cb(null, res.rows);
+        } catch (err) {
+            console.error("🔴 DB PG ALL Error:", err.message);
+            if (cb) cb(err, null);
+        }
+        return this;
+    };
+}
 
 // Criando as Tabelas automaticamente caso o fundador exclua o arquivo ou inicie um computador novo
 db.serialize(() => {
@@ -410,7 +516,9 @@ app.post('/api/users/register', async (req, res) => {
             }
             
             const novoUserId = this.lastID;
-            const URL_CRIAR_SENHA = `https://faculnext.onrender.com/setup-senha.html?token=${tokenAtivacao}`;
+            const host = process.env.APP_URL || req.headers.host || 'faculnext.onrender.com';
+            const protocol = req.protocol || 'https';
+            const URL_CRIAR_SENHA = `${protocol}://${host}/setup-senha.html?token=${tokenAtivacao}`;
             
             const htmlEmail = `
                 <!DOCTYPE html>
@@ -595,26 +703,68 @@ app.get('/api/essays/themes/week', (req, res) => {
 });
 
 // Rota 4: Submeter Redação (Mock de I.A.)
-app.post('/api/essays/submit', (req, res) => {
+app.post('/api/essays/submit', async (req, res) => {
     const { userId, texto, tema } = req.body;
     
-    // Simulação de Correção I.A. instantânea
-    const notaMock = Math.floor(Math.random() * (1000 - 600 + 1)) + 600; // Entre 600 e 1000
-    
-    db.run("INSERT INTO essays (user_id, texto, nota_recebida) VALUES (?, ?, ?)", [userId, texto, notaMock], function(err) {
-        if (err) return res.status(400).json({ sucesso: false, erro: err.message });
+    // Fallback: se não tiver chave OpenAI real, mantém o Mock
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'fake_key') {
+        const notaMock = Math.floor(Math.random() * (1000 - 600 + 1)) + 600; // Entre 600 e 1000
         
-        // Opcional: Atualizar a média do usuário
-        db.run("UPDATE users SET nota_redacao_media = ? WHERE id = ?", [notaMock, userId]);
+        return db.run("INSERT INTO essays (user_id, texto, nota_recebida) VALUES (?, ?, ?)", [userId, texto, notaMock], function(err) {
+            if (err) return res.status(400).json({ sucesso: false, erro: err.message });
+            
+            db.run("UPDATE users SET nota_redacao_media = ? WHERE id = ?", [notaMock, userId]);
 
-        res.json({
-            sucesso: true,
-            essayId: this.lastID,
-            nota_recebida: notaMock,
-            feedback: "Redação analisada com sucesso pela I.A. Argumentação coesa e repertório produtivo!",
-            mensagem: "Sua redação foi salva no banco de dados."
+            res.json({
+                sucesso: true,
+                essayId: this.lastID,
+                nota_recebida: notaMock,
+                feedback: "Redação analisada com sucesso pela I.A. Argumentação coesa e repertório produtivo! [MODO MOCK]",
+                mensagem: "Sua redação foi salva no banco de dados."
+            });
         });
-    });
+    }
+
+    // Integração Real OpenAI
+    try {
+        const systemPrompt = `Você é um avaliador super exigente da banca de redação do ENEM. Avalie a seguinte redação do aluno de acordo com as 5 competências do ENEM. O tema proposto foi: "${tema}".
+Retorne APENAS um objeto JSON no formato exato:
+{
+  "nota": 920,
+  "feedback": "Seu feedback detalhado e educativo aqui."
+}`;
+
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: texto }
+            ],
+            response_format: { type: "json_object" }
+        });
+
+        const avaliacao = JSON.parse(completion.choices[0].message.content);
+        const notaReal = parseInt(avaliacao.nota) || 600;
+        const feedbackReal = avaliacao.feedback || "Redação avaliada. Pratique mais!";
+
+        db.run("INSERT INTO essays (user_id, texto, nota_recebida) VALUES (?, ?, ?)", [userId, texto, notaReal], function(err) {
+            if (err) return res.status(400).json({ sucesso: false, erro: err.message });
+            
+            db.run("UPDATE users SET nota_redacao_media = ? WHERE id = ?", [notaReal, userId]);
+
+            res.json({
+                sucesso: true,
+                essayId: this.lastID,
+                nota_recebida: notaReal,
+                feedback: feedbackReal,
+                mensagem: "Corrigida com sucesso pelo Mentor I.A."
+            });
+        });
+
+    } catch (e) {
+        console.error("Erro na I.A. Corretora:", e);
+        res.status(500).json({ sucesso: false, erro: 'A Inteligência Artificial corretora está indisponível. Tente novamento em instantes.' });
+    }
 });
 
 // ==========================================
@@ -809,7 +959,7 @@ app.get('/api/users/:id/dashboard', (req, res) => {
                 perfil_inicial: row.perfil_inicial || null,
                 questoes_resolvidas: 1205,
                 ranking_percentil: 5,
-                dias_enem: 245,
+                dias_enem: (() => { const hoje = new Date(); const enem = new Date(new Date().getFullYear(), 10, 2); if (enem < hoje) enem.setFullYear(enem.getFullYear() + 1); return Math.ceil((enem - hoje) / 86400000); })(),
                 cashback_saldo: row.cashback_saldo || 0.0,
                 idade: row.idade || 17,
                 trilha_continuidade: {
@@ -875,34 +1025,79 @@ app.get('/api/trilhas/user/:id', (req, res) => {
 // 💳 FASE VII: MONETIZAÇÃO E ASSINATURAS
 // ==========================================
 
-// Rota 10: Checkout (Geração de Link de Pagamento MOCK/Stripe)
-app.post('/api/checkout/session', (req, res) => {
+// Rota 10: Checkout (Geração de Link de Pagamento REAL com Stripe)
+app.post('/api/checkout/session', async (req, res) => {
     const { userId, plano } = req.body;
     
-    // Na vida real, chamaríamos stripe.checkout.sessions.create
-    // Como é MOCK para testes sem chave, vamos retornar a URL do nosso mock-checkout.html
-    const checkoutUrl = `/mock-checkout.html?plan=${plano}&userId=${userId}`;
-    
-    res.json({
-        sucesso: true,
-        url: checkoutUrl
-    });
+    // Fallback para Mock se não houver chave real configurada
+    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'fake_stripe_key') {
+        const checkoutUrl = `/mock-checkout.html?plan=${plano}&userId=${userId}`;
+        return res.json({ sucesso: true, url: checkoutUrl });
+    }
+
+    try {
+        const priceId = (plano === 'PREMIUM') ? STRIPE_PRICE_PREMIUM : STRIPE_PRICE_STARTER;
+        const host = process.env.APP_URL || req.headers.host || 'faculnext.onrender.com';
+        const protocol = req.headers['x-forwarded-proto'] || 'http';
+        const baseUrl = `${protocol}://${host}`;
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [{ price: priceId, quantity: 1 }],
+            mode: 'subscription',
+            success_url: `${baseUrl}/dashboard.html?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${baseUrl}/planos.html`,
+            client_reference_id: userId.toString(),
+            metadata: { userId: userId.toString(), plano: plano }
+        });
+
+        res.json({ sucesso: true, url: session.url });
+    } catch (err) {
+        console.error("❌ [STRIPE ERROR]:", err);
+        res.status(500).json({ sucesso: false, erro: 'Erro ao criar sessão de pagamento no Stripe.' });
+    }
 });
 
-// Webhook Mínimo que simula a notificação de pagamento bem-sucedido
-app.post('/api/webhook/payment', (req, res) => {
-    const { userId, plano, status } = req.body;
-    
-    if (status !== 'PAID') return res.status(400).json({ erro: 'Pagamento não confirmado' });
-    
-    const assinaturaId = 'sub_mock_' + Math.floor(Math.random() * 999999);
-    
-    db.run("UPDATE users SET plano_ativo = ?, assinatura_id = ? WHERE id = ?", [plano, assinaturaId, userId], function(err) {
-        if (err) return res.status(500).json({ sucesso: false, erro: err.message });
-        
-        console.log(`\n💰 [FINANCEIRO]: Pagamento Aprovado. Assinatura [${plano}] ativa para Aluno ID ${userId}.\n`);
-        res.json({ sucesso: true, mensagem: `Plano atualizado para ${plano}` });
-    });
+// Webhook REAL do Stripe com Verificação de Assinatura
+app.post('/api/webhook/stripe', express.raw({type: 'application/json'}), async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    let event;
+
+    try {
+        // Para Webhooks Reais, precisamos validar a assinatura digital vinda do Stripe
+        if (STRIPE_WEBHOOK_SECRET && sig) {
+            event = stripe.webhooks.constructEvent(req.body, sig, STRIPE_WEBHOOK_SECRET);
+        } else {
+            // Modo desenvolvimento/mock sem assinatura
+            event = req.body;
+            console.log("⚠️ Webhook recebido SEM verificação de assinatura (Modo DEV)");
+        }
+    } catch (err) {
+        console.error(`❌ Webhook Signature Error: ${err.message}`);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Lidar com o evento checkout.session.completed
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        const userId = session.metadata.userId || session.client_reference_id;
+        const plano = session.metadata.plano || 'STARTER';
+        const assinaturaId = session.subscription;
+        const stripeCustomerId = session.customer;
+
+        console.log(`\n💰 [STRIPE]: Pagamento Confirmado. Ativando [${plano}] para Usuário ID ${userId}`);
+
+        db.run("UPDATE users SET plano_ativo = ?, assinatura_id = ?, stripe_customer_id = ? WHERE id = ?", 
+        [plano, assinaturaId, stripeCustomerId, userId], function(err) {
+            if (err) {
+                console.error("❌ Erro ao atualizar plano no banco pós-Stripe:", err.message);
+            } else {
+                console.log(`✅ [DB UPDATED]: Plano ${plano} ativo com sucesso.`);
+            }
+        });
+    }
+
+    res.json({ received: true });
 });
 
 // ==========================================

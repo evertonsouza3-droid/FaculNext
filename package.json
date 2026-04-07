@@ -20,6 +20,8 @@
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^8.0.4",
     "openai": "^6.33.0",
-    "sqlite3": "^5.1.6"
+    "pg": "^8.20.0",
+    "sqlite3": "^5.1.6",
+    "stripe": "^22.0.0"
   }
 }

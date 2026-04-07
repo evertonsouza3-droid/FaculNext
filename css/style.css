@@ -528,3 +528,19 @@ button {
     .navbar { padding: 1rem 5%; }
     .logo { font-size: 1.5rem; }
 }
+
+/* ===== ANIMAÇÕES UNIFICADAS ===== */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.rank-animate-in {
+    animation: fadeInUp 0.4s ease forwards;
+    opacity: 0;
+}

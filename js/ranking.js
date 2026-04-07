@@ -1,39 +1,63 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const rankingList = document.getElementById('ranking-list');
     if (!rankingList) return;
 
-    // Simulação de Dados do Ranking
-    const students = [
-        { name: "Ana Beatriz", points: 985, avatar: "👩‍🔬", region: "SP", isMe: false },
-        { name: "Carlos Eduardo", points: 942, avatar: "👨‍💻", region: "RJ", isMe: false },
-        { name: "Estudante (Você)", points: 890, avatar: "👨‍🎓", region: "MG", isMe: true },
-        { name: "Mariana Silva", points: 875, avatar: "👩‍⚕️", region: "PR", isMe: false },
-        { name: "João Pedro", points: 820, avatar: "👨‍⚖️", region: "BA", isMe: false },
-        { name: "Fernanda Costa", points: 795, avatar: "👩‍🏫", region: "RS", isMe: false },
-        { name: "Lucas Rocha", points: 750, avatar: "👨‍🎨", region: "PE", isMe: false }
-    ];
+    const userId = localStorage.getItem('faculnext_user_id');
 
+    try {
+        const res = await fetch('/api/ranking');
+        const data = await res.json();
+        if (!data.sucesso) throw new Error('API sem sucesso');
+        renderRanking(data.jogadores, userId);
+    } catch (e) {
+        console.warn('API de ranking offline, carregando dados demo...');
+        // Fallback com dados demo
+        const demo = [
+            { id: 101, nome: "Ana Beatriz", avatar: "👩‍🔬", regiao: "SP", pontos: 14500, isMe: false },
+            { id: 102, nome: "Carlos Eduardo", avatar: "👨‍💻", regiao: "RJ", pontos: 13200, isMe: false },
+            { id: 103, nome: "Mariana Silva", avatar: "👩‍⚕️", regiao: "PR", pontos: 12950, isMe: false },
+            { id: userId || 1, nome: "Estudante (Você)", avatar: "👨‍🎓", regiao: "MG", pontos: 11800, isMe: true },
+            { id: 104, nome: "João Pedro", avatar: "👨‍⚖️", regiao: "BA", pontos: 11200, isMe: false },
+            { id: 105, nome: "Fernanda Costa", avatar: "👩‍🏫", regiao: "RS", pontos: 10500, isMe: false },
+            { id: 106, nome: "Lucas Rocha", avatar: "👨‍🎨", regiao: "PE", pontos: 9800, isMe: false }
+        ];
+        renderRanking(demo, userId);
+    }
+});
+
+function renderRanking(jogadores, myUserId) {
+    const rankingList = document.getElementById('ranking-list');
     rankingList.innerHTML = '';
-    
-    students.forEach((student, index) => {
-        const item = document.createElement('li');
-        item.className = `rank-item ${student.isMe ? 'is-me' : ''}`;
-        
+
+    jogadores.forEach((jogador, index) => {
         const position = index + 1;
         let posClass = '';
-        if (position === 1) posClass = 'top1';
-        else if (position === 2) posClass = 'top2';
-        else if (position === 3) posClass = 'top3';
+        let medalha = `${position}º`;
+        if (position === 1) { posClass = 'top1'; medalha = '🥇'; }
+        else if (position === 2) { posClass = 'top2'; medalha = '🥈'; }
+        else if (position === 3) { posClass = 'top3'; medalha = '🥉'; }
 
+        const isMe = jogador.isMe || String(jogador.id) === String(myUserId);
+
+        const item = document.createElement('li');
+        item.className = `rank-item ${isMe ? 'is-me' : ''}`;
         item.innerHTML = `
-            <div class="r-position ${posClass}">${position}º</div>
+            <div class="r-position ${posClass}">${medalha}</div>
             <div class="r-user">
-                <div class="r-avatar">${student.avatar}</div>
-                <span>${student.name}</span>
-                <span class="r-region">${student.region}</span>
+                <div class="r-avatar">${jogador.avatar}</div>
+                <span>${jogador.nome}${isMe ? ' <strong style="color:var(--primary-red);font-size:0.75rem;"> • VOCÊ</strong>' : ''}</span>
+                <span class="r-region">${jogador.regiao || jogador.regiao}</span>
             </div>
-            <div class="r-points">${student.points} pts</div>
+            <div class="r-points">${Number(jogador.pontos).toLocaleString('pt-BR')} pts</div>
         `;
         rankingList.appendChild(item);
     });
-});
+
+    // Highlight com animação suave nas 3 primeiras posições
+    setTimeout(() => {
+        document.querySelectorAll('.rank-item').forEach((item, i) => {
+            item.style.animationDelay = `${i * 60}ms`;
+            item.classList.add('rank-animate-in');
+        });
+    }, 50);
+}
