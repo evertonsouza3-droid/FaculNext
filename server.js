@@ -498,6 +498,7 @@ app.post('/api/dev/reload-fixtures', (req, res) => {
 // Rota 1: Cadastrar Aluno Localmente (Gerando Email de Confirmação com Token Seguro)
 app.post('/api/users/register', async (req, res) => {
     const { nome, email, cep, estado, cpf, celular } = req.body;
+    console.log(`\n📝 [ONBOARDING]: Iniciando registro para: ${email}`);
     
     if (!cpf || !celular) return res.status(400).json({ sucesso: false, erro: 'Dados Pessoais (CPF e Celular) são obrigatórios para a matrícula.' });
     
@@ -516,65 +517,15 @@ app.post('/api/users/register', async (req, res) => {
             }
             
             const novoUserId = this.lastID;
-            const host = process.env.APP_URL || req.headers.host || 'faculnext.onrender.com';
-            const protocol = req.protocol || 'https';
-            const URL_CRIAR_SENHA = `${protocol}://${host}/setup-senha.html?token=${tokenAtivacao}`;
             
-            const htmlEmail = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <style>
-                        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #000000; color: #ffffff; margin: 0; padding: 0; }
-                        .container { max-width: 600px; margin: 0 auto; background-color: #141414; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
-                        .header { padding: 40px 20px; text-align: center; border-bottom: 2px solid #E50914; }
-                        .logo { font-size: 32px; font-weight: 900; color: #E50914; letter-spacing: -1px; }
-                        .logo span { color: #ffffff; }
-                        .content { padding: 40px 30px; line-height: 1.6; }
-                        h1 { color: #ffffff; font-size: 24px; font-weight: 700; margin-bottom: 20px; }
-                        p { color: #cccccc; font-size: 16px; margin-bottom: 30px; }
-                        .btn { display: inline-block; background-color: #E50914; color: #ffffff !important; padding: 16px 32px; text-decoration: none; border-radius: 4px; font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: background-color 0.3s ease; }
-                        .footer { padding: 30px; text-align: center; color: #666666; font-size: 12px; background-color: #080808; }
-                        .link-apoio { color: #E50914; text-decoration: none; font-size: 11px; word-break: break-all; opacity: 0.6; }
-                    </style>
-                </head>
-                <body>
-                    <div class="container" style="margin-top: 40px; margin-bottom: 40px;">
-                        <div class="header">
-                            <div class="logo">Facul<span>Next</span>.</div>
-                        </div>
-                        <div class="content">
-                            <h1>Sua vaga foi reservada, ${nome.split(' ')[0]}. 🎓</h1>
-                            <p>Você deu o primeiro passo rumo a uma das conquistas mais importantes da sua vida. Bem-vindo ao <strong>FaculNext</strong> — a plataforma construída para transformar esforço em aprovação.</p>
-                            <p>Para garantir a segurança da sua conta e ativar o acesso completo à plataforma, clique no botão abaixo para criar sua senha:</p>
-                            <div style="text-align: center; margin: 40px 0;">
-                                <a href="${URL_CRIAR_SENHA}" class="btn">CRIAR MINHA SENHA E ENTRAR</a>
-                            </div>
-                            <p>Este link expira em <strong>24 horas</strong>. Se você não realizou esse cadastro, ignore este e-mail.</p>
-                            <p>Estamos aqui para o seu sucesso,</p>
-                            <p><strong>Equipe FaculNext</strong></p>
-                        </div>
-                        <div class="footer">
-                            <p>Você recebeu este e-mail porque se cadastrou na plataforma FaculNext.</p>
-                            <p style="margin-top: 10px;">Se o botão acima não funcionar, copie e cole o link abaixo no seu navegador:</p>
-                            <a href="${URL_CRIAR_SENHA}" class="link-apoio">${URL_CRIAR_SENHA}</a>
-                        </div>
-                    </div>
-                </body>
-                </html>
-            `;
-
-            console.log(`\n📧 [EMAIL SERVICE]: Disparando via API Resend para ${email}...`);
-            await enviarEmailViaResend(email, 'Sua vaga no FaculNext está garantida! 🎓', htmlEmail);
-
             res.json({ 
                 sucesso: true, 
                 userId: novoUserId, 
-                mensagem: 'Cadastro recebido! O e-mail de ativação foi enviado via API segura.' 
+                mensagem: 'Cadastro recebido! O e-mail de ativação será enviado após a conclusão do seu Teste Vocacional.' 
             });
         });
     } catch (err) {
-        res.status(500).json({ sucesso: false, erro: 'Erro ao processar o servidor de e-mail.' });
+        res.status(500).json({ sucesso: false, erro: 'Erro ao processar o cadastro.' });
     }
 });
 
@@ -659,30 +610,90 @@ app.post('/api/users/login', (req, res) => {
     });
 });
 
-// Rota 2: Salvar o Perfil Vocacional (preserva sempre o perfil_inicial)
+// Rota 2: Salvar o Perfil Vocacional e Disparar E-mail de Boas-Vindas
 app.post('/api/users/:id/vocational', (req, res) => {
     const { perfil } = req.body;
     const userId = req.params.id;
+    console.log(`\n🎯 [ONBOARDING]: Teste vocacional concluído para User ID: ${userId} (${perfil})`);
 
-    // Verifica se já tem um perfil inicial registrado
-    db.get("SELECT perfil_inicial FROM users WHERE id = ?", [userId], (err, row) => {
-        if (err) return res.status(400).json({ sucesso: false, erro: err.message });
+    // 1. Atualizar Profile
+    db.get("SELECT perfil_inicial, nome, email, verification_token FROM users WHERE id = ?", [userId], (err, row) => {
+        if (err || !row) return res.status(400).json({ sucesso: false, erro: 'Usuário não encontrado' });
 
         const jaTemPerfilInicial = row && row.perfil_inicial;
+        const { nome, email, verification_token } = row;
 
-        if (jaTemPerfilInicial) {
-            // Já tem perfil inicial: atualiza só o perfil_vocacional (o atual)
-            db.run("UPDATE users SET perfil_vocacional = ? WHERE id = ?", [perfil, userId], function(err) {
-                if (err) return res.status(400).json({ sucesso: false, erro: err.message });
-                res.json({ sucesso: true, mensagem: `Perfil vocacional atualizado para [${perfil}]. Perfil original preservado.` });
-            });
-        } else {
-            // Primeiro teste: grava nos dois campos
-            db.run("UPDATE users SET perfil_vocacional = ?, perfil_inicial = ? WHERE id = ?", [perfil, perfil, userId], function(err) {
-                if (err) return res.status(400).json({ sucesso: false, erro: err.message });
-                res.json({ sucesso: true, mensagem: `Perfil vocacional [${perfil}] registrado com sucesso!` });
-            });
-        }
+        const updateSql = jaTemPerfilInicial 
+            ? "UPDATE users SET perfil_vocacional = ? WHERE id = ?" 
+            : "UPDATE users SET perfil_vocacional = ?, perfil_inicial = ? WHERE id = ?";
+        const updateParams = jaTemPerfilInicial ? [perfil, userId] : [perfil, perfil, userId];
+
+        db.run(updateSql, updateParams, async function(err) {
+            if (err) return res.status(400).json({ sucesso: false, erro: err.message });
+
+            // 2. Disparar E-mail de Boas-Vindas APÓS o teste
+            const host = process.env.APP_URL || req.headers.host || 'faculnext.onrender.com';
+            const protocol = req.protocol || 'https';
+            const URL_CRIAR_SENHA = `${protocol}://${host}/setup-senha.html?token=${verification_token}`;
+            
+            const htmlEmail = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #000000; color: #ffffff; margin: 0; padding: 0; }
+                        .container { max-width: 600px; margin: 0 auto; background-color: #141414; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
+                        .header { padding: 40px 20px; text-align: center; border-bottom: 2px solid #E50914; }
+                        .logo { font-size: 32px; font-weight: 900; color: #E50914; letter-spacing: -1px; }
+                        .logo span { color: #ffffff; }
+                        .content { padding: 40px 30px; line-height: 1.6; }
+                        h1 { color: #ffffff; font-size: 24px; font-weight: 700; margin-bottom: 20px; }
+                        p { color: #cccccc; font-size: 16px; margin-bottom: 30px; }
+                        .match-box { background: #1f1f1f; border: 1px solid #333; padding: 20px; border-radius: 8px; text-align: center; margin: 30px 0; border-left: 4px solid #E50914; }
+                        .match-title { color: #E50914; font-weight: 800; font-size: 14px; text-transform: uppercase; margin-bottom: 5px; }
+                        .match-result { font-size: 24px; font-weight: 900; color: #fff; }
+                        .btn { display: inline-block; background-color: #E50914; color: #ffffff !important; padding: 16px 32px; text-decoration: none; border-radius: 4px; font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: background-color 0.3s ease; }
+                        .footer { padding: 30px; text-align: center; color: #666666; font-size: 12px; background-color: #080808; }
+                        .link-apoio { color: #E50914; text-decoration: none; font-size: 11px; word-break: break-all; opacity: 0.6; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container" style="margin-top: 40px; margin-bottom: 40px;">
+                        <div class="header">
+                            <div class="logo">Facul<span>Next</span>.</div>
+                        </div>
+                        <div class="content">
+                            <h1>Para sua jornada, ${nome.split(' ')[0]}. 🎓</h1>
+                            <p>O resultado do seu Teste Vocacional está pronto. Com base nas suas respostas, identificamos que você possui um perfil dominante:</p>
+                            
+                            <div class="match-box">
+                                <div class="match-title">SEU PERFIL ACADÊMICO</div>
+                                <div class="match-result">${perfil}</div>
+                            </div>
+
+                            <p>Agora que sabemos o seu potencial, criamos o seu ambiente de estudos personalizado. Para ativar o seu acesso e começar a sua trilha, clique abaixo:</p>
+                            
+                            <div style="text-align: center; margin: 40px 0;">
+                                <a href="${URL_CRIAR_SENHA}" class="btn">ATIVAR MEU ACESSO AGORA</a>
+                            </div>
+
+                            <p>Estamos aqui para o seu sucesso,</p>
+                            <p><strong>Equipe FaculNext</strong></p>
+                        </div>
+                        <div class="footer">
+                            <p>Se o botão acima não funcionar, copie e cole o link abaixo no seu navegador:</p>
+                            <a href="${URL_CRIAR_SENHA}" class="link-apoio">${URL_CRIAR_SENHA}</a>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            console.log(`\n📧 [EMAIL SERVICE]: Disparando Boas-Vindas Personalizado para ${email}...`);
+            await enviarEmailViaResend(email, `Seu Perfil: ${perfil} - Bem-vindo ao FaculNext 🎓`, htmlEmail);
+
+            res.json({ sucesso: true, mensagem: `Perfil [${perfil}] registrado. E-mail de ativação enviado.` });
+        });
     });
 });
 
