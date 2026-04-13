@@ -206,6 +206,9 @@ db.serialize(() => {
         criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
     )`, () => {
         // Garantindo que as colunas existam em bases antigas
+        db.run("ALTER TABLE users ADD COLUMN perfil_vocacional TEXT", (err) => {});
+        db.run("ALTER TABLE users ADD COLUMN perfil_inicial TEXT", (err) => {});
+        db.run("ALTER TABLE users ADD COLUMN nota_redacao_media INTEGER DEFAULT 0", (err) => {});
         db.run("ALTER TABLE users ADD COLUMN cashback_saldo REAL DEFAULT 0.0", (err) => {});
         db.run("ALTER TABLE users ADD COLUMN idade INTEGER DEFAULT 17", (err) => {});
         db.run("ALTER TABLE users ADD COLUMN senha_hash TEXT", (err) => {});
