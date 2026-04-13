@@ -104,7 +104,7 @@ function renderResultadoRedacao(data) {
     div.innerHTML = `
         <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:16px;">
             <div>
-                <p style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:2px; margin-bottom:6px;">Sua Nota TRI — Redação</p>
+                <p style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:2px; margin-bottom:6px;">Seu Score ENEM — Redação</p>
                 <div style="font-size:4rem; font-weight:900; color:${cor}; line-height:1;">${nota}</div>
                 <div style="font-size:1rem; color:${cor}; font-weight:700; margin-top:4px;">${label}</div>
             </div>

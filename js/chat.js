@@ -50,7 +50,7 @@ async function sendMessage() {
         if(typingDiv.parentNode) messages.removeChild(typingDiv);
         
         // MOCK CHAT FALLBACK: Orientador Moderno e Sério 🎓
-        const reply = "Essa é uma excelente pergunta. Do ponto de vista da TRI, dominar esse tópico é estratégico para sua consistência. Vamos focar em resolver algumas questões sobre isso juntos?";
+        const reply = "Essa é uma excelente pergunta. Do ponto de vista do seu Score ENEM, dominar esse tópico é estratégico para sua consistência. Vamos focar em resolver algumas questões sobre isso juntos?";
                 
         const botDiv = document.createElement('div');
         botDiv.className = 'msg bot';

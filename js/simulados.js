@@ -191,10 +191,10 @@ function renderResultScreen(data, questoes, respostasAluno) {
     resultScreen.style.display = 'block';
     resultScreen.scrollIntoView({ behavior: 'smooth' });
 
-    // Animar nota
+    // Animar Score
     const notaEl = document.getElementById('result-nota');
     let count = 0;
-    const target = data.nota_tri;
+    const target = data.nota_tri; // Mantendo a chave do backend, mas mudando o conceito visual
     const step = Math.ceil(target / 40);
     const counter = setInterval(() => {
         count = Math.min(count + step, target);

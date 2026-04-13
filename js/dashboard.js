@@ -145,23 +145,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('');
         }
 
-        // FASE X: Populando Conquistas (Badges)
-        const badgesContainer = document.getElementById('badges-container');
-        if (badgesContainer && data.conquistas) {
-            badgesContainer.innerHTML = data.conquistas.map(b => `
-                <div class="badge-card">
-                    <span class="badge-icon">${b.icone}</span>
-                    <strong>${b.nome}</strong>
-                    <span>${b.desc}</span>
-                </div>
-            `).join('');
-        }
-
-        // FASE X: Populando Gráfico de Evolução
+        // FASE X: Populando Gráfico de Evolução (Normalizado para Score ENEM)
         const chartContainer = document.getElementById('evolution-chart');
         if (chartContainer && data.evolucao_semanal) {
             chartContainer.innerHTML = data.evolucao_semanal.map((val, i) => {
-                // Normaliza nota TRI (máx ~1000) para altura percentual (máx 100%)
+                // Normaliza Score ENEM (máx ~1000) para altura percentual (máx 100%)
                 const height = val > 0 ? Math.min((val / 1000) * 100, 100) : 5; 
                 return `<div class="chart-bar" style="height: ${height}%" title="Dia ${i+1}: ${val} pts"></div>`;
             }).join('');

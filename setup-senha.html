@@ -59,6 +59,7 @@
                     <input type="password" id="confirma-senha" placeholder="Repita a senha" minlength="6" required>
                     <span class="toggle-password" onclick="togglePassword('confirma-senha', this)">👁️</span>
                     <small id="senha-aviso" style="color: #ff5252; display: none; margin-top: 5px;">As senhas não coincidem!</small>
+                    <small id="senha-check" style="color: var(--neon-lime); display: none; margin-top: 5px; font-weight: 800;">✅ Senhas Identificadas!</small>
                 </div>
 
                 <button type="submit" id="submit-btn" class="btn-primary">SALVAR SENHA E ENTRAR</button>
@@ -91,12 +92,18 @@
             form.style.display = 'block';
 
             confirmaSenha.addEventListener('input', () => {
-                if (novaSenha.value !== confirmaSenha.value) {
-                    aviso.style.display = 'block';
+                if (novaSenha.value === confirmaSenha.value && novaSenha.value !== '') {
+                    aviso.style.display = 'none';
+                    document.getElementById('senha-check').style.display = 'block';
+                    submitBtn.disabled = false;
+                } else if (confirmaSenha.value === '') {
+                    aviso.style.display = 'none';
+                    document.getElementById('senha-check').style.display = 'none';
                     submitBtn.disabled = true;
                 } else {
-                    aviso.style.display = 'none';
-                    submitBtn.disabled = false;
+                    aviso.style.display = 'block';
+                    document.getElementById('senha-check').style.display = 'none';
+                    submitBtn.disabled = true;
                 }
             });
 

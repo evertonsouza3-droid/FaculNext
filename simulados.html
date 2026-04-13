@@ -101,12 +101,10 @@
             <a href="ranking.html"><span class="icon">🏆</span> Ranking</a>
             <a href="planos.html" style="margin-top:auto; color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
         </nav>
-        <div class="wallet-card">
-            <div class="wallet-info">
-                <span>CASHBACK ACUMULADO 🔥</span>
-                <h2 id="cashback-value">R$ 0,00</h2>
-                <p>Desconto na próxima fatura!</p>
-            </div>
+        <!-- Wallet Minimalista -->
+        <div class="wallet-badge" title="Cashback acumulado para descontos">
+            <span class="icon">💰</span>
+            <span id="cashback-value">R$ 0,00</span>
         </div>
         <div class="user-profile">
             <div class="avatar">👨‍🎓</div>
@@ -121,7 +119,7 @@
         <header class="dash-header">
             <div>
                 <h1>Arena de Provas 📝</h1>
-                <p>Treino difícil, jogo fácil. <span class="primary-text">Simule o grande dia</span> avaliando sua precisão na TRI.</p>
+                <p>Treino difícil, jogo fácil. <span class="primary-text">Simule o grande dia</span> avaliando sua precisão e score.</p>
             </div>
         </header>
 
@@ -130,7 +128,7 @@
             <div class="spotlight-content">
                 <span class="badge uppercase">Simulado Nacional do Mês</span>
                 <h2>ENEM Modelo 2024 - 1º Dia (Linguagens e Humanas)</h2>
-                <p>8 questões inéditas baseadas no ranqueamento da TRI, cobrindo todas as áreas do ENEM. Descubra sua nota e posição no ranking!</p>
+                <p>8 questões inéditas baseadas no padrão ENEM, cobrindo todas as áreas do conhecimento. Descubra seu score e posição no ranking!</p>
                 <div class="stats-row">
                     <span>⏱️ Duração Alvo: 5h30</span>
                     <span>📊 Dificuldade: Alta</span>
@@ -149,7 +147,7 @@
             <div class="glass-card mini-card">
                 <div class="mini-icon" style="background: var(--bg-surface); border: 1px solid var(--border-glass); color: #fff;">📐</div>
                 <h4>Sprint Matemática</h4>
-                <p>Questões focadas em Geometria, Razão e Proporcionalidade para dominar a TRI.</p>
+                <p>Questões focadas em Geometria, Razão e Proporcionalidade para dominar a prova.</p>
                 <button class="btn-secondary btn-block" data-exam-id="math_01">Treinar Agora</button>
             </div>
             <div class="glass-card mini-card">
@@ -200,7 +198,7 @@
         <div class="result-screen" id="result-screen">
             <div class="result-hero">
                 <div class="result-nota" id="result-nota">000</div>
-                <div class="result-label">Sua Nota TRI Estimada</div>
+                <div class="result-label">Seu Score ENEM Estimado</div>
                 <div class="result-stats">
                     <div class="result-stat-card">
                         <strong id="result-acertos">0</strong>
@@ -239,7 +237,7 @@
             <button onclick="toggleChat()">✖</button>
         </div>
         <div id="chat-messages" class="chat-body">
-            <div class="msg bot">Olá! Como sua jornada de simulados está indo hoje? Pronto para dominar a TRI?</div>
+            <div class="msg bot">Olá! Como sua jornada de simulados está indo hoje? Pronto para dominar o ENEM?</div>
         </div>
         <div class="chat-footer">
             <input type="text" id="user-msg-input" placeholder="Pergunte qualquer coisa...">

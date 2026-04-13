@@ -12,7 +12,6 @@
     <script src="js/auth.js"></script>
 </head>
 <body class="dashboard-body">
-    <div id="noise-overlay"></div>
 
     <aside class="sidebar">
         <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="white-dot">.</span></div>
@@ -35,13 +34,10 @@
                 <span id="header-perfil-tag">Plano Premium</span>
             </div>
         </div>
-        <!-- Wallet Cinematic Wrapper -->
-        <div class="wallet-card">
-            <div class="wallet-info">
-                <span class="wallet-label">Cashback Acumulado 💰</span>
-                <strong id="cashback-value">R$ 0,00</strong>
-            </div>
-            <p>Desconto na próxima fatura!</p>
+        <!-- Wallet Minimalista -->
+        <div class="wallet-badge" title="Cashback acumulado para descontos">
+            <span class="icon">💰</span>
+            <span id="cashback-value">R$ 0,00</span>
         </div>
     </aside>
 
@@ -49,11 +45,7 @@
         <header class="dash-header">
             <div>
                 <h1>Hora de fazer história! 🚀</h1>
-                <p>O foco de hoje garante a <span class="primary-text">sua vaga amanhã</span>. Você tem 3 metas essenciais.</p>
-            </div>
-            <div class="countdown">
-                <span class="days">245</span>
-                <span class="label">Dias pro ENEM</span>
+                <p>O foco de hoje garante a <span class="primary-text">sua vaga amanhã</span>.</p>
             </div>
         </header>
 
@@ -66,9 +58,8 @@
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div id="perfil-icone" style="font-size: 3rem; line-height: 1;">🧬</div>
                         <div>
-                            <p style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px;">Seu DNA de Carreira</p>
                             <h2 id="perfil-nome" style="font-size: 1.6rem; font-weight: 900; color: #fff; margin-bottom: 4px;">Carregando...</h2>
-                            <p id="perfil-desc" style="font-size: 0.95rem; color: var(--text-muted); max-width: 500px; line-height: 1.5;">Analisando seu perfil...</p>
+                            <p id="perfil-desc" style="font-size: 0.95rem; color: var(--text-muted); max-width: 500px; line-height: 1.4; opacity: 0.8;">Analisando seu perfil...</p>
                         </div>
                     </div>
                     <div style="text-align: right; flex-shrink: 0;">
@@ -99,7 +90,7 @@
                 </section>
 
                 <section class="activity-section">
-                    <h2>Continuidade Pela Trilha</h2>
+                    <h2>Sua Próxima Aula</h2>
                     <div class="glass-card activity-card">
                         <div class="activity-icon">🧬</div>
                         <div class="activity-details">
@@ -112,26 +103,18 @@
                         <button class="btn-primary btn-small">Continuar</button>
                     </div>
                 </section>
-
-                <section class="achievements-section mt-3">
-                    <h2>Suas Conquistas 🏆</h2>
-                    <div class="achievements-grid" id="badges-container">
-                        <!-- Badges virão da API -->
-                        <p style="color:var(--text-muted);">Mapeando seus troféus...</p>
-                    </div>
-                </section>
             </div>
 
             <!-- Coluna Lateral -->
             <div class="side-column">
                 <section class="evolution-card glass-card mb-2">
-                    <h3>Evolução Semanal 📈</h3>
+                    <h3>Sua Performance 📈</h3>
                     <div class="chart-container">
                         <div class="simple-bar-chart" id="evolution-chart">
                             <!-- Barras dinâmicas -->
                         </div>
                     </div>
-                    <p class="chart-footer">Sua nota TRI subiu <span class="primary-text">+12%</span> esta semana!</p>
+                    <p class="chart-footer">Seu <span class="primary-text">Score ENEM</span> subiu <span class="primary-text">+12%</span> esta semana!</p>
                 </section>
 
                 <section class="today-tasks glass-card">

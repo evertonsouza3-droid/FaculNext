@@ -795,7 +795,7 @@ Retorne APENAS um objeto JSON no formato exato:
 });
 
 // ==========================================
-// 💡 MÓDULO DE SIMULADOS (ARENA TRI)
+// 💡 MÓDULO DE SIMULADOS (ARENA SCORE ENEM)
 // ==========================================
 
 // Rota 5: Listagem de Simulados Ativos
@@ -905,7 +905,7 @@ app.post('/api/exams/:id/session', (req, res) => {
     });
 });
 
-// Rota 7: Correção TRI (usando gabarito real)
+// Rota 7: Correção Score ENEM (usando gabarito real)
 app.post('/api/exams/:id/evaluate', (req, res) => {
     const { respostas, userId } = req.body; // Array com alternativas clicadas
     const examId = req.params.id;
@@ -934,7 +934,7 @@ app.post('/api/exams/:id/evaluate', (req, res) => {
             const nota_tri = Math.round(450 + taxa * 450);
             let feedback = 'Parabéns, continue assim!';
 
-            if (taxa >= 0.9) feedback = 'Excelente desempenho: Elite TRI!';
+            if (taxa >= 0.9) feedback = 'Excelente desempenho: Elite Score ENEM!';
             else if (taxa >= 0.7) feedback = 'Muito bom: você está no caminho certo.';
             else if (taxa >= 0.5) feedback = 'Bom, foque em revisão dos conceitos fracos.';
             else feedback = 'Estude com mais intensidade e revise os conteúdos principais.';
@@ -1007,7 +1007,7 @@ app.get('/api/users/:id/dashboard', (req, res) => {
                 conquistas: [
                     { id: 1, icone: '🔥', nome: '7 Dias de Fogo', desc: 'Estudou a semana toda sem parar.' },
                     { id: 2, icone: '✍️', nome: 'Escritor Ágil', desc: 'Fez uma redação em menos de 1h.' },
-                    { id: 3, icone: '🎯', nome: 'Sniper TRI', desc: 'Acertou 5 questões difíceis seguidas.' }
+                    { id: 3, icone: '🎯', nome: 'Sniper ENEM', desc: 'Acertou 5 questões difíceis seguidas.' }
                 ],
                 evolucao_semanal: evolucao_semanal,
                 simulados_historico: results ? results.reverse().slice(0, 10) : []
@@ -1236,7 +1236,7 @@ app.post('/api/ai/chat', (req, res) => {
             const systemPrompt = `Você é o Tutor FaculNext, um orientador educacional moderno, motivador e focado 100% no ENEM e vestibulares brasileiros. 
             Seu tom de voz deve ser:
             - Proativo e Moderno: 'Bora conquistar essa vaga!', 'Sua meta está logo ali.'
-            - Sério e Técnico: Dê orientações baseadas na TRI (Teoria de Resposta ao Item) e competências do ENEM.
+            - Sério e Técnico: Dê orientações baseadas no Score ENEM (cálculo de performance real) e competências do ENEM.
             - Conciso: Responda de forma direta, sem rodeios.
             - Linguagem: Português do Brasil, evite gírias de nicho, prefira uma fala jovem mas profissional.`;
             

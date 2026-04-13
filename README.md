@@ -1,7 +1,7 @@
 # 🚀 FaculNext - Plataforma Educacional
 
 ## 📋 Descrição
-O FaculNext é uma plataforma educacional completa para preparação ao ENEM, com funcionalidades de cadastro, redação, simulados TRI, dashboard e gamificação.
+O FaculNext é uma plataforma educacional completa para preparação ao ENEM, com funcionalidades de cadastro, redação, Score ENEM, dashboard e gamificação.
 
 ## 🛠️ Tecnologias
 - **Backend**: Node.js + Express
@@ -79,7 +79,7 @@ npm run deploy:heroku
 ### ✅ Core Completo
 - **Cadastro de Usuários**: Com validação e perfil vocacional
 - **Sistema de Redação**: Tema semanal + correção simulada
-- **Simulados TRI**: Avaliação automática com cálculo de nota
+- **Score ENEM**: Avaliação automática com cálculo de nota baseada no desempenho real
 - **Dashboard**: Histórico, progresso, conquistas
 - **Gamificação**: Sistema de cashback e rankings
 
@@ -101,7 +101,7 @@ curl http://localhost:3001/api/exams/dashboard
 curl http://localhost:3001/api/exams/nacional_123/questions
 ```
 
-### Avaliação TRI
+### Avaliação Score ENEM
 ```bash
 curl -X POST http://localhost:3001/api/exams/nacional_123/evaluate \
   -H "Content-Type: application/json" \
@@ -163,7 +163,7 @@ Este projeto é open source - veja o arquivo LICENSE para detalhes.
 ---
 
 **🎓 FaculNext - Transformando estudos em resultados!**
-- Simulados TRI
+- Simulados com Score ENEM
 - Dashboard com gamificação
 - Ranking e conquistas
 - IA Tutor 24h
