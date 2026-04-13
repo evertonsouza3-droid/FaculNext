@@ -618,18 +618,31 @@ app.post('/api/users/:id/vocational', (req, res) => {
 
     // 1. Atualizar Profile
     db.get("SELECT perfil_inicial, nome, email, verification_token FROM users WHERE id = ?", [userId], (err, row) => {
-        if (err || !row) return res.status(400).json({ sucesso: false, erro: 'Usuário não encontrado' });
+        if (err) {
+            console.error(`❌ [DÉBUG]: Erro no db.get: ${err.message}`);
+            return res.status(500).json({ sucesso: false, erro: 'Erro interno no banco' });
+        }
+        if (!row) {
+            console.warn(`⚠️ [DÉBUG]: Usuário ${userId} não encontrado no banco.`);
+            return res.status(404).json({ sucesso: false, erro: 'Usuário não encontrado' });
+        }
 
-        const jaTemPerfilInicial = row && row.perfil_inicial;
         const { nome, email, verification_token } = row;
+        const jaTemPerfilInicial = row.perfil_inicial;
+        console.log(`✅ [DÉBUG]: Dados recuperados: ${nome} (${email}) - Token: ${verification_token ? 'OK' : 'MISSING'}`);
 
         const updateSql = jaTemPerfilInicial 
             ? "UPDATE users SET perfil_vocacional = ? WHERE id = ?" 
             : "UPDATE users SET perfil_vocacional = ?, perfil_inicial = ? WHERE id = ?";
         const updateParams = jaTemPerfilInicial ? [perfil, userId] : [perfil, perfil, userId];
 
+        console.log(`📝 [DÉBUG]: Atualizando perfil no banco...`);
         db.run(updateSql, updateParams, async function(err) {
-            if (err) return res.status(400).json({ sucesso: false, erro: err.message });
+            if (err) {
+                console.error(`❌ [DÉBUG]: Erro no db.run update: ${err.message}`);
+                return res.status(400).json({ sucesso: false, erro: err.message });
+            }
+            console.log(`✅ [DÉBUG]: Perfil atualizado com sucesso no banco.`);
 
             // 2. Disparar E-mail de Boas-Vindas APÓS o teste
             const host = process.env.APP_URL || req.headers.host || 'faculnext.onrender.com';
@@ -953,8 +966,13 @@ app.get('/api/users/:id/dashboard', (req, res) => {
     db.get("SELECT * FROM users WHERE id = ?", [userId], (err, row) => {
         if (err || !row) return res.status(404).json({ sucesso: false, erro: 'Usuário não encontrado' });
 
-        db.all("SELECT id, exam_id, acertos, total, nota_tri, feedback, criado_em FROM exam_results WHERE user_id = ? ORDER BY criado_em DESC LIMIT 10", [userId], (err2, results) => {
-            if (err2) return res.status(500).json({ sucesso: false, erro: 'Erro ao buscar histórico de simulados' });
+        // Buscar total de questões resolvidas e evolução
+        db.all("SELECT nota_tri, total, criado_em FROM exam_results WHERE user_id = ? ORDER BY criado_em ASC", [userId], (err2, results) => {
+            const questoes_resolvidas = (results || []).reduce((acc, curr) => acc + (curr.total || 0), 0) || 0;
+            const evolucao_semanal = results ? results.slice(-7).map(r => r.nota_tri) : [0, 0, 0, 0, 0, 0, 0];
+            
+            // Garantir que evolucao_semanal tenha 7 itens para o gráfico
+            while(evolucao_semanal.length < 7) evolucao_semanal.unshift(0);
 
             res.json({
                 sucesso: true,
@@ -968,8 +986,8 @@ app.get('/api/users/:id/dashboard', (req, res) => {
                 estado_usuario: row.estado || '-',
                 perfil: row.perfil_vocacional || 'Não Definido',
                 perfil_inicial: row.perfil_inicial || null,
-                questoes_resolvidas: 1205,
-                ranking_percentil: 5,
+                questoes_resolvidas: questoes_resolvidas > 0 ? questoes_resolvidas : 0, 
+                ranking_percentil: row.verificado ? 12 : 0, // Mock baseado em verificação
                 dias_enem: (() => { const hoje = new Date(); const enem = new Date(new Date().getFullYear(), 10, 2); if (enem < hoje) enem.setFullYear(enem.getFullYear() + 1); return Math.ceil((enem - hoje) / 86400000); })(),
                 cashback_saldo: row.cashback_saldo || 0.0,
                 idade: row.idade || 17,
@@ -988,8 +1006,8 @@ app.get('/api/users/:id/dashboard', (req, res) => {
                     { id: 2, icone: '✍️', nome: 'Escritor Ágil', desc: 'Fez uma redação em menos de 1h.' },
                     { id: 3, icone: '🎯', nome: 'Sniper TRI', desc: 'Acertou 5 questões difíceis seguidas.' }
                 ],
-                evolucao_semanal: [45, 52, 48, 70, 85, 92, 88],
-                simulados_historico: results
+                evolucao_semanal: evolucao_semanal,
+                simulados_historico: results ? results.reverse().slice(0, 10) : []
             });
         });
     });
@@ -1111,22 +1129,66 @@ app.post('/api/webhook/stripe', express.raw({type: 'application/json'}), async (
     res.json({ received: true });
 });
 
+// 🪄 ROTA DE "ASSINATURA MÁGICA" (Modo Demo)
+// Permite ativar o Premium instantaneamente sem Stripe real
+app.post('/api/webhook/payment', (req, res) => {
+    const { userId, plano, status } = req.body;
+    
+    if (status === 'PAID') {
+        console.log(`\n🪄 [MAGIC SUBSCRIPTION]: Ativando [${plano}] para Usuário ID ${userId}`);
+        
+        db.run("UPDATE users SET plano_ativo = ?, verificado = 1 WHERE id = ?", 
+        [plano, userId], function(err) {
+            if (err) {
+                console.error("❌ Erro ao ativar assinatura mágica:", err.message);
+                return res.status(500).json({ sucesso: false, erro: err.message });
+            }
+            res.json({ sucesso: true, mensagem: `Plano ${plano} ativado com sucesso!` });
+        });
+    } else {
+        res.status(400).json({ sucesso: false, erro: 'Pagamento não confirmado' });
+    }
+});
+
 // ==========================================
 // 🏆 FASE VIII: GAMIFICAÇÃO & RANKING
 // ==========================================
 
 // Rota 11: Placar Geral e Ligas
 app.get('/api/ranking', (req, res) => {
-    // Array simulado dos 5 melhores + O Usuário atual (na posição 4)
-    res.json({
-        sucesso: true,
-        jogadores: [
-            { id: 101, nome: "Ana Beatriz", avatar: "👩‍🔬", regiao: "Sudeste", pontos: 14500, isMe: false },
-            { id: 102, nome: "Carlos V.", avatar: "👨‍💻", regiao: "Sul", pontos: 13200, isMe: false },
-            { id: 103, nome: "Mariana Silva", avatar: "👩‍⚖️", regiao: "Nordeste", pontos: 12950, isMe: false },
-            { id: 1, nome: "Você (Estudante)", avatar: "👨‍🎓", regiao: "Sua Região", pontos: 12500, isMe: true },
-            { id: 104, nome: "Felipe G.", avatar: "👨‍⚕️", regiao: "Centro-Oeste", pontos: 11800, isMe: false }
-        ]
+    // Buscar os top 10 no banco (Pode ser por maior nota_tri ou soma de acertos)
+    db.all(`
+        SELECT u.id, u.nome, u.estado as regiao, MAX(er.nota_tri) as pontos
+        FROM users u
+        JOIN exam_results er ON u.id = er.user_id
+        GROUP BY u.id
+        ORDER BY pontos DESC
+        LIMIT 10
+    `, [], (err, topPlayers) => {
+        // Mock de bots para o ranking não parecer vazio se for banco novo
+        const bots = [
+            { id: 991, nome: "Ana Beatriz", avatar: "👩‍🔬", regiao: "Sudeste", pontos: 945, isMe: false },
+            { id: 992, nome: "Carlos V.", avatar: "👨‍💻", regiao: "Sul", pontos: 880, isMe: false },
+            { id: 993, nome: "Mariana Silva", avatar: "👩‍⚖️", regiao: "Nordeste", pontos: 815, isMe: false },
+            { id: 994, nome: "Felipe G.", avatar: "👨‍⚕️", regiao: "Centro-Oeste", pontos: 790, isMe: false }
+        ];
+
+        // Se tiver jogadores reais, junta e ordena. Se não, usa apenas os bots.
+        let leaderboard = (topPlayers && topPlayers.length > 0) ? [...topPlayers, ...bots] : bots;
+        leaderboard.sort((a,b) => b.pontos - a.pontos);
+
+        // Atribuir avatares aleatórios para bots
+        const avatares = ["👩‍🔬", "👨‍💻", "👩‍⚖️", "👨‍⚕️", "👩‍🎓", "👨‍🏫", "👩‍🎨"];
+        leaderboard = leaderboard.map((p, idx) => ({
+            ...p,
+            avatar: p.avatar || avatares[idx % avatares.length],
+            pontos: Math.round(p.pontos)
+        }));
+
+        res.json({
+            sucesso: true,
+            jogadores: leaderboard.slice(0, 7)
+        });
     });
 });
 

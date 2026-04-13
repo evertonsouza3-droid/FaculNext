@@ -160,9 +160,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         // FASE X: Populando Gráfico de Evolução
         const chartContainer = document.getElementById('evolution-chart');
         if (chartContainer && data.evolucao_semanal) {
-            chartContainer.innerHTML = data.evolucao_semanal.map((val, i) => `
-                <div class="chart-bar" style="height: ${val}%" title="Dia ${i+1}: ${val} pts"></div>
-            `).join('');
+            chartContainer.innerHTML = data.evolucao_semanal.map((val, i) => {
+                // Normaliza nota TRI (máx ~1000) para altura percentual (máx 100%)
+                const height = val > 0 ? Math.min((val / 1000) * 100, 100) : 5; 
+                return `<div class="chart-bar" style="height: ${height}%" title="Dia ${i+1}: ${val} pts"></div>`;
+            }).join('');
         }
     }
 

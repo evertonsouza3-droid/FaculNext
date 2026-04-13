@@ -1,78 +1,361 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estudo de Mercado - Plataforma IA Educacional</title>
+    <title>Pitch Deck | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #333; }
-        .slide { background: white; margin: 20px 0; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 1000px; margin: 20px auto; }
-        h1 { color: #1a73e8; font-size: 2.5em; margin-bottom: 10px; }
-        h2 { color: #333; font-size: 1.8em; margin-bottom: 20px; }
-        .metric { background: #e8f4fd; padding: 15px; border-radius: 8px; margin: 10px 0; font-size: 1.2em; font-weight: bold; }
-        img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .cta { background: linear-gradient(135deg, #1a73e8, #34a853); color: white; padding: 20px; text-align: center; border-radius: 12px; font-size: 1.3em; margin-top: 30px; }
-        footer { text-align: center; margin-top: 40px; padding: 20px; color: #666; font-size: 0.9em; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+        }
+
+        .slide {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            scroll-snap-align: start;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-content {
+            z-index: 10;
+            max-width: 1000px;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide.active .slide-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .slide h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .slide h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            margin-bottom: 20px;
+        }
+
+        .slide p {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-red);
+        }
+
+        .metric-value {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .metric-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-red);
+            font-weight: 700;
+        }
+
+        .chart-mock {
+            width: 100%;
+            height: 300px;
+            background: rgba(255,255,255,0.02);
+            border: 1px dashed rgba(255,255,255,0.1);
+            border-radius: 20px;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .bar-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+            height: 200px;
+        }
+
+        .bar {
+            width: 50px;
+            background: var(--primary-red);
+            border-radius: 8px 8px 0 0;
+            transition: height 1s ease-out;
+            position: relative;
+        }
+
+        .bar::after {
+            content: attr(data-label);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .cta-slide {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
+        }
+
+        .slide-nav {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--primary-red);
+            transform: scale(1.5);
+            box-shadow: 0 0 10px var(--primary-red);
+        }
+
+        .background-blobs {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .slide h1 { font-size: 2.5rem; }
+            .slide h2 { font-size: 1.8rem; }
+            .slide p { font-size: 1.1rem; }
+            .metric-value { font-size: 2.5rem; }
+        }
     </style>
 </head>
 <body>
-    <div class="slide">
-        <h1>🧠 Estudo de Mercado</h1>
-        <h2>Plataforma IA para Jornada Educacional Completa</h2>
-        <p><strong>De 33% que entram no superior à 24% que concluem</strong> — uma oportunidade de R$ bilhões em retenção de alunos.</p>
+    <div id="noise-overlay"></div>
+
+    <div class="slide-nav">
+        <div class="nav-dot active" data-slide="0"></div>
+        <div class="nav-dot" data-slide="1"></div>
+        <div class="nav-dot" data-slide="2"></div>
+        <div class="nav-dot" data-slide="3"></div>
+        <div class="nav-dot" data-slide="4"></div>
     </div>
 
-    <div class="slide">
-        <h2>Slide 1: O Gargalo Educacional</h2>
-        <div class="metric">33% dos concluintes EM → superior no ano seguinte (Inep 2024)</div>
-        <div class="metric">25% abandonam no 1º ano (OCDE 2025)</div>
-        <img src="funil_educacional.png" alt="Funil educacional">
-        <p><em>Fonte: Inep, IBGE, OCDE | [web:6][web:48]</em></p>
-    </div>
-
-    <div class="slide">
-        <h2>Slide 2: Os Números do Funil</h2>
-        <ul>
-            <li><strong>33%</strong> ingressam após EM [web:6]</li>
-            <li><strong>75%</strong> permanecem no 1º ano [web:48]</li>
-            <li><strong>49%</strong> concluem até +3 anos [web:48]</li>
-            <li><strong>24%</strong> dos 25-34 anos têm diploma [web:48]</li>
-        </ul>
-        <img src="funil_educacional.png" alt="Funil educacional">
-    </div>
-
-    <div class="slide">
-        <h2>Slide 3: Brasil x Mundo</h2>
-        <div class="metric">Brasil: 24% | OCDE média: 49%</div>
-        <img src="brasil_ocde.png" alt="Comparação Brasil x OCDE">
-        <p><em>Gap de 25 pontos percentuais = grande oportunidade [web:48]</em></p>
-    </div>
-
-    <div class="slide">
-        <h2>Slide 4: Nossa Solução</h2>
-        <ul>
-            <li>🎯 Orientação ENEM + escolha de curso</li>
-            <li>🛡️️ Retenção no 1º ano (75% → 90%?)</li>
-            <li>📈 Acompanhamento até formatura</li>
-            <li>📊 Mercado: 10M estudantes no superior [web:6]</li>
-        </ul>
-    </div>
-
-    <div class="slide">
-        <h2>Slide 5: Oportunidade de Negócio</h2>
-        <div class="metric">Perda de 27% no funil = R$ bilhões em evasão evitável</div>
-        <div class="cta">
-            <strong>Parceria estratégica:</strong><br>
-            Escolas + Universidades + Plataforma IA<br>
-            <em>Do ENEM à colação de grau</em>
+    <!-- Slide 1: Welcome -->
+    <section class="slide active" id="slide-0">
+        <div class="background-blobs">
+            <div class="circle-blob blob-1" style="top: 10%; right: 10%;"></div>
         </div>
-    </div>
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="badge">ESTUDO DE MERCADO 2026</div>
+                <h1>🧠 FaculNext:<br>A Próxima Fronteira.</h1>
+                <p>De 33% que entram no superior à 24% que concluem — uma oportunidade de <strong>R$ bilhões</strong> em retenção e educação personalizada.</p>
+            </div>
+        </div>
+    </section>
 
-    <footer>
-        <p>Dados: Inep 2024 | IBGE 2024 | OCDE Education at a Glance 2025<br>
-        Gráficos: [chart:66][chart:68] | Base: [code_file:67]</p>
-        <p>Estudo gerado para plataforma IA educacional | Mar/2026</p>
-    </footer>
+    <!-- Slide 2: O Gargalo -->
+    <section class="slide" id="slide-1">
+        <div class="slide-content">
+            <div class="slide-header">
+                <h2>O Gargalo Educacional</h2>
+                <p>O funil do ensino superior no Brasil é crítico e ineficiente.</p>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-value">33%</span>
+                    <span class="metric-label">Entram no Superior</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">25%</span>
+                    <span class="metric-label">Abandonam no 1º Ano</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">24%</span>
+                    <span class="metric-label">Têm Diploma aos 34a</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3: Brasil x OCDE -->
+    <section class="slide" id="slide-2">
+        <div class="slide-content">
+            <div class="slide-header">
+                <h2>Brasil vs. Mundo</h2>
+                <p>Abaixo da média global, mas com o maior potencial de crescimento do G20.</p>
+            </div>
+            <div class="chart-mock">
+                <div class="bar-container">
+                    <div class="bar" style="height: 48%;" data-label="Brasil (24%)"></div>
+                    <div class="bar" style="height: 100%; background: var(--text-muted); opacity: 0.3;" data-label="Média OCDE (49%)"></div>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 60px;"><em>Gap de 25 pontos percentuais = Oportunidade de Mercado Inexplorada.</em></p>
+        </div>
+    </section>
+
+    <!-- Slide 4: Nossa Solução -->
+    <section class="slide" id="slide-3">
+        <div class="slide-content">
+            <div class="slide-header">
+                <h2>Nossa Estratégia</h2>
+                <p>Educação baseada em Dados (TRI) e Inteligência Artificial.</p>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="icon">🎯</div>
+                    <h3>Orientação</h3>
+                    <p>Escolha de carreira com RIASEC Sci-Model.</p>
+                </div>
+                <div class="metric-card">
+                    <div class="icon">🛡️</div>
+                    <h3>Retenção</h3>
+                    <p>Apoio contínuo do ENEM ao 1º ano da facul.</p>
+                </div>
+                <div class="metric-card">
+                    <div class="icon">🤖</div>
+                    <h3>IA Tutor</h3>
+                    <p>Mentoria 24/7 personalizada por aluno.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: Business -->
+    <section class="slide cta-slide" id="slide-4">
+        <div class="slide-content">
+            <div class="slide-header">
+                <h2>Oportunidade de Negócio</h2>
+                <p>Escalabilidade global com tecnologia proprietária.</p>
+            </div>
+            <div class="glass-card" style="flex-direction: column; padding: 50px; text-align: center; gap: 20px;">
+                <h3 style="font-size: 2rem;">Parceria Estratégica</h3>
+                <p>Estamos unindo Escolas + Universidades + IA para dominar o ciclo de vida do estudante.</p>
+                <div class="badge" style="margin: 20px 0; background: var(--primary-red); color: white;">DO ENEM À COLAÇÃO DE GRAU</div>
+                <button class="btn-primary btn-large" onclick="window.location.href='index.html'">Voltar para a Plataforma</button>
+            </div>
+        </div>
+        <footer>
+            Fonte: Inep 2024 | IBGE 2024 | OCDE Education at a Glance 2025
+        </footer>
+    </section>
+
+    <script>
+        // Sistema de navegação por slides
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        let currentSlide = 0;
+        let isScrolling = false;
+
+        function goToSlide(index) {
+            if (index < 0 || index >= slides.length) return;
+            
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+            
+            slides[index].scrollIntoView({ behavior: 'smooth' });
+            currentSlide = index;
+        }
+
+        window.addEventListener('wheel', (e) => {
+            if (isScrolling) return;
+            isScrolling = true;
+            
+            if (e.deltaY > 0) {
+                goToSlide(currentSlide + 1);
+            } else {
+                goToSlide(currentSlide - 1);
+            }
+            
+            setTimeout(() => { isScrolling = false; }, 1000);
+        });
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => goToSlide(index));
+        });
+
+        // Trigger inicial
+        setTimeout(() => {
+            document.querySelector('.slide').classList.add('active');
+        }, 100);
+    </script>
 </body>
 </html>
