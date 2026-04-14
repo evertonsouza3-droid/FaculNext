@@ -11,7 +11,7 @@ window.assinarPlano = async function(planoEscolhido) {
         const res = await fetch(`/api/checkout/session`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, plano: planoEscolhido })
+            body: JSON.stringify({ userId, plano: planoEscolhido, email: currentUserEmail })
         });
         const data = await res.json();
         
@@ -36,7 +36,10 @@ window.assinarPlano = async function(planoEscolhido) {
     }
 };
 
-// Ao carregar a tela, destacar o plano atual se já tiver
+// Variável global para armazenar e-mail temporariamente e injetar no checkout Hotmart
+let currentUserEmail = '';
+
+// Ao carregar a tela, destacar o plano atual se já tiver e cachear e-mail
 document.addEventListener('DOMContentLoaded', async () => {
     const userId = localStorage.getItem('faculnext_user_id') || 1;
     try {
@@ -44,6 +47,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await res.json();
         if(data.sucesso) {
             document.getElementById('current-plan-badge').innerText = `Plano ${data.plano_ativo || 'Ativo'}`;
+            if(data.email_usuario) {
+                currentUserEmail = data.email_usuario;
+            }
         }
     } catch (e) {}
 });
