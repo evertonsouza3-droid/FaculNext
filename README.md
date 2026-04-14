@@ -79,7 +79,7 @@ npm run deploy:heroku
 ### ✅ Core Completo
 - **Cadastro de Usuários**: Com validação e perfil vocacional
 - **Sistema de Redação**: Tema semanal + correção simulada
-- **Score ENEM**: Avaliação automática com cálculo de nota baseada no desempenho real
+- **Score ENEM**: Avaliação automática com cálculo de nota
 - **Dashboard**: Histórico, progresso, conquistas
 - **Gamificação**: Sistema de cashback e rankings
 

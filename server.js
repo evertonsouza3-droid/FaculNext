@@ -14,11 +14,9 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || 'fake_key', 
 });
 
-// Inicializando Stripe (Gateway de Pagamentos)
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'fake_stripe_key');
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
-const STRIPE_PRICE_STARTER = process.env.STRIPE_PRICE_STARTER || 'price_starter_mock';
-const STRIPE_PRICE_PREMIUM = process.env.STRIPE_PRICE_PREMIUM || 'price_premium_mock';
+// Inicializando Hotmart (Gateway de Pagamentos)
+const HOTMART_WEBHOOK_TOKEN = process.env.HOTMART_WEBHOOK_TOKEN || 'hottok_mock_123';
+const HOTMART_PREMIUM_LINK = process.env.HOTMART_PREMIUM_LINK || 'https://pay.hotmart.com/mock-premium';
 
 // Carteiro Moderno (VIA API HTTP - Porta 443)
 // Não trava no Render.com!
@@ -1057,74 +1055,47 @@ app.get('/api/trilhas/user/:id', (req, res) => {
 // 💳 FASE VII: MONETIZAÇÃO E ASSINATURAS
 // ==========================================
 
-// Rota 10: Checkout (Geração de Link de Pagamento REAL com Stripe)
+// Rota 10: Checkout (Redirecionamento Inteligente para Hotmart)
 app.post('/api/checkout/session', async (req, res) => {
-    const { userId, plano } = req.body;
+    const { userId, plano, email } = req.body;
     
-    // Fallback para Mock se não houver chave real configurada
-    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'fake_stripe_key') {
-        const checkoutUrl = `/mock-checkout.html?plan=${plano}&userId=${userId}`;
+    // Se for o plano Premium completo
+    if (plano === 'PREMIUM') {
+        const checkoutUrl = email 
+            ? `${HOTMART_PREMIUM_LINK}?email=${encodeURIComponent(email)}&src=panel`
+            : HOTMART_PREMIUM_LINK;
         return res.json({ sucesso: true, url: checkoutUrl });
     }
-
-    try {
-        const priceId = (plano === 'PREMIUM') ? STRIPE_PRICE_PREMIUM : STRIPE_PRICE_STARTER;
-        const host = process.env.APP_URL || req.headers.host || 'faculnext.onrender.com';
-        const protocol = req.headers['x-forwarded-proto'] || 'http';
-        const baseUrl = `${protocol}://${host}`;
-
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items: [{ price: priceId, quantity: 1 }],
-            mode: 'subscription',
-            success_url: `${baseUrl}/dashboard.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${baseUrl}/planos.html`,
-            client_reference_id: userId.toString(),
-            metadata: { userId: userId.toString(), plano: plano }
-        });
-
-        res.json({ sucesso: true, url: session.url });
-    } catch (err) {
-        console.error("❌ [STRIPE ERROR]:", err);
-        res.status(500).json({ sucesso: false, erro: 'Erro ao criar sessão de pagamento no Stripe.' });
-    }
+    
+    // Fallback para outros planos / local
+    res.json({ sucesso: true, url: `/mock-checkout.html?plan=${plano}&userId=${userId}` });
 });
 
-// Webhook REAL do Stripe com Verificação de Assinatura
-app.post('/api/webhook/stripe', express.raw({type: 'application/json'}), async (req, res) => {
-    const sig = req.headers['stripe-signature'];
-    let event;
+// Webhook REAL da Hotmart com Verificação de Hottok
+app.post('/api/webhook/hotmart', async (req, res) => {
+    const { hottok, status, email, transaction, prod } = req.body;
 
-    try {
-        // Para Webhooks Reais, precisamos validar a assinatura digital vinda do Stripe
-        if (STRIPE_WEBHOOK_SECRET && sig) {
-            event = stripe.webhooks.constructEvent(req.body, sig, STRIPE_WEBHOOK_SECRET);
-        } else {
-            // Modo desenvolvimento/mock sem assinatura
-            event = req.body;
-            console.log("⚠️ Webhook recebido SEM verificação de assinatura (Modo DEV)");
-        }
-    } catch (err) {
-        console.error(`❌ Webhook Signature Error: ${err.message}`);
-        return res.status(400).send(`Webhook Error: ${err.message}`);
+    // Verificamos a autenticidade da chamada usando o Token de Webhook da Hotmart
+    if (HOTMART_WEBHOOK_TOKEN && hottok !== HOTMART_WEBHOOK_TOKEN) {
+        console.error("❌ Webhook Hotmart Rejeitado (Hottok Inválido)");
+        return res.status(401).json({ erro: "Não autorizado" });
     }
 
-    // Lidar com o evento checkout.session.completed
-    if (event.type === 'checkout.session.completed') {
-        const session = event.data.object;
-        const userId = session.metadata.userId || session.client_reference_id;
-        const plano = session.metadata.plano || 'STARTER';
-        const assinaturaId = session.subscription;
-        const stripeCustomerId = session.customer;
+    // Lidar com o evento de compra aprovada
+    if (status === 'APPROVED' || status === 'COMPLETED') {
+        const plano = 'PREMIUM';
+        
+        console.log(`\n💰 [HOTMART]: Pagamento Confirmado. Ativando [${plano}] para o e-mail: ${email}`);
 
-        console.log(`\n💰 [STRIPE]: Pagamento Confirmado. Ativando [${plano}] para Usuário ID ${userId}`);
-
-        db.run("UPDATE users SET plano_ativo = ?, assinatura_id = ?, stripe_customer_id = ? WHERE id = ?", 
-        [plano, assinaturaId, stripeCustomerId, userId], function(err) {
+        // A Hotmart costuma enviar primariamente o e-mail do comprador, buscaremos o usuário por ele
+        db.run("UPDATE users SET plano_ativo = ?, assinatura_id = ? WHERE email = ?", 
+        [plano, transaction, email], function(err) {
             if (err) {
-                console.error("❌ Erro ao atualizar plano no banco pós-Stripe:", err.message);
+                console.error("❌ Erro ao atualizar plano no banco pós-Hotmart:", err.message);
+            } else if (this.changes === 0) {
+                console.warn(`⚠️ O e-mail pagante da Hotmart (${email}) não existe no banco local.`);
             } else {
-                console.log(`✅ [DB UPDATED]: Plano ${plano} ativo com sucesso.`);
+                console.log(`✅ [DB UPDATED]: Plano ${plano} ativo com sucesso para ${email}.`);
             }
         });
     }
@@ -1221,7 +1192,7 @@ app.post('/api/ai/chat', (req, res) => {
             if(msgLower.includes("redação")) {
                 reply = "A redação é o pilar da sua nota mil. Foque na estrutura dissertativo-argumentativa e na clareza da sua tese. Já conferiu o tema inédito da semana no portal?";
             } else if(msgLower.includes("matemática")) {
-                reply = "Matemática no ENEM exige estratégia. Domine a TRI focando em questões de nível fácil e médio primeiro. Razão, proporção e porcentagem são essenciais para o seu sucesso.";
+                reply = "Matemática no ENEM exige estratégia. Domine o Score ENEM focando em questões de nível fácil e médio primeiro. Razão, proporção e porcentagem são essenciais para o seu sucesso.";
             } else if(msgLower.includes("estudar") || msgLower.includes("dica")) {
                 reply = "A consistência vence o talento. Minha orientação é: siga seu Cronograma Smart e não deixe revisões para depois. Vamos bater as metas de hoje?";
             } else if(msgLower.includes("oi") || msgLower.includes("olá") || msgLower.includes("bom dia")) {

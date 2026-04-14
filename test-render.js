@@ -32,7 +32,7 @@ const tests = [
         method: 'GET'
     },
     {
-        name: '✅ Avaliação TRI',
+        name: '✅ Avaliação Score ENEM',
         path: '/api/exams/nacional_123/evaluate',
         method: 'POST',
         body: JSON.stringify({ respostas: ['B', 'B', 'B'], userId: 1 })
