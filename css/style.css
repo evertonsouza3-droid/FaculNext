@@ -402,15 +402,16 @@ button {
 }
 
 .pricing-card.popular {
-    border-color: var(--neon-purple);
-    box-shadow: 0 0 40px rgba(176, 38, 255, 0.08);
+    border-color: var(--primary-red);
+    box-shadow: 0 0 40px rgba(229, 9, 20, 0.15);
 }
-.pricing-card.popular .badge { background: var(--neon-purple); color: #fff; border: none; }
+.pricing-card.popular .badge { background: var(--primary-red); color: #fff; border: none; }
 
 .pricing-card.premium {
-    border-color: rgba(0, 240, 255, 0.3);
+    border-color: var(--gold);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
 }
-.pricing-card.premium .badge { background: var(--neon-cyan); color: var(--bg-dark); border: none; }
+.pricing-card.premium .badge { background: var(--gold); color: var(--bg-dark); border: none; }
 
 .absolute-badge {
     position: absolute;
