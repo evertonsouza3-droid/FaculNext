@@ -97,9 +97,9 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    transition: transform 0.3s;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.mini-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.mini-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
 
 .mini-icon {
     width: 55px; height: 55px;
@@ -177,7 +177,7 @@
     display: flex;
     align-items: flex-start;
     gap: 1.2rem;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     line-height: 1.4;
 }
 
@@ -186,7 +186,7 @@
     color: var(--primary-red);
 }
 
-.alt-label:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); transform: translateX(5px); }
+.alt-label:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); transform: translateX(8px); box-shadow: -5px 5px 15px rgba(0,0,0,0.2); }
 
 .alt-label input[type="radio"] {
     width: 22px; height: 22px;

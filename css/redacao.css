@@ -23,6 +23,13 @@
     border: 1px solid rgba(229, 9, 20, 0.3);
     border-radius: 4px;
     position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tema-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    border-color: rgba(229, 9, 20, 0.5);
 }
 
 .tema-header h2 {
@@ -102,6 +109,12 @@
     padding: 2.2rem;
     position: sticky;
     top: 2rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ajuda-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
 }
 
 .ajuda-card h3 {
@@ -126,6 +139,15 @@
 .competencia-list li {
     padding-bottom: 1.5rem;
     border-bottom: 1px dashed rgba(255,255,255,0.1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.competencia-list li:hover {
+    transform: translateX(8px);
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .competencia-list li:last-child {
