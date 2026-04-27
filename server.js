@@ -200,7 +200,6 @@ db.serialize(() => {
         verificado BOOLEAN DEFAULT 0,
         plano_ativo TEXT DEFAULT 'FREE',
         assinatura_id TEXT,
-        stripe_customer_id TEXT,
         criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
     )`, () => {
         // Garantindo que as colunas existam em bases antigas
@@ -216,7 +215,6 @@ db.serialize(() => {
         db.run("ALTER TABLE users ADD COLUMN verificado BOOLEAN DEFAULT 0", (err) => {});
         db.run("ALTER TABLE users ADD COLUMN plano_ativo TEXT DEFAULT 'FREE'", (err) => {});
         db.run("ALTER TABLE users ADD COLUMN assinatura_id TEXT", (err) => {});
-        db.run("ALTER TABLE users ADD COLUMN stripe_customer_id TEXT", (err) => {});
     });
     console.log('✅ Tabela de Usuários [USERS] verificada.');
     
@@ -1093,9 +1091,20 @@ app.post('/api/webhook/hotmart', async (req, res) => {
             if (err) {
                 console.error("❌ Erro ao atualizar plano no banco pós-Hotmart:", err.message);
             } else if (this.changes === 0) {
-                console.warn(`⚠️ O e-mail pagante da Hotmart (${email}) não existe no banco local.`);
+                console.warn(`⚠️ ALERTA: O e-mail pagante da Hotmart (${email}) não existe no banco local. O usuário deve criar uma conta usando este mesmo e-mail para que a sincronização ocorra.`);
+                // Em sistemas mais avançados, poderíamos criar uma conta "stub" (fantasma) aqui.
             } else {
                 console.log(`✅ [DB UPDATED]: Plano ${plano} ativo com sucesso para ${email}.`);
+            }
+        });
+    } else if (status === 'CANCELED' || status === 'REFUNDED' || status === 'CHARGEBACK') {
+        console.log(`\n🔻 [HOTMART]: Pagamento Cancelado ou Reembolsado (${status}). Rebaixando o e-mail: ${email} para FREE.`);
+        
+        db.run("UPDATE users SET plano_ativo = 'FREE' WHERE email = ?", [email], function(err) {
+            if (err) {
+                console.error("❌ Erro ao rebaixar plano no banco pós-Hotmart:", err.message);
+            } else if (this.changes > 0) {
+                console.log(`✅ [DB UPDATED]: Plano rebaixado para FREE para o usuário ${email}.`);
             }
         });
     }

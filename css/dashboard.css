@@ -196,12 +196,13 @@
     position: relative;
     padding: 1.8rem;
     border-radius: 24px;
-    transition: transform 0.3s;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .stats-cards .stat:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px) scale(1.02);
     background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
 }
 
 .stats-cards .stat .icon {
@@ -314,11 +315,13 @@
     padding: 1.2rem;
     border-radius: 16px;
     position: relative;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .task-list li:hover {
     background: rgba(255,255,255,0.06);
+    transform: translateX(8px);
+    box-shadow: -5px 5px 15px rgba(0,0,0,0.2);
 }
 
 .task-list input[type="checkbox"] {
