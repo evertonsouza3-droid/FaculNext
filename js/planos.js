@@ -1,5 +1,5 @@
 window.assinarPlano = async function(planoEscolhido) {
-    const userId = localStorage.getItem('faculnext_user_id') || 1;
+    const userId = localStorage.getItem('score_enem_user_id') || 1;
     
     // Pequena firula visual
     const btnClick = event.target;
@@ -41,7 +41,7 @@ let currentUserEmail = '';
 
 // Ao carregar a tela, destacar o plano atual se já tiver e cachear e-mail
 document.addEventListener('DOMContentLoaded', async () => {
-    const userId = localStorage.getItem('faculnext_user_id') || 1;
+    const userId = localStorage.getItem('score_enem_user_id') || 1;
     try {
         const res = await fetch(`/api/users/${userId}/dashboard`);
         const data = await res.json();

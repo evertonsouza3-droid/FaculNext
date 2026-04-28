@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro | FaculNext</title>
+    <title>Cadastro | Score ENEM</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/cadastro.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,8 +17,8 @@
     <div class="cadastro-container glass-card" id="cadastro-box">
         <!-- HEADER -->
         <div class="cadastro-header">
-            <a href="index.html" class="logo">FaculNext<span class="neon-dot">.</span></a>
-            <p>Sua jornada começa agora. Preencha os dados e descubra seu caminho.</p>
+            <a href="index.html" class="logo">Score ENEM<span class="neon-dot">.</span></a>
+            <p>A elite da aprovação te espera. Preencha seus dados para começar sua jornada.</p>
         </div>
 
         <!-- FORMULARIO INICIAL -->
@@ -30,14 +30,14 @@
 
             <div class="input-group">
                 <label>E-mail de Acesso</label>
-                <input type="email" id="email-input" placeholder="seuemail@futuro.com" required>
+                <input type="email" id="email-input" placeholder="seuemail@elite.com" required>
             </div>
 
             <div class="input-row">
                 <div class="input-group half">
                     <label>CEP (Sua Região)</label>
                     <input type="text" id="cep-input" placeholder="00000-000" maxlength="9" required>
-                    <span class="feedback-msg" id="cep-feedback">Buscando inteligência local...</span>
+                    <span class="feedback-msg" id="cep-feedback">Mapeando sua região...</span>
                 </div>
                 <!-- Preenchido pela API ViaCEP -->
                 <div class="input-group half">
@@ -47,8 +47,8 @@
             </div>
             
             <div class="regiao-detectada" id="regiao-box" style="display: none;">
-                🎯 Mapeamos que seu foco será na <strong id="nome-regiao" class="primary-text">Região</strong>. 
-                Nossos simulados vão se moldar para você!
+                🎯 Detectamos que seu foco será na <strong id="nome-regiao" class="primary-text">Região</strong>. 
+                Sua experiência será totalmente personalizada!
             </div>
 
             <div class="input-row">
@@ -62,8 +62,8 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-primary btn-block" id="submit-btn" disabled>Faça o seu cadastro</button>
-            <p class="login-link">Já tem uma conta? <a href="login.html">Acesse aqui</a></p>
+            <button type="submit" class="btn-primary btn-block" id="submit-btn" disabled>Criar Minha Conta na Elite</button>
+            <p class="login-link">Já faz parte da elite? <a href="login.html">Acesse aqui</a></p>
         </form>
     </div>
 
@@ -101,16 +101,16 @@
             <div class="vocacional-icon" style="font-size: 5.5rem; margin-bottom: 25px;">🧬</div>
             <h2 style="font-size: 2.2rem; margin-bottom: 15px; font-weight:900;">Perfil Mapeado! 🚀</h2>
             <p style="font-size: 1.15rem; color: #e0e0e0; margin-bottom: 35px; line-height: 1.6;">
-                Seu DNA de carreira foi processado com sucesso pela nossa I.A.<br>
-                <strong>Enviamos agora mesmo um link de segurança para o seu e-mail.</strong><br>
-                Acesse sua caixa de entrada para criar sua senha e entrar na plataforma.
+                Seu DNA de carreira foi processado com sucesso pelo motor Score ENEM.<br>
+                <strong>Enviamos um link de segurança para o seu e-mail agora mesmo.</strong><br>
+                Acesse sua caixa de entrada para criar sua senha e entrar na Elite.
             </p>
             <div style="margin-bottom: 20px;">
                 <p style="font-size: 1.0rem; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;">Próximo passo</p>
                 <h3 style="font-size: 1.6rem; font-weight: 800; color: #fff;">📬 Acesse seu e-mail agora</h3>
             </div>
             <div style="padding: 20px; background: rgba(229, 9, 20, 0.1); border: 1px solid var(--primary-red); border-radius: 12px; display: inline-block;">
-                <span style="font-weight: 800; color: var(--primary-red);">DICA:</span> Não esqueça de conferir a pasta de <strong>Spam</strong> ou <strong>Promoções</strong>.
+                <span style="font-weight: 800; color: var(--primary-red);">DICA:</span> Verifique também a pasta de <strong>Spam</strong> ou <strong>Promoções</strong>.
             </div>
             <p class="mt-2" style="margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);">Não recebeu? <a href="#" onclick="window.location.reload()" style="color: var(--primary-red); text-decoration: underline;">Tentar novamente</a></p>
         </div>
@@ -121,3 +121,4 @@
     <script src="js/carreiras.js?v=3"></script>
 </body>
 </html>
+

@@ -50,7 +50,12 @@ function renderQuestao() {
     document.getElementById('progress-pct').innerText = `${pct}%`;
     document.getElementById('progress-fill').style.width = `${pct}%`;
 
-    // Conteúdo da questão
+    // Conteúdo da questão com animação
+    const questaoBody = document.getElementById('exam-questao-body');
+    questaoBody.classList.remove('fade-in-up');
+    void questaoBody.offsetWidth; // Trigger reflow para reiniciar animação
+    questaoBody.classList.add('fade-in-up');
+
     document.getElementById('q-materia').innerText = q.materia || 'Geral';
     document.getElementById('q-enunciado').innerText = q.enunciado;
 
@@ -159,7 +164,7 @@ async function finalizarSimulado() {
     if (!currentExam) return;
     stopTimer();
 
-    const userId = localStorage.getItem('faculnext_user_id') || 1;
+    const userId = localStorage.getItem('score_enem_user_id') || 1;
 
     try {
         const res = await fetch(`${API_BASE}/exams/${currentExam.examId}/evaluate`, {
@@ -225,14 +230,31 @@ function renderResultScreen(data, questoes, respostasAluno) {
             cls = 'erro'; icon = '✗';
         }
 
-        gGrid.insertAdjacentHTML('beforeend', `
-            <div class="gabarito-item ${cls}">
+        const itemHtml = `
+            <div class="gabarito-item ${cls}" style="animation-delay: ${idx * 50}ms">
                 <span class="g-num">${idx + 1}</span>
                 <span>${icon}</span>
                 <small>${correta}</small>
             </div>
-        `);
+        `;
+        gGrid.insertAdjacentHTML('beforeend', itemHtml);
+        
+        // Trigger animação após o delay
+        setTimeout(() => {
+            const items = gGrid.querySelectorAll('.gabarito-item');
+            if (items[idx]) items[idx].classList.add('gabarito-item-anim');
+        }, 100);
     });
+
+    // Pulse na nota ao terminar contagem
+    setTimeout(() => {
+        const counterTotal = setInterval(() => {
+             if (parseInt(notaEl.innerText) >= target) {
+                 notaEl.classList.add('pulse');
+                 clearInterval(counterTotal);
+             }
+        }, 100);
+    }, 500);
 }
 
 // =============================================

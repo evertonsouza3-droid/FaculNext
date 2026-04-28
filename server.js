@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const { OpenAI } = require('openai');
 const crypto = require('crypto');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'faculnext_super_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'score_enem_elite_secret';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 
 const openai = new OpenAI({
@@ -34,7 +34,7 @@ async function enviarEmailViaResend(to, subject, htmlContent) {
                 'Authorization': `Bearer ${RESEND_API_KEY}`
             },
             body: JSON.stringify({
-                from: 'FaculNext <onboarding@resend.dev>', 
+                from: 'Score ENEM <onboarding@resend.dev>', 
                 to: [to],
                 subject: subject,
                 html: htmlContent
@@ -66,7 +66,7 @@ app.use(cors({
 app.use(express.static(path.join(__dirname)));
 
 console.log("-----------------------------------------");
-console.log("Incializando Inteligência do FaculNext...");
+console.log("Incializando Inteligência do Score ENEM...");
 
 // =====================================
 // SETUP DE BANCO DE DADOS HÍBRIDO (SQLite local / PostgreSQL cloud)

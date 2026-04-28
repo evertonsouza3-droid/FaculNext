@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const userId = localStorage.getItem('faculnext_user_id') || 1;
+    const userId = localStorage.getItem('score_enem_user_id') || 1;
     
     // Atualiza o saldo de cashback no sidebar
-    const cashbackLocal = localStorage.getItem('faculnext_cashback');
+    const cashbackLocal = localStorage.getItem('score_enem_cashback');
     if (cashbackLocal) {
         const valEl = document.getElementById('cashback-value');
         if (valEl) valEl.innerText = `R$ ${cashbackLocal}`;
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <div class="progress-bar mt-2" style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 24px;">
                                 <div class="progress" style="height: 100%; width: ${trilha.progresso}%; background: ${trilha.progresso > 0 ? colorHex : 'transparent'}; box-shadow: ${trilha.progresso > 0 ? '0 0 10px '+colorHex : 'none'}; transition: width 1s ease-in-out;"></div>
                             </div>
-                            <button class="${trilha.progresso > 0 ? 'btn-primary' : 'btn-secondary'} btn-block" style="width: 100%;" onclick="alert('Módulo em desenvolvimento! 🚧')">${trilha.progresso > 0 ? 'Continuar Trilha ➔' : 'Iniciar Trilha'}</button>
+                            <button class="${trilha.progresso > 0 ? 'btn-primary' : 'btn-secondary'} btn-block" style="width: 100%;" onclick="acessarTrilha('${trilha.titulo}')">${trilha.progresso > 0 ? 'Continuar Trilha ➔' : 'Iniciar Trilha'}</button>
                         </div>
                     </div>`;
                     grid.insertAdjacentHTML('beforeend', html);
@@ -57,6 +57,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch (e) {
         console.error('Erro ao carregar Trilhas:', e);
-        // Fallback visual caso a API falhe
     }
 });
+
+function acessarTrilha(nome) {
+    showToast(`🚀 Preparando módulo de <strong>${nome}</strong>...`);
+    // Aqui no futuro redirecionaria para aula.html?trilha=id
+    setTimeout(() => {
+        showToast(`📚 Módulo <strong>${nome}</strong> carregado! Boa aula.`);
+    }, 1500);
+}
+
+function showToast(message) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = message;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-20px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+

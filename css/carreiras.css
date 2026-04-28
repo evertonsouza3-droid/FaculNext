@@ -168,3 +168,37 @@
     .proj-content p { font-size: 0.95rem; }
     .proj-footer { padding-top: 1rem; }
 }
+
+/* Upgrade Tinder Cards */
+.tinder-card {
+    position: relative;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+    border: 1px solid rgba(255,255,255,0.1);
+    transform-origin: bottom center;
+}
+
+.tinder-card #card-icon {
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tinder-card:hover #card-icon {
+    transform: scale(1.1);
+}
+
+/* Animação de Resultado Vocacional */
+#vocacional-resultado {
+    animation: resultPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes resultPop {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.match-highlight {
+    background: linear-gradient(135deg, #FFD700, var(--primary-red));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+}
+

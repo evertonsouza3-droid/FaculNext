@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planos | FaculNext</title>
+    <title>Planos | Score ENEM</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,20 +19,25 @@
         }
         .plano-card {
             padding: 40px 30px;
-            transition: transform 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             height: 100%;
-            background: var(--bg-surface);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-glass);
-            border-radius: 4px;
+            border-radius: 12px;
         }
-        .plano-card:hover { transform: translateY(-10px); }
-        .plano-card h2 { font-size: 2rem; margin-bottom: 10px; }
-        .plano-card .price { font-size: 3rem; font-weight: 900; margin: 20px 0; }
-        .plano-card .price span { font-size: 1.2rem; font-weight: 400; opacity: 0.7; }
+        .plano-card:hover { 
+            transform: translateY(-12px); 
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+        .plano-card h2 { font-size: 1.8rem; margin-bottom: 10px; font-weight: 800; }
+        .plano-card .price { font-size: 3.5rem; font-weight: 900; margin: 20px 0; letter-spacing: -2px; }
+        .plano-card .price span { font-size: 1.2rem; font-weight: 400; opacity: 0.7; letter-spacing: 0; }
         .plano-features { 
             list-style: none; 
             padding: 0; 
@@ -40,36 +45,29 @@
             text-align: left; 
             flex-grow: 1; 
         }
-        .plano-features li { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); }
-        .plano-features li.check { color: #fff; }
-        .plano-features li.check::before { content: "✅"; }
-        .plano-features li.cross::before { content: "❌"; opacity: 0.5; }
+        .plano-features li { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.95rem; }
+        .plano-features li.check { color: #fff; font-weight: 600; }
+        .plano-features li.check::before { content: "✓"; color: var(--primary-red); font-weight: 900; }
+        .plano-features li.cross::before { content: "✕"; opacity: 0.3; }
         
         .destaque-premium {
             border: 2px solid var(--primary-red);
-            box-shadow: 0 0 30px rgba(229,9,20,0.15);
-            transform: scale(1.05);
-            background: linear-gradient(135deg, var(--bg-surface), rgba(229, 9, 20, 0.05));
+            box-shadow: 0 0 40px rgba(229,9,20,0.2);
+            background: linear-gradient(135deg, rgba(20,20,20,0.8), rgba(229, 9, 20, 0.05));
         }
-        .destaque-premium:hover { transform: scale(1.08) translateY(-10px); }
+        .destaque-premium .price { color: #fff; }
+        
         .badge-absolute {
             position: absolute;
-            top: -22px; left: 50%;
+            top: -15px; left: 50%;
             transform: translateX(-50%);
             white-space: nowrap;
         }
 
         /* --- Responsividade Planos --- */
         @media (max-width: 1024px) {
-            .planos-grid { grid-template-columns: 1fr; gap: 20px; }
-            .destaque-premium { transform: scale(1); }
-            .destaque-premium:hover { transform: translateY(-5px); }
-        }
-        @media (max-width: 800px) {
-            .planos-main { padding-bottom: 100px; } /* espaço para widget IA */
-            .plano-card { padding: 30px 20px; }
-            .plano-card h2 { font-size: 1.6rem; }
-            .plano-card .price { font-size: 2.2rem; }
+            .planos-grid { grid-template-columns: 1fr; gap: 30px; max-width: 450px; margin: 40px auto; }
+            .destaque-premium { transform: none; }
         }
     </style>
     <script src="js/auth.js"></script>
@@ -78,7 +76,7 @@
     <div id="noise-overlay"></div>
 
     <aside class="sidebar">
-        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="neon-dot"></span></div>
+        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">Score ENEM<span class="neon-dot"></span></div>
         <nav class="side-nav">
             <a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a>
             <a href="trilhas.html"><span class="icon">📚</span> Trilhas</a>
@@ -91,7 +89,7 @@
             <div class="avatar">👨‍🎓</div>
             <div class="user-info">
                 <strong>Estudante</strong>
-                <span id="current-plan-badge">Plano Atual</span>
+                <span id="current-plan-badge">Membro da Elite</span>
             </div>
         </div>
     </aside>
@@ -99,55 +97,55 @@
     <main class="dashboard-main planos-main">
         <header class="dash-header" style="justify-content: center; text-align:center;">
             <div>
-                <h1>Invista no seu <span class="primary-text">Futuro</span> 🚀</h1>
-                <p>Escolha o pacote que melhor se adapta à sua rotina de estudos. Assinaturas seguras e sem fidelidade.</p>
-                <p style="color: var(--gold); font-weight: 800; margin-top: 10px;">✨ Use seu Cashback acumulado para abater no valor da mensalidade!</p>
+                <h1>A Elite da <span class="primary-text">Aprovação</span> 🚀</h1>
+                <p>Escolha o plano que vai transformar sua nota e garantir sua vaga na federal.</p>
+                <p style="color: var(--gold); font-weight: 800; margin-top: 10px;">✨ Desconto progressivo aplicado via Hotmart!</p>
             </div>
         </header>
 
         <section class="planos-grid">
             <!-- Free -->
             <div class="glass-card plano-card">
-                <h2>Básico</h2>
-                <div class="price">Grátis <span>/mês</span></div>
+                <h2>Trial Elite</h2>
+                <div class="price">Grátis<span>/7 dias</span></div>
                 <ul class="plano-features">
-                    <li class="check">Teste Vocacional Inicial</li>
-                    <li class="check">1 Simulado Rápido por Mês</li>
-                    <li class="cross">Correção Redação I.A.</li>
-                    <li class="cross">Acesso a todas as Trilhas</li>
-                    <li class="cross">Mentoria Universitária</li>
+                    <li class="check">Teste Vocacional Completo</li>
+                    <li class="check">1 Simulado Nacional</li>
+                    <li class="check">1 Correção de Redação</li>
+                    <li class="cross">Acesso Total às Trilhas</li>
+                    <li class="cross">Mentor de Elite 24h</li>
                 </ul>
-                <button class="btn-secondary btn-block" style="margin-top: auto;" onclick="assinarPlano('FREE')">Continuar Grátis</button>
+                <button class="btn-secondary btn-block" style="margin-top: auto;" onclick="assinarPlano('FREE')">Experimentar Agora</button>
             </div>
 
             <!-- Starter -->
-            <div class="glass-card plano-card" style="border-color: var(--primary-red); box-shadow: 0 0 40px rgba(229, 9, 20, 0.15);">
-                <span class="badge absolute-badge uppercase" style="background: var(--primary-red); color: #fff; border: none;">Mais Escolhido</span>
-                <h2>Starter</h2>
-                <div class="price">R$ 29<span>,90/mês</span></div>
+            <div class="glass-card plano-card destaque-premium">
+                <span class="badge absolute-badge uppercase" style="background: var(--primary-red); color: #fff; border: none;">Recomendado</span>
+                <h2>Score Elite</h2>
+                <div class="price">R$ 39<span>/mês</span></div>
                 <ul class="plano-features">
-                    <li class="check">Tudo do Básico</li>
-                    <li class="check">Simulados Ilimitados Score ENEM</li>
-                    <li class="check">Correção de 2 Redações/mês</li>
-                    <li class="check">Acesso a Trilhas Base</li>
-                    <li class="cross">Mentoria Universitária</li>
+                    <li class="check">Tudo do Trial</li>
+                    <li class="check">Simulados Ilimitados</li>
+                    <li class="check">Redações Ilimitadas (I.A.)</li>
+                    <li class="check">Todas as Trilhas de Estudo</li>
+                    <li class="check">Mentor de Elite 24h</li>
                 </ul>
-                <button class="btn-primary btn-block" style="background: var(--bg-surface); border: 1px solid var(--primary-red); color: #fff; margin-top: auto;" onclick="assinarPlano('STARTER')">Assinar Starter</button>
+                <button class="btn-primary btn-block" style="margin-top: auto;" onclick="assinarPlano('STARTER')">Garantir Minha Vaga</button>
             </div>
 
             <!-- Premium -->
-            <div class="glass-card plano-card destaque-premium" style="border-color: var(--gold); box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);">
+            <div class="glass-card plano-card" style="border-color: var(--gold); box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);">
                 <span class="badge absolute-badge uppercase" style="background: var(--gold); color: var(--bg-dark); border: none;">Até a Formatura</span>
-                <h2>Premium</h2>
-                <div class="price">R$ 49<span>,90/mês</span></div>
+                <h2>Score Vitalício</h2>
+                <div class="price">R$ 69<span>/mês</span></div>
                 <ul class="plano-features">
-                    <li class="check">Tudo do Starter</li>
-                    <li class="check">Correção Redação Ilimitada</li>
-                    <li class="check">Trilhas Focadas em Medicina/TI</li>
-                    <li class="check">Mentoria Universitária 1x1</li>
-                    <li class="check">Suporte até o 1º Mês de Faculdade</li>
+                    <li class="check">Tudo do Plano Elite</li>
+                    <li class="check">Acesso Vitalício (Pré + Pós-venda)</li>
+                    <li class="check">Módulos Universitários (Cálculo/Bio)</li>
+                    <li class="check">Acompanhamento Individual</li>
+                    <li class="check">Certificado de Conclusão</li>
                 </ul>
-                <button class="btn-primary btn-block" style="margin-top: auto;" onclick="assinarPlano('PREMIUM')">Quero ser Premium</button>
+                <button class="btn-secondary btn-block" style="margin-top: auto; border-color: var(--gold); color: var(--gold);" onclick="assinarPlano('PREMIUM')">Assinar Vitalício</button>
             </div>
         </section>
     </main>
@@ -156,3 +154,4 @@
     <script src="js/chat.js"></script>
 </body>
 </html>
+

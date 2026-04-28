@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (data.sucesso) {
-                localStorage.setItem('faculnext_user_id', data.userId);
-                localStorage.setItem('faculnext_token', data.token);
+                localStorage.setItem('score_enem_user_id', data.userId);
+                localStorage.setItem('score_enem_token', data.token);
                 
                 submitBtn.innerText = "Acesso Permitido! Redirecionando... 🚀";
                 submitBtn.style.color = "#000";
@@ -35,14 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 erroFeedback.innerText = data.erro || "Falha no login. Verifique suas credenciais.";
                 erroFeedback.style.display = 'block';
-                submitBtn.innerText = "Acessar Plataforma";
+                submitBtn.innerText = "Entrar na Elite";
                 submitBtn.disabled = false;
             }
         } catch (error) {
             console.error('Erro de API:', error);
             erroFeedback.innerText = "Erro ao conectar com o servidor.";
             erroFeedback.style.display = 'block';
-            submitBtn.innerText = "Acessar Plataforma";
+            submitBtn.innerText = "Entrar na Elite";
             submitBtn.disabled = false;
         }
     });

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const userId = localStorage.getItem('faculnext_user_id') || 1;
+    const userId = localStorage.getItem('score_enem_user_id') || 1;
 
     // Mapa local de perfis RIASEC para exibir no dashboard sem depender do servidor
     const PERFIS_RIASEC = {
@@ -12,6 +12,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     
     try {
+        // Detectar se o usuário veio da página de sucesso (pós-venda)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('from') === 'success') {
+            setTimeout(() => {
+                showToast("💎 <strong>BEM-VINDO À ELITE!</strong> Seu acesso Premium está ativo e todas as ferramentas foram desbloqueadas.");
+            }, 1000);
+        }
+
         const res = await fetch(`/api/users/${userId}/dashboard`);
         const data = await res.json();
         

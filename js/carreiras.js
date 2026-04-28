@@ -18,9 +18,10 @@ window.handleRIASEC = function(sim) {
     const q = questoesRIASEC[indiceAtual];
     if (sim) pontuacao[q.tipo]++;
 
-    // 2. Animar o card
+    // 2. Animar o card com efeito de "mola"
     const card = document.getElementById('main-card');
-    card.style.transform = sim ? 'translateX(200px) rotate(15deg)' : 'translateX(-200px) rotate(-15deg)';
+    card.style.transition = 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s';
+    card.style.transform = sim ? 'translateX(300px) rotate(20deg) scale(0.8)' : 'translateX(-300px) rotate(-20deg) scale(0.8)';
     card.style.opacity = '0';
 
     setTimeout(() => {
@@ -29,13 +30,20 @@ window.handleRIASEC = function(sim) {
         if (indiceAtual < questoesRIASEC.length) {
             // Próxima Pergunta
             atualizarCard();
-            card.style.transform = 'translateX(0) rotate(0)';
+            card.style.transition = 'none'; // Reseta instantaneamente
+            card.style.transform = 'translateY(20px) scale(0.9)';
+            card.style.opacity = '0';
+            
+            // Força reflow e anima a entrada da próxima
+            void card.offsetWidth;
+            card.style.transition = 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s';
+            card.style.transform = 'translateY(0) scale(1)';
             card.style.opacity = '1';
         } else {
             // Final do Teste: Calcular Resultado
             mostrarResultadoRIASEC();
         }
-    }, 300);
+    }, 400);
 };
 
 function atualizarCard() {
@@ -49,7 +57,7 @@ function atualizarCard() {
 
 function mostrarResultadoRIASEC() {
     const resultado = calcularResultadoRIASEC(pontuacao);
-    const userId = localStorage.getItem('faculnext_user_id') || 1;
+    const userId = localStorage.getItem('score_enem_user_id') || 1;
 
     // Salvar no servidor (Opcional se já estiver logado)
     fetch(`/api/users/${userId}/vocational`, {
@@ -61,11 +69,27 @@ function mostrarResultadoRIASEC() {
         
         const resBox = document.getElementById('vocacional-resultado');
         resBox.style.display = 'block';
-        document.getElementById('result-title').innerText = `Match: ${resultado.nome}`;
-        document.getElementById('result-desc').innerText = resultado.desc;
+        
+        const titleEl = document.getElementById('result-title');
+        titleEl.innerHTML = `DNA Score ENEM: <span class="match-highlight">${resultado.nome}</span>`;
+        
+        const descEl = document.getElementById('result-desc');
+        const fullDesc = resultado.desc;
+        descEl.innerText = '';
+        
+        let i = 0;
+        function typeResult() {
+            if (i < fullDesc.length) {
+                descEl.innerText += fullDesc.charAt(i);
+                i++;
+                setTimeout(typeResult, 15);
+            }
+        }
+        
+        setTimeout(typeResult, 600);
         
         if (typeof showToast === 'function') {
-            showToast("Perfil Vocacional atualizado com sucesso! 🎯");
+            showToast("Seu DNA de Carreira foi mapeado! 🎯");
         }
     });
 }

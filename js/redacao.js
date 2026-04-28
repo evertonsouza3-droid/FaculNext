@@ -51,7 +51,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             submitBtn.innerText = '🪄 Corrigindo com Inteligência...';
             submitBtn.disabled = true;
 
-            const userId = localStorage.getItem('faculnext_user_id') || 1;
+            // Iniciar efeito de Scanning
+            const editorArea = document.querySelector('.editor-area');
+            if (editorArea) editorArea.classList.add('scanning');
+
+            const userId = localStorage.getItem('score_enem_user_id') || 1;
             const temaAtual = document.querySelector('.tema-header h2')?.innerText || 'Tema geral';
 
             try {
@@ -72,6 +76,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     submitBtn.innerText = originalText;
                     submitBtn.disabled = false;
                 }
+                
+                // Parar efeito de Scanning
+                if (editorArea) editorArea.classList.remove('scanning');
             } catch (err) {
                 console.error('Erro na API de submissão:', err);
                 showToast('❌ Falha de conexão com o servidor.');
@@ -105,7 +112,7 @@ function renderResultadoRedacao(data) {
         <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:16px;">
             <div>
                 <p style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:2px; margin-bottom:6px;">Seu Score ENEM — Redação</p>
-                <div style="font-size:4rem; font-weight:900; color:${cor}; line-height:1;">${nota}</div>
+                <div style="font-size:4rem; font-weight:900; color:${cor}; line-height:1;" id="final-nota-redacao">0</div>
                 <div style="font-size:1rem; color:${cor}; font-weight:700; margin-top:4px;">${label}</div>
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; text-align:center;">
@@ -117,13 +124,42 @@ function renderResultadoRedacao(data) {
                 `).join('')}
             </div>
         </div>
-        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:16px 20px; font-style:italic; color:#ccc; line-height:1.6;">
-            💬 "${data.feedback}"
+        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:16px 20px; font-style:italic; color:#ccc; line-height:1.6;" class="typing-text" id="ai-feedback-text">
         </div>
     `;
 
     const editorFooter = document.querySelector('.editor-footer');
     if (editorFooter) editorFooter.after(div);
+
+    // Animar Nota
+    const notaEl = document.getElementById('final-nota-redacao');
+    let current = 0;
+    const interval = setInterval(() => {
+        current += 20;
+        if (current >= nota) {
+            notaEl.innerText = nota;
+            clearInterval(interval);
+        } else {
+            notaEl.innerText = current;
+        }
+    }, 30);
+
+    // Efeito de Digitação no Feedback
+    const feedbackEl = document.getElementById('ai-feedback-text');
+    const fullText = `💬 "${data.feedback}"`;
+    let i = 0;
+    feedbackEl.innerText = '';
+    
+    function typeWriter() {
+        if (i < fullText.length) {
+            feedbackEl.innerText += fullText.charAt(i);
+            i++;
+            setTimeout(typeWriter, 20);
+        } else {
+            feedbackEl.classList.remove('typing-text');
+        }
+    }
+    setTimeout(typeWriter, 600);
 }
 
 function showToast(message) {

@@ -3,49 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranking | FaculNext</title>
+    <title>Ranking | Score ENEM</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <style>
-        .ranking-main { max-width: 900px; margin: 0 auto; }
+        .ranking-main { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
         .league-banner {
-            background: linear-gradient(135deg, rgba(229,9,20,0.15), rgba(0,0,0,0.4));
-            border: 1px solid var(--primary-red);
-            border-radius: 4px;
-            padding: 30px;
+            background: linear-gradient(135deg, rgba(229,9,20,0.1), rgba(0,0,0,0.6));
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            border-radius: 12px;
+            padding: 40px;
             text-align: center;
             margin-bottom: 40px;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
         }
-        .league-banner h2 { font-size: 2.5rem; margin-bottom: 10px; color: #fff;}
-        .league-icon { font-size: 4rem; line-height: 1; text-shadow: 0 0 20px var(--primary-red); }
+        .league-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(229,9,20,0.1) 0%, transparent 70%);
+            animation: rotateGlow 10s linear infinite;
+        }
+        @keyframes rotateGlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .league-banner h2 { font-size: 2.8rem; font-weight: 900; margin-bottom: 10px; color: #fff; letter-spacing: -1px;}
+        .league-icon { font-size: 5rem; line-height: 1; text-shadow: 0 0 30px var(--primary-red); margin-bottom: 15px; display: block; }
         
         .ranking-list { list-style: none; padding: 0; }
         .rank-item {
             display: flex; align-items: center; justify-content: space-between;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-glass);
-            padding: 15px 25px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            transition: transform 0.2s, border 0.2s;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 18px 30px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            opacity: 0;
+            transform: translateY(20px);
         }
-        .rank-item:hover { transform: translateX(10px); border-color: rgba(255, 255, 255, 0.3); }
-        .rank-item.is-me { border-color: var(--primary-red); background: rgba(229, 9, 20, 0.05); }
+        .rank-item.rank-animate-in { opacity: 1; transform: translateY(0); }
+        .rank-item:hover { 
+            transform: translateX(10px) scale(1.02); 
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .rank-item.is-me { border-color: var(--primary-red); background: rgba(229, 9, 20, 0.08); box-shadow: 0 0 20px rgba(229, 9, 20, 0.2); }
         
-        .r-position { font-size: 1.5rem; font-weight: 800; width: 50px; color: var(--text-muted); }
-        .r-position.top1 { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
-        .r-position.top2 { color: var(--silver); }
-        .r-position.top3 { color: #cd7f32; }
+        .r-position { font-size: 1.6rem; font-weight: 900; width: 60px; color: var(--text-muted); }
+        .r-position.top1 { color: #FFD700; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); font-size: 2.2rem; }
+        .r-position.top2 { color: #C0C0C0; text-shadow: 0 0 12px rgba(192, 192, 192, 0.4); font-size: 1.8rem; }
+        .r-position.top3 { color: #CD7F32; text-shadow: 0 0 10px rgba(205, 127, 50, 0.3); font-size: 1.7rem; }
 
-        .r-user { flex: 1; display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 1.1rem; }
-        .r-avatar { width: 45px; height: 45px; background: var(--bg-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 1px solid var(--border-glass); }
-        .r-points { font-size: 1.2rem; font-weight: 900; color: var(--primary-red); }
-        .r-region { font-size: 0.85rem; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); margin-left: 10px; font-weight: 400; border: 1px solid var(--border-glass);}
+        .r-user { flex: 1; display: flex; align-items: center; gap: 20px; font-weight: 700; font-size: 1.15rem; color: #fff; }
+        .r-avatar { width: 50px; height: 50px; background: rgba(0,0,0,0.3); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border: 1px solid rgba(255,255,255,0.1); }
+        .r-points { font-size: 1.3rem; font-weight: 900; color: var(--primary-red); font-family: 'Outfit', sans-serif; }
+        .r-region { font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.08); margin-left: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); border: 1px solid rgba(255,255,255,0.05);}
     </style>
     <script src="js/auth.js"></script>
 </head>
@@ -53,7 +77,7 @@
     <div id="noise-overlay"></div>
 
     <aside class="sidebar">
-        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="white-dot">.</span></div>
+        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">Score ENEM<span class="neon-dot"></span></div>
         <nav class="side-nav">
             <a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a>
             <a href="trilhas.html"><span class="icon">📚</span> Trilhas</a>
@@ -111,7 +135,7 @@
     <!-- Janela de Chat -->
     <div id="chat-window" class="chat-hidden">
         <div class="chat-header">
-            <strong>FaculNext AI Tutor 🪄</strong>
+            <strong>Mentor Score ENEM 🪄</strong>
             <button onclick="toggleChat()">✖</button>
         </div>
         <div id="chat-messages" class="chat-body">

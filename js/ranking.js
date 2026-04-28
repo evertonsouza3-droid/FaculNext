@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const rankingList = document.getElementById('ranking-list');
     if (!rankingList) return;
 
-    const userId = localStorage.getItem('faculnext_user_id');
+    const userId = localStorage.getItem('score_enem_user_id');
 
     try {
         const res = await fetch('/api/ranking');
@@ -45,8 +45,8 @@ function renderRanking(jogadores, myUserId) {
             <div class="r-position ${posClass}">${medalha}</div>
             <div class="r-user">
                 <div class="r-avatar">${jogador.avatar}</div>
-                <span>${jogador.nome}${isMe ? ' <strong style="color:var(--primary-red);font-size:0.75rem;"> • VOCÊ</strong>' : ''}</span>
-                <span class="r-region">${jogador.regiao || jogador.regiao}</span>
+                <span>${jogador.nome}${isMe ? ' <strong style="color:var(--primary-red);font-size:0.75rem; margin-left:5px;">• VOCÊ</strong>' : ''}</span>
+                <span class="r-region">${jogador.regiao}</span>
             </div>
             <div class="r-points">${Number(jogador.pontos).toLocaleString('pt-BR')} pts</div>
         `;
