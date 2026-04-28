@@ -453,23 +453,30 @@ db.serialize(() => {
             });
         }
     });
-});
 
-// 🎮 CRIAR CONTA DEMO AUTOMATICAMENTE (Para testes da Elite)
-db.serialize(() => {
+    // 🎮 CRIAR CONTA DEMO AUTOMATICAMENTE (Dentro do fluxo garantido)
     const demoEmail = 'demo@faculnext.com';
     const demoSenha = 'elite123';
     
     db.get("SELECT id FROM users WHERE email = ?", [demoEmail], async (err, row) => {
+        if (err) {
+            console.error("⚠️ Erro ao verificar conta demo:", err.message);
+            return;
+        }
         if (!row) {
             const hash = await bcrypt.hash(demoSenha, 10);
             db.run("INSERT INTO users (nome, email, senha_hash, plano_ativo, verificado) VALUES (?, ?, ?, ?, ?)", 
             ['Aluno Demo Elite', demoEmail, hash, 'ELITE', 1], (err) => {
                 if (!err) console.log(`🚀 [DEMO ACCOUNT]: Conta ${demoEmail} criada com sucesso (Senha: ${demoSenha})`);
+                else console.error("❌ Erro ao criar conta demo:", err.message);
             });
+        } else {
+            console.log(`✅ [DEMO ACCOUNT]: Conta ${demoEmail} já existe.`);
         }
     });
 });
+
+
 
 // ==========================================
 // 🔌 APIs E COMUNICAÇÃO (As pontes pro Front)
