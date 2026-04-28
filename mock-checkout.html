@@ -33,8 +33,19 @@
         const plan = urlParams.get('plan') || 'PREMIUM';
         const userId = urlParams.get('userId');
 
-        document.getElementById('plan-name').innerText = plan === 'STARTER' ? 'Plano Starter' : 'Plano Premium';
-        document.getElementById('plan-price').innerText = plan === 'STARTER' ? 'R$ 39,00' : 'R$ 69,00';
+        const planNames = {
+            'FREE': 'Plano Starter (Free)',
+            'STARTER': 'Plano Elite',
+            'PREMIUM': 'Plano Premium'
+        };
+        const planPrices = {
+            'FREE': 'R$ 0,00',
+            'STARTER': 'R$ 39,00',
+            'PREMIUM': 'R$ 69,00'
+        };
+
+        document.getElementById('plan-name').innerText = planNames[plan] || 'Plano Elite';
+        document.getElementById('plan-price').innerText = planPrices[plan] || 'R$ 39,00';
 
         document.getElementById('pay-btn').addEventListener('click', async () => {
             const btn = document.getElementById('pay-btn');

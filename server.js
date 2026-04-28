@@ -9,6 +9,7 @@ const crypto = require('crypto');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'score_enem_elite_secret';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
+const SENDER_EMAIL = 'FaculNext <onboarding@resend.dev>';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || 'fake_key', 
