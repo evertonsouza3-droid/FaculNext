@@ -34,7 +34,7 @@ async function enviarEmailViaResend(to, subject, htmlContent) {
                 'Authorization': `Bearer ${RESEND_API_KEY}`
             },
             body: JSON.stringify({
-                from: 'Score ENEM <onboarding@resend.dev>', 
+                from: 'FaculNext <onboarding@resend.dev>', 
                 to: [to],
                 subject: subject,
                 html: htmlContent
@@ -66,7 +66,7 @@ app.use(cors({
 app.use(express.static(path.join(__dirname)));
 
 console.log("-----------------------------------------");
-console.log("Incializando Inteligência do Score ENEM...");
+console.log("Incializando Inteligência do FaculNext...");
 
 // =====================================
 // SETUP DE BANCO DE DADOS HÍBRIDO (SQLite local / PostgreSQL cloud)
@@ -1213,7 +1213,7 @@ app.post('/api/ai/chat', (req, res) => {
 
         // Chamada real à OpenAI com a nova Personalidade
         try {
-            const systemPrompt = `Você é o Tutor FaculNext, um orientador educacional moderno, motivador e focado 100% no ENEM e vestibulares brasileiros. 
+            const systemPrompt = `Você é o AI Tutor FaculNext, um orientador educacional moderno, motivador e focado 100% no ENEM e vestibulares brasileiros. 
             Seu tom de voz deve ser:
             - Proativo e Moderno: 'Bora conquistar essa vaga!', 'Sua meta está logo ali.'
             - Sério e Técnico: Dê orientações baseadas no Score ENEM (cálculo de performance real) e competências do ENEM.

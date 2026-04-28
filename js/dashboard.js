@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const userId = localStorage.getItem('score_enem_user_id') || 1;
+    const userId = localStorage.getItem('faculnext_user_id') || 1;
 
     // Mapa local de perfis RIASEC para exibir no dashboard sem depender do servidor
     const PERFIS_RIASEC = {

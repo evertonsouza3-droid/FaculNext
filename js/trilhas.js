@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const userId = localStorage.getItem('score_enem_user_id') || 1;
+    const userId = localStorage.getItem('faculnext_user_id') || 1;
     
     // Atualiza o saldo de cashback no sidebar
-    const cashbackLocal = localStorage.getItem('score_enem_cashback');
+    const cashbackLocal = localStorage.getItem('faculnext_cashback');
     if (cashbackLocal) {
         const valEl = document.getElementById('cashback-value');
         if (valEl) valEl.innerText = `R$ ${cashbackLocal}`;

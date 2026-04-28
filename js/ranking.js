@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const rankingList = document.getElementById('ranking-list');
     if (!rankingList) return;
 
-    const userId = localStorage.getItem('score_enem_user_id');
+    const userId = localStorage.getItem('faculnext_user_id') || 1;
 
     try {
         const res = await fetch('/api/ranking');

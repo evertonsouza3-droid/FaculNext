@@ -44,6 +44,25 @@
     animation: drift 12s infinite alternate-reverse ease-in-out;
 }
 
+.cadastro-bg-glow {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(229, 9, 20, 0.1), transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.neon-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--primary-red);
+    border-radius: 50%;
+    margin-left: 2px;
+    box-shadow: 0 0 15px var(--primary-red);
+}
+
 .cadastro-container, .form-wrapper {
     position: relative;
     max-width: 600px;

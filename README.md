@@ -1,7 +1,7 @@
 # 🚀 FaculNext - Plataforma Educacional
 
 ## 📋 Descrição
-O FaculNext é uma plataforma educacional completa para preparação ao ENEM, com funcionalidades de cadastro, redação, Score ENEM, dashboard e gamificação.
+O FaculNext é uma plataforma educacional completa para preparação ao ENEM, com funcionalidades de cadastro, redação, simulados, dashboard e gamificação.
 
 ## 🛠️ Tecnologias
 - **Backend**: Node.js + Express

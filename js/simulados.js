@@ -164,7 +164,7 @@ async function finalizarSimulado() {
     if (!currentExam) return;
     stopTimer();
 
-    const userId = localStorage.getItem('score_enem_user_id') || 1;
+    const userId = localStorage.getItem('faculnext_user_id') || 1;
 
     try {
         const res = await fetch(`${API_BASE}/exams/${currentExam.examId}/evaluate`, {

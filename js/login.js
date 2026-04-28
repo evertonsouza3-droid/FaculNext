@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (data.sucesso) {
-                localStorage.setItem('score_enem_user_id', data.userId);
-                localStorage.setItem('score_enem_token', data.token);
+                localStorage.setItem('faculnext_user_id', data.userId);
+                localStorage.setItem('faculnext_token', data.token);
                 
                 submitBtn.innerText = "Acesso Permitido! Redirecionando... 🚀";
                 submitBtn.style.color = "#000";

@@ -57,7 +57,7 @@ function atualizarCard() {
 
 function mostrarResultadoRIASEC() {
     const resultado = calcularResultadoRIASEC(pontuacao);
-    const userId = localStorage.getItem('score_enem_user_id') || 1;
+    const userId = localStorage.getItem('faculnext_user_id') || 1;
 
     // Salvar no servidor (Opcional se já estiver logado)
     fetch(`/api/users/${userId}/vocational`, {
@@ -71,7 +71,7 @@ function mostrarResultadoRIASEC() {
         resBox.style.display = 'block';
         
         const titleEl = document.getElementById('result-title');
-        titleEl.innerHTML = `DNA Score ENEM: <span class="match-highlight">${resultado.nome}</span>`;
+        titleEl.innerHTML = `DNA FaculNext: <span class="match-highlight">${resultado.nome}</span>`;
         
         const descEl = document.getElementById('result-desc');
         const fullDesc = resultado.desc;

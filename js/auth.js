@@ -1,6 +1,6 @@
 // Middleware simples de Frontend para verificar autenticação
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('score_enem_token');
+    const token = localStorage.getItem('faculnext_token');
     
     // Se não tiver token, redireciona para a home/login
     if (!token) {

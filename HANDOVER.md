@@ -1,12 +1,12 @@
-# 🚀 Handover do Projeto: Score ENEM (FINAL GOLD)
+# 🚀 Handover do Projeto: FaculNext (FINAL GOLD)
 **Data da última atualização:** 28 de Abril de 2026
 
 Este arquivo marca a conclusão da fase de refinamento e rebranding. A plataforma está pronta para o lançamento comercial.
 
 ## 🟢 O que já foi concluído (Status Final)
-1. **Rebranding Completo (Score ENEM):**
-   - Nome, Logotipos e Metadados atualizados em 100% das páginas (Landing, Auth e Dash).
-   - **Chaves Técnicas:** Chaves de `localStorage` renomeadas para `score_enem_user_id`, `score_enem_token` e `score_enem_cashback` para consistência de marca.
+1. **Rebranding Completo (FaculNext):**
+   - Nome, Logotipos e Metadados restaurados para FaculNext.
+   - **Chaves Técnicas:** Chaves de `localStorage` voltaram para `faculnext_*`.
 2. **UI/UX de Alta Fidelidade (Premium):**
    - **Simulados:** Efeito de cascata no gabarito, animação de pulso na nota TRI e transições suaves entre questões.
    - **Redação:** Efeito visual de "Scanner I.A." e feedback textual com efeito "Typewriter" (máquina de escrever).
@@ -18,7 +18,7 @@ Este arquivo marca a conclusão da fase de refinamento e rebranding. A plataform
    - Fluxo de "Welcome Toast" no Dashboard para novos assinantes Premium ativado.
 4. **Backend & Segurança:**
    - E-mails transacionais (Resend) configurados com a nova marca.
-   - Segredos JWT e logs do servidor atualizados para Score ENEM.
+   - Segredos JWT e logs do servidor atualizados para FaculNext.
 
 ## 🟡 Próximos Passos Recomendados
 - **Deploy de Produção:** Realizar o `git push` para o repositório principal conectado ao Render.com.
@@ -26,4 +26,4 @@ Este arquivo marca a conclusão da fase de refinamento e rebranding. A plataform
 - **Campanha de Influenciadores:** Utilizar o material de Pitch na `/Lixeira` para atrair os primeiros parceiros da nova fase.
 
 ---
-**Score ENEM - Domine o Exame, Conquiste a Vaga.**
+**FaculNext - Domine o Exame, Conquiste a Vaga.**

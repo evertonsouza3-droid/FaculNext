@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Score ENEM</title>
+    <title>Dashboard | FaculNext</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,7 @@
 <body class="dashboard-body">
 
     <aside class="sidebar">
-        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">Score ENEM<span class="neon-dot"></span></div>
+        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="neon-dot"></span></div>
         <nav class="side-nav">
             <a href="dashboard.html" class="active"><span class="icon">🏠</span> Dashboard</a>
             <a href="trilhas.html"><span class="icon">📚</span> Trilhas</a>
@@ -146,9 +146,9 @@
     </div>
 
     <div id="chat-window" class="glass-card chat-hidden">
-        <div class="chat-header">
-            <h3>Mentor Score ENEM 🪄</h3>
-            <button onclick="toggleChat()">✖</button>
+        <div class="ai-header">
+            <h3>AI Tutor FaculNext 🪄</h3>
+            <button id="close-chat">×</button>
         </div>
         <div id="chat-messages" class="chat-body">
             <div class="msg bot">Olá! Sou sua IA de estudos. Qual a dúvida de hoje?</div>

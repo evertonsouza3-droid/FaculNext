@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const editorArea = document.querySelector('.editor-area');
             if (editorArea) editorArea.classList.add('scanning');
 
-            const userId = localStorage.getItem('score_enem_user_id') || 1;
+            const userId = localStorage.getItem('faculnext_user_id') || 1;
             const temaAtual = document.querySelector('.tema-header h2')?.innerText || 'Tema geral';
 
             try {
