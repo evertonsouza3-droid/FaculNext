@@ -120,13 +120,29 @@ async function initProactiveTutor() {
                 idade = data.idade || 17;
             }
             if(page === 'dashboard.html') {
-                const msg = "Bora bater a meta de hoje? Sua evolução constante é o que garante a vaga. Vamos revisar algum conteúdo?";
-                sendProactiveMessage(msg);
+                const isFree = data.plano_ativo === 'FREE';
+                
+                if (isFree) {
+                    const msg = "🔒 <strong>Bloqueio do Tutor:</strong><br>Ainda no plano Starter? Upgrade agora para liberar acesso ilimitado ao Mentor I.A. Elite!";
+                    sendProactiveMessage(msg);
+                    
+                    // Bloqueia o input
+                    const input = document.getElementById('user-msg-input');
+                    if (input) {
+                        input.disabled = true;
+                        input.placeholder = "Acesso exclusivo Elite/Premium";
+                    }
+                } else {
+                    const msg = "Bora bater a meta de hoje? Sua evolução constante é o que garante a vaga. Vamos revisar algum conteúdo?";
+                    sendProactiveMessage(msg);
+                }
             } else if(page === 'ranking.html') {
                 const msg = "Sua posição no ranking está subindo! Se mantiver esse ritmo, a aprovação é consequência. Vamos para a próxima?";
                 sendProactiveMessage(msg);
             }
-        } catch(e) {}
+        } catch(e) {
+            console.error("Erro ao iniciar Tutor:", e);
+        }
     }, 3000); // 3 segundos para não assustar
 }
 

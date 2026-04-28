@@ -452,7 +452,21 @@ db.serialize(() => {
                 }
             });
 
-            console.log('✅ Fixtures inseridos com sucesso!');
+    });
+});
+
+// 🎮 CRIAR CONTA DEMO AUTOMATICAMENTE (Para testes da Elite)
+db.serialize(() => {
+    const demoEmail = 'demo@faculnext.com';
+    const demoSenha = 'elite123';
+    
+    db.get("SELECT id FROM users WHERE email = ?", [demoEmail], async (err, row) => {
+        if (!row) {
+            const hash = await bcrypt.hash(demoSenha, 10);
+            db.run("INSERT INTO users (nome, email, senha_hash, plano_ativo, verificado) VALUES (?, ?, ?, ?, ?)", 
+            ['Aluno Demo Elite', demoEmail, hash, 'ELITE', 1], (err) => {
+                if (!err) console.log(`🚀 [DEMO ACCOUNT]: Conta ${demoEmail} criada com sucesso (Senha: ${demoSenha})`);
+            });
         }
     });
 });
@@ -525,32 +539,10 @@ app.post('/api/users/register', async (req, res) => {
             
             const novoUserId = this.lastID;
             
-            // FASE 7: Enviar E-mail de Ativação IMEDIATO (Para garantir que chegue logo)
-            const host = process.env.APP_URL || req.headers.host || 'faculnext.onrender.com';
-            const protocol = req.protocol || 'https';
-            const URL_CRIAR_SENHA = `${protocol}://${host}/setup-senha.html?token=${tokenAtivacao}`;
-            
-            const htmlAtivacao = `
-                <div style="font-family: sans-serif; background: #141414; color: #fff; padding: 40px; border-radius: 10px; max-width: 600px; margin: 0 auto; border: 1px solid #E50914;">
-                    <h1 style="color: #E50914;">Bem-vindo à Elite, ${nome.split(' ')[0]}! 🎓</h1>
-                    <p>Sua pré-matrícula no <strong>FaculNext</strong> foi recebida com sucesso.</p>
-                    <p>Para liberar seu acesso ao Dashboard, Simulados e Mentor I.A., você precisa criar sua senha de acesso:</p>
-                    <div style="text-align: center; margin: 30px 0;">
-                        <a href="${URL_CRIAR_SENHA}" style="background: #E50914; color: #fff; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">CRIAR MINHA SENHA AGORA</a>
-                    </div>
-                    <p style="font-size: 0.8rem; color: #666;">Se o botão não funcionar, use o link: ${URL_CRIAR_SENHA}</p>
-                </div>
-            `;
-
-            console.log(`\n📧 [EMAIL SERVICE]: Disparando Ativação Imediata para ${email}...`);
-            console.log(`🔗 [DEBUG LINK]: ${URL_CRIAR_SENHA}`);
-            console.log(`-----------------------------------------`);
-            enviarEmailViaResend(email, 'Bem-vindo ao FaculNext: Crie sua senha 🔑', htmlAtivacao);
-
             res.json({ 
                 sucesso: true, 
                 userId: novoUserId, 
-                mensagem: 'Matrícula pré-aprovada! Verifique seu e-mail para criar sua senha enquanto termina o teste.' 
+                mensagem: 'Matrícula pré-aprovada! O e-mail de ativação será enviado após a conclusão do seu Teste Vocacional.' 
             });
         });
     } catch (err) {
@@ -1223,7 +1215,7 @@ app.post('/api/ai/chat', (req, res) => {
 
         // Limitação Free
         if (plano === 'FREE') {
-            return res.json({ sucesso: true, reply: "⚠️ O Tutor de Inteligência Artificial Ilimitado está liberado apenas para alunos Premium e Starter. Acesse a guia 'Meu Plano' para fazer o upgrade e desbloquear a IA Ilimitada!" });
+            return res.json({ sucesso: true, reply: "⚠️ O Tutor de Inteligência Artificial Ilimitado está liberado apenas para alunos membros da Elite e Premium. Acesse a guia 'Meu Plano' para fazer o upgrade agora!" });
         }
 
         if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'fake_key') {
