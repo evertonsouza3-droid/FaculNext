@@ -197,7 +197,7 @@ function mostrarResultadoRIASEC() {
         
         const resBox = document.getElementById('vocacional-resultado');
         resBox.style.display = 'block';
-        resBox.querySelector('h2').innerText = `Match: ${resultado.nome}`;
-        resBox.querySelector('p').innerText = resultado.desc;
+        document.getElementById('resultado-titulo').innerText = `Match: ${resultado.nome}`;
+        document.getElementById('resultado-desc').innerText = resultado.desc;
     });
 }

@@ -34,7 +34,7 @@ async function enviarEmailViaResend(to, subject, htmlContent) {
                 'Authorization': `Bearer ${RESEND_API_KEY}`
             },
             body: JSON.stringify({
-                from: 'FaculNext <onboarding@resend.dev>', 
+                from: SENDER_EMAIL, 
                 to: [to],
                 subject: subject,
                 html: htmlContent
@@ -42,7 +42,14 @@ async function enviarEmailViaResend(to, subject, htmlContent) {
         });
 
         const data = await response.json();
-        console.log("📨 [RESEND API]:", data);
+        console.log("📨 [RESEND API RESPONSE]:", JSON.stringify(data, null, 2));
+        
+        if (data.id) {
+            console.log(`✅ [RESEND SUCCESS]: E-mail aceito para entrega (ID: ${data.id}) para ${to}`);
+        } else {
+            console.warn(`⚠️ [RESEND WARNING]: O Resend aceitou a requisição, mas não retornou um ID de entrega. Verifique o painel.`);
+        }
+        
         return { sucesso: true, data };
     } catch (err) {
         console.error("❌ [RESEND ERROR]:", err);
@@ -517,10 +524,32 @@ app.post('/api/users/register', async (req, res) => {
             
             const novoUserId = this.lastID;
             
+            // FASE 7: Enviar E-mail de Ativação IMEDIATO (Para garantir que chegue logo)
+            const host = process.env.APP_URL || req.headers.host || 'faculnext.onrender.com';
+            const protocol = req.protocol || 'https';
+            const URL_CRIAR_SENHA = `${protocol}://${host}/setup-senha.html?token=${tokenAtivacao}`;
+            
+            const htmlAtivacao = `
+                <div style="font-family: sans-serif; background: #141414; color: #fff; padding: 40px; border-radius: 10px; max-width: 600px; margin: 0 auto; border: 1px solid #E50914;">
+                    <h1 style="color: #E50914;">Bem-vindo à Elite, ${nome.split(' ')[0]}! 🎓</h1>
+                    <p>Sua pré-matrícula no <strong>FaculNext</strong> foi recebida com sucesso.</p>
+                    <p>Para liberar seu acesso ao Dashboard, Simulados e Mentor I.A., você precisa criar sua senha de acesso:</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${URL_CRIAR_SENHA}" style="background: #E50914; color: #fff; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">CRIAR MINHA SENHA AGORA</a>
+                    </div>
+                    <p style="font-size: 0.8rem; color: #666;">Se o botão não funcionar, use o link: ${URL_CRIAR_SENHA}</p>
+                </div>
+            `;
+
+            console.log(`\n📧 [EMAIL SERVICE]: Disparando Ativação Imediata para ${email}...`);
+            console.log(`🔗 [DEBUG LINK]: ${URL_CRIAR_SENHA}`);
+            console.log(`-----------------------------------------`);
+            enviarEmailViaResend(email, 'Bem-vindo ao FaculNext: Crie sua senha 🔑', htmlAtivacao);
+
             res.json({ 
                 sucesso: true, 
                 userId: novoUserId, 
-                mensagem: 'Cadastro recebido! O e-mail de ativação será enviado após a conclusão do seu Teste Vocacional.' 
+                mensagem: 'Matrícula pré-aprovada! Verifique seu e-mail para criar sua senha enquanto termina o teste.' 
             });
         });
     } catch (err) {
@@ -702,6 +731,8 @@ app.post('/api/users/:id/vocational', (req, res) => {
             `;
 
             console.log(`\n📧 [EMAIL SERVICE]: Disparando Boas-Vindas Personalizado para ${email}...`);
+            console.log(`🔗 [DEBUG LINK]: ${URL_CRIAR_SENHA}`);
+            console.log(`-----------------------------------------`);
             await enviarEmailViaResend(email, `Seu Perfil: ${perfil} - Bem-vindo ao FaculNext 🎓`, htmlEmail);
 
             res.json({ sucesso: true, mensagem: `Perfil [${perfil}] registrado. E-mail de ativação enviado.` });
