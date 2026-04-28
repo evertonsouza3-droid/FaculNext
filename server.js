@@ -451,7 +451,7 @@ db.serialize(() => {
                     db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Uma unidade de medida']);
                 }
             });
-
+        }
     });
 });
 
