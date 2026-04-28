@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bem-vindo ao FaculNext!</title>
+<style>
+    /* Reset básico para clientes de email */
+    body, table, td, div, p { margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
+    body {
+        background-color: #07090F; /* Tema Dark */
+        color: #e0e0e0; /* Texto secundário */
+        padding: 40px 20px;
+    }
+    
+    /* Wrapper do Email */
+    .wrapper {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #101423; /* Fundo do card */
+        border-radius: 20px; /* Bordas arredondadas (pode não renderizar em alguns emails antigos) */
+        overflow: hidden;
+        border: 1px solid rgba(212, 255, 0, 0.2); /* Borda em Neon Lime */
+    }
+    
+    /* Header do Email */
+    .header {
+        background-color: #0A0D18;
+        padding: 40px 20px;
+        text-align: center;
+        border-bottom: 3px solid #D4FF00;
+    }
+    
+    .logo {
+        font-size: 32px;
+        font-weight: 900;
+        color: #ffffff;
+        text-decoration: none;
+        letter-spacing: -1.5px;
+    }
+    .neon-dot { color: #D4FF00; } /* Ponto Neon Lime */
+
+    /* Corpo Principal */
+    .main-content {
+        padding: 50px 40px;
+        line-height: 1.6;
+        font-size: 16px;
+    }
+
+    .title {
+        font-size: 26px;
+        font-weight: bold;
+        color: #ffffff;
+        margin-bottom: 25px;
+        line-height: 1.3;
+    }
+    
+    .highlight {
+        color: #D4FF00; /* Neon Lime em destaque no texto */
+        font-weight: bold;
+    }
+    .highlight-blue {
+        color: #00F0FF; /* Neon Cyan para região */
+        font-weight: bold;
+    }
+
+    /* Botão Call to Action */
+    .btn {
+        display: inline-block;
+        background-color: #D4FF00; /* Neon Lime puro */
+        color: #000000;
+        padding: 18px 40px;
+        text-decoration: none;
+        font-weight: 900;
+        border-radius: 50px;
+        margin-top: 35px;
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        font-size: 15px;
+        letter-spacing: 1px;
+    }
+
+    /* Rodapé */
+    .footer {
+        text-align: center;
+        padding: 25px;
+        font-size: 13px;
+        color: #666666;
+        background-color: #07090F;
+    }
+    
+    /* Responsividade Simulada Padrão E-mail */
+    @media (max-width: 600px) {
+        .main-content { padding: 30px 20px; }
+        body { padding: 10px; }
+    }
+</style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Logo e Header -->
+        <div class="header">
+            <a href="#" class="logo">FaculNext<span class="neon-dot">.</span></a>
+        </div>
+        
+        <!-- Conteúdo do E-mail -->
+        <div class="main-content">
+            <div class="title">O seu passe livre para a faculdade começou agora. 🚀</div>
+            
+            <p style="margin-bottom: 15px;">Que incrível ter você por aqui! O seu cadastro foi concluído com sucesso e o nosso sistema já calibrou tudo identificando que você vai dominar a <span class="highlight-blue">Região Centro-Oeste</span>.</p>
+            
+            <p style="margin-bottom: 15px;">Nós preparamos um arsenal de simulados inéditos, redações comentadas e trilhas focadas exatamente nas universidades estaduais, federais e particulares do seu estado e adjacências.</p>
+            
+            <p style="margin-bottom: 5px;">Esqueça os métodos chatos e cursinhos desatualizados.</p>
+            <p style="margin-bottom: 15px;">No <strong>FaculNext</strong>, você vai ser <span class="highlight">imparável</span> nas provas do ENEM e Vestibulares.</p>
+            
+            <!-- Botão -->
+            <div style="text-align: center;">
+                <a href="https://faculnext-local.test/dashboard" class="btn">Me leve para o Dashboard</a>
+            </div>
+            
+            <p style="margin-top: 25px; margin-bottom: 15px;">Lembre-se: nosso time está com você do primeiro dia de cursinho até você pegar o diploma universitário. Vamos acompanhar cada passo seu, então conte com a gente.</p>
+            
+            <p><strong>Hora de fazer história!</strong><br><br>Equipe FaculNext ✌️</p>
+        </div>
+        
+        <!-- Footer / Unsubscribe -->
+        <div class="footer">
+            Você está recebendo este e-mail porque acaba de iniciar seu plano no FaculNext.<br><br>
+            Siga-nos nas redes sociais!<br>
+            © 2026 FaculNext Educacional. Foco, força e facul.
+        </div>
+    </div>
+</body>
+</html>

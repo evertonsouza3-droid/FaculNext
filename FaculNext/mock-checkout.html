@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Seguro | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cadastro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #E50914;
+            --bg-dark: #000;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --border-glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-dark);
+            overflow-x: hidden;
+        }
+
+        .checkout-wrapper {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .checkout-card {
+            padding: 50px 40px;
+            text-align: center;
+            border-radius: 24px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .checkout-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+        }
+
+        .secure-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .plan-info {
+            margin: 30px 0;
+        }
+
+        .plan-label {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        #plan-name {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .price-tag {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #fff;
+            margin: 25px 0;
+            letter-spacing: -2px;
+        }
+
+        .price-tag span {
+            font-size: 1.2rem;
+            opacity: 0.5;
+            font-weight: 400;
+            letter-spacing: 0;
+        }
+
+        .benefits-summary {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .benefits-summary div {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .benefits-summary div:last-child { margin-bottom: 0; }
+
+        .sandbox-warning {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 20px;
+        }
+
+        .logo-box {
+            margin-bottom: 40px;
+            cursor: pointer;
+        }
+
+        .logo-box .logo {
+            font-size: 1.8rem;
+            justify-content: center;
+        }
+
+        .btn-pay {
+            background: var(--primary-red);
+            color: #fff;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.3);
+        }
+
+        .btn-pay:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(229, 9, 20, 0.5);
+            filter: brightness(1.1);
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-glass);
+            padding: 15px;
+            border-radius: 12px;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="noise-overlay"></div>
+    <div class="cadastro-bg-glow" style="opacity: 0.4;"></div>
+    
+    <div class="checkout-wrapper">
+        <div class="logo-box" onclick="window.location.href='index.html'">
+            <div class="logo">FaculNext<span class="neon-dot"></span></div>
+        </div>
+
+        <div class="checkout-card glass-card">
+            <div class="secure-badge">
+                <span>🔒</span> Conexão Criptografada
+            </div>
+
+            <div class="plan-info">
+                <div class="plan-label">Você está assinando o</div>
+                <strong id="plan-name">Plano Elite</strong>
+            </div>
+
+            <div class="price-tag" id="plan-price">R$ 39,00<span>/mês</span></div>
+
+            <div class="benefits-summary">
+                <div>✓ Acesso Ilimitado à Plataforma</div>
+                <div>✓ Mentor I.A. 24h Disponível</div>
+                <div>✓ Correções de Redação em Tempo Real</div>
+            </div>
+            
+            <button id="pay-btn" class="btn-pay">Finalizar Pagamento</button>
+            <button class="btn-cancel" onclick="window.location.href='planos.html'">Voltar e alterar plano</button>
+
+            <p class="sandbox-warning">Gateway em modo de teste. Nenhuma cobrança real será feita.</p>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const plan = urlParams.get('plan') || 'STARTER';
+        const userId = urlParams.get('userId');
+
+        const planNames = {
+            'FREE': 'Plano Starter (Free)',
+            'STARTER': 'Plano Elite',
+            'PREMIUM': 'Plano Premium'
+        };
+        const planPrices = {
+            'FREE': 'R$ 0,00',
+            'STARTER': 'R$ 39,00',
+            'PREMIUM': 'R$ 69,00'
+        };
+
+        document.getElementById('plan-name').innerText = planNames[plan] || 'Plano Elite';
+        document.getElementById('plan-price').innerHTML = plan === 'FREE' ? 'Grátis' : (planPrices[plan] || 'R$ 39,00') + '<span>/mês</span>';
+
+        document.getElementById('pay-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('pay-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "Processando Segurança...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/webhook/payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, plano: plan, status: 'PAID' })
+                });
+                
+                if (res.ok) {
+                    btn.innerText = "✅ PAGAMENTO APROVADO!";
+                    btn.style.background = "#00E676";
+                    btn.style.color = "#000";
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } else {
+                    throw new Error();
+                }
+            } catch (e) {
+                alert("Erro ao processar pagamento. Tente novamente.");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

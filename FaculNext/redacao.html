@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treino de Redação | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/redacao.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <script src="js/auth.js"></script>
+</head>
+<body class="dashboard-body">
+    <div id="noise-overlay"></div>
+
+    <aside class="sidebar">
+        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="neon-dot"></span></div>
+        <nav class="side-nav">
+            <a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a>
+            <a href="trilhas.html"><span class="icon">📚</span> Trilhas</a>
+            <a href="simulados.html"><span class="icon">📝</span> Simulados</a>
+            <a href="redacao.html" class="active"><span class="icon">🔥</span> Redação</a>
+            <a href="carreiras.html"><span class="icon">🎯</span> Carreiras</a>
+            <a href="ranking.html"><span class="icon">🏆</span> Ranking</a>
+            <a href="#" id="logout-btn" style="margin-top: 15px; color: #ff5e62;"><span class="icon">🚪</span> Sair do Sistema</a>
+            <a href="planos.html" style="margin-top:auto; color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
+        </nav>
+
+        <div class="wallet-card">
+            <div class="wallet-info">
+                <span>CASHBACK ACUMULADO 🔥</span>
+                <h2 id="cashback-value">R$ 0,00</h2>
+                <p>Desconto na próxima fatura!</p>
+            </div>
+        </div>
+
+        <div class="user-profile">
+            <div class="avatar">👨‍🎓</div>
+            <div class="user-info">
+                <strong>Estudante</strong>
+                <span>Plano Premium</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="dashboard-main redacao-main">
+        <header class="dash-header">
+            <div>
+                <h1>Aperfeiçoe sua Escrita ✍️</h1>
+                <p>Treino diário é a chave pra sua sonhada nota <span class="primary-text">1000</span>.</p>
+            </div>
+        </header>
+
+        <div class="dash-grid redacao-grid">
+            <div class="main-column">
+                <!-- Tema da Semana -->
+                <section class="glass-card tema-card">
+                    <div class="tema-header">
+                        <span class="badge absolute-badge">Tema da Semana</span>
+                        <h2>Os impactos da Inteligência Artificial no mercado de trabalho brasileiro</h2>
+                        <p>Texto dissertativo-argumentativo com base nos textos motivadores.</p>
+                    </div>
+                    <div class="tema-actions">
+                        <button class="btn-secondary btn-small">Ver Textos Motivadores</button>
+                    </div>
+                </section>
+
+                <!-- Área de Editor de Texto MOCKUP -->
+                <section class="editor-area">
+                    <div class="editor-toolbar">
+                        <span>Minha Tese</span>
+                        <span id="word-count">0 / 30 linhas</span>
+                    </div>
+                    <textarea class="editor-textarea" placeholder="Neste espaço, digite sua redação. Comece pela introdução, levante sua tese inicial nos primeiros parágrafos..."></textarea>
+                    
+                    <div class="editor-footer">
+                        <button class="btn-secondary">Salvar Rascunho</button>
+                        <button class="btn-primary" id="submit-redacao-btn">Submeter ao Corretor</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Coluna de Ajuda/Competências -->
+            <div class="side-column">
+                <section class="ajuda-card glass-card">
+                    <h3>Critérios INEP 🎯</h3>
+                    <p class="subtitle">Cada tópico garante 200 pontos.</p>
+                    <ul class="competencia-list">
+                        <li>
+                            <div class="c-header">
+                                <strong>Competência 1</strong>
+                                <span>Gramática</span>
+                            </div>
+                            <p>Domínio da modalidade escrita formal da Língua Portuguesa.</p>
+                        </li>
+                        <li>
+                            <div class="c-header">
+                                <strong>Competência 2</strong>
+                                <span>Repertório</span>
+                            </div>
+                            <p>Compreensão da proposta e sociologia/pontos de referências usados fora do texto motivador.</p>
+                        </li>
+                        <li>
+                            <div class="c-header">
+                                <strong>Competência 3</strong>
+                                <span>Coerência</span>
+                            </div>
+                            <p>Seleção, relação, organização e interpretação das opiniões.</p>
+                        </li>
+                        <li>
+                            <div class="c-header">
+                                <strong>Competência 4</strong>
+                                <span>Coesão</span>
+                            </div>
+                            <p>Conhecimentos linguísticos na elaboração da argumentação.</p>
+                        </li>
+                        <li>
+                            <div class="c-header">
+                                <strong>Competência 5</strong>
+                                <span>Intervenção</span>
+                            </div>
+                            <p>Proposta de solução para o problema abordado respeitando direitos humanos.</p>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Botão Flutuante IA -->
+    <div id="ai-chat-widget" class="ai-chat-closed" onclick="toggleChat()">
+        <span class="chat-icon">🤖</span>
+        <span class="chat-label">Dúvida? Chama a IA</span>
+    </div>
+
+    <!-- Janela de Chat -->
+    <div id="chat-window" class="chat-hidden">
+        <div class="chat-header">
+            <strong>FaculNext AI Tutor 🪄</strong>
+            <button onclick="toggleChat()">✖</button>
+        </div>
+        <div id="chat-messages" class="chat-body">
+            <div class="msg bot">A Redação nota 1000 exige planejamento. Em que posso te ajudar hoje?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="user-msg-input" placeholder="Pergunte qualquer coisa...">
+            <button onclick="sendMessage()">➔</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="js/redacao.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>

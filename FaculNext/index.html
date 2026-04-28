@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaculNext | O Caminho Mais Rápido para a Federal</title>
+    <meta name="description" content="A plataforma mais moderna para o ENEM. Simulados, Redação com IA e Trilhas de Estudo personalizadas. Conquiste seu score máximo agora!">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="noise-overlay"></div>
+
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='index.html'">FaculNext<span class="neon-dot"></span></div>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home" class="active">Início</a></li>
+            <li><a href="#simulados">Simulados</a></li>
+            <li><a href="#planos">Planos</a></li>
+            <li class="mobile-only"><a href="cadastro.html" class="btn-primary mobile-btn">Entrar na Elite</a></li>
+        </ul>
+        <button class="btn-primary desktop-only" onclick="window.location.href='cadastro.html'">Entrar na Elite</button>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <div class="badge">🚀 O ENEM TÁ LOGO AÍ</div>
+                <h1>O seu score<br><span class="highlight">máximo.</span></h1>
+                <p>Estude do seu jeito, no seu tempo. Esqueça métodos chatos: com o FaculNext você domina as competências e conquista sua vaga de forma dinâmica e focada.</p>
+                <div class="cta-group">
+                    <button class="btn-primary btn-large" id="start-btn" onclick="window.location.href='cadastro.html'">Começar Agora</button>
+                    <button class="btn-secondary" id="tour-btn" onclick="document.getElementById('planos').scrollIntoView();">Ver Planos</button>
+                </div>
+            </div>
+            <div class="hero-visuals">
+                <div class="glass-card floating float-1">
+                    <div class="icon">📝</div>
+                    <div class="info">
+                        <strong>Simulado Nacional 2024</strong>
+                        <span class="primary-text" style="color: #00c864; font-weight: 700;">Disponível Agora</span>
+                    </div>
+                </div>
+                <div class="glass-card floating float-2">
+                    <div class="icon">🔥</div>
+                    <div class="info">
+                        <strong>Redação com I.A.</strong>
+                        <span class="primary-text">Feedback Instantâneo</span>
+                    </div>
+                </div>
+                <div class="glass-card floating float-3">
+                    <div class="icon">🏆</div>
+                    <div class="info">
+                        <strong>Ranking Diamante</strong>
+                        <span class="primary-text">Arena de Campeões</span>
+                    </div>
+                </div>
+                <div class="glass-card floating float-4">
+                    <div class="icon">🎯</div>
+                    <div class="info">
+                        <strong>Foco Total</strong>
+                        <span class="primary-text">Plano de Estudo Smart</span>
+                    </div>
+                </div>
+                <div class="glass-card floating float-5">
+                    <div class="icon">⚡</div>
+                    <div class="info">
+                        <strong>Mentor de Elite</strong>
+                        <span class="primary-text">Tira-dúvidas 24h</span>
+                    </div>
+                </div>
+                <div class="glass-card floating float-6">
+                    <div class="icon">📈</div>
+                    <div class="info">
+                        <strong>Dashboard de Evolução</strong>
+                        <span class="primary-text">Acompanhe seu Score</span>
+                    </div>
+                </div>
+                <div class="circle-blob blob-1"></div>
+                <div class="circle-blob blob-2"></div>
+            </div>
+        </section>
+
+        <!-- Features Showcase -->
+        <section id="simulados" class="features">
+            <div class="section-header">
+                <h2>O Arsenal do Aprovado</h2>
+                <p>Tudo o que você precisa para gabaritar, sem enrolação e focado na sua melhor performance.</p>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: var(--primary-red); color: #fff;">📚</div>
+                    <h3>Questões Inéditas</h3>
+                    <p>Milhares de questões com o rigor do ENEM e resoluções que explicam o porquê de cada resposta.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: var(--bg-surface); border: 1px solid var(--border-glass); color: #fff;">📅</div>
+                    <h3>Cronograma Smart</h3>
+                    <p>Planejamento adaptativo que recalcula sua rota automaticamente se você precisar pausar um dia.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: var(--primary-red); color: #fff;">🎯</div>
+                    <h3>Match de Carreira</h3>
+                    <p>Descubra o curso perfeito para o seu perfil através do nosso Teste Vocacional dinâmico.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="planos" class="pricing features">
+            <div class="section-header">
+                <h2>Seja Membro da Elite</h2>
+                <p>Acesso total às ferramentas que vão garantir a sua aprovação na federal.</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <!-- Starter (Free) -->
+                <div class="pricing-card">
+                    <h3>Plano Starter</h3>
+                    <div class="price">7 Dias Grátis</div>
+                    <p>Teste gratuito e sinta o poder da plataforma antes de decidir seu futuro.</p>
+                    <ul class="plan-features">
+                        <li>✔️ Acesso ao Dashboard</li>
+                        <li>✔️ Aulas Demonstrativas</li>
+                        <li>✔️ 1 Correção de Redação</li>
+                    </ul>
+                    <button class="btn-secondary btn-block mt-2" onclick="window.location.href='cadastro.html'">Iniciar Trial</button>
+                </div>
+                
+                <!-- Elite (Popular) -->
+                <div class="pricing-card popular">
+                    <div class="badge absolute-badge">Mais Escolhido</div>
+                    <h3>Plano Elite</h3>
+                    <div class="price">R$ 39<span>/mês</span></div>
+                    <p>O plano completo para quem não aceita nada menos que a aprovação este ano.</p>
+                    <ul class="plan-features">
+                        <li>✔️ Trilhas & Cronograma Smart</li>
+                        <li>✔️ Redações Ilimitadas com I.A.</li>
+                        <li>✔️ Mentor Individual 24h</li>
+                    </ul>
+                    <button class="btn-primary btn-block mt-2" onclick="window.location.href='cadastro.html'">Garantir Minha Vaga</button>
+                </div>
+
+                <!-- Premium Universitário -->
+                <div class="pricing-card premium">
+                    <div class="badge absolute-badge">Até a Formatura</div>
+                    <h3>Plano Premium</h3>
+                    <div class="price">R$ 69<span>/mês</span></div>
+                    <p>Acompanhamento total do cursinho até a conclusão da sua faculdade.</p>
+                    <ul class="plan-features">
+                        <li>✔️ Tudo do Plano Elite</li>
+                        <li>✔️ Módulos Extras (Superior)</li>
+                        <li>✔️ Mentorias de Carreira</li>
+                    </ul>
+                    <button class="btn-secondary btn-block mt-2" onclick="window.location.href='cadastro.html'">Assinar Vitalício</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 40px; color: var(--text-muted); border-top: 1px solid var(--border-glass);">
+        <p>&copy; 2024 FaculNext. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
+

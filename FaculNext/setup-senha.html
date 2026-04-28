@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaculNext | Criar Senha</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cadastro.css">
+    <style>
+        .token-feedback {
+            color: var(--neon-cyan);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 45px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            user-select: none;
+            transition: color 0.3s;
+        }
+        .toggle-password:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="auth-body">
+    <nav class="auth-nav">
+        <a href="index.html" class="logo">Facul<span class="highlight">Next</span></a>
+    </nav>
+
+    <div class="auth-container">
+        <!-- Glow Effect Netflix Cinematic -->
+        <div class="glow-bg" id="glow-bg" style="background: var(--neon-cyan)"></div>
+        
+        <div class="auth-box animate-up" id="setup-box">
+            <h2>🔑 Validação Completa</h2>
+            <p>Seu e-mail foi verificado com sucesso. Agora, crie a sua chave de acesso definitiva.</p>
+
+            <div class="token-feedback" id="token-status">Autenticando token seguro...</div>
+
+            <form id="setup-form" style="display: none;">
+                <div class="input-group">
+                    <label>Sua nova Senha</label>
+                    <input type="password" id="nova-senha" placeholder="No mínimo 6 caracteres" minlength="6" required>
+                    <span class="toggle-password" onclick="togglePassword('nova-senha', this)">👁️</span>
+                </div>
+                
+                <div class="input-group">
+                    <label>Confirme a Senha</label>
+                    <input type="password" id="confirma-senha" placeholder="Repita a senha" minlength="6" required>
+                    <span class="toggle-password" onclick="togglePassword('confirma-senha', this)">👁️</span>
+                    <small id="senha-aviso" style="color: #ff5252; display: none; margin-top: 5px;">As senhas não coincidem!</small>
+                    <small id="senha-check" style="color: var(--neon-lime); display: none; margin-top: 5px; font-weight: 800;">✅ Senhas Identificadas!</small>
+                </div>
+
+                <button type="submit" id="submit-btn" class="btn-primary">SALVAR SENHA E ENTRAR</button>
+                <div id="erro-feedback" style="color:#ff5252; text-align:center; display:none; margin-top:15px"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script Inline Provisório para a lógica de validação do Token e Hash de Senha -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const statusBox = document.getElementById('token-status');
+            const form = document.getElementById('setup-form');
+            const erroFeedback = document.getElementById('erro-feedback');
+            const novaSenha = document.getElementById('nova-senha');
+            const confirmaSenha = document.getElementById('confirma-senha');
+            const aviso = document.getElementById('senha-aviso');
+            const submitBtn = document.getElementById('submit-btn');
+
+            if (!token) {
+                statusBox.innerHTML = "❌ Erro Crítico: Link de verificação não possui o token de segurança. Verifique se copiou a URL completa do e-mail.";
+                statusBox.style.color = "#ff5252";
+                return;
+            }
+
+            // Exibir o form se houver token
+            statusBox.innerHTML = "✓ Criptografia Ativa. Pode prosseguir.";
+            form.style.display = 'block';
+
+            confirmaSenha.addEventListener('input', () => {
+                if (novaSenha.value === confirmaSenha.value && novaSenha.value !== '') {
+                    aviso.style.display = 'none';
+                    document.getElementById('senha-check').style.display = 'block';
+                    submitBtn.disabled = false;
+                } else if (confirmaSenha.value === '') {
+                    aviso.style.display = 'none';
+                    document.getElementById('senha-check').style.display = 'none';
+                    submitBtn.disabled = true;
+                } else {
+                    aviso.style.display = 'block';
+                    document.getElementById('senha-check').style.display = 'none';
+                    submitBtn.disabled = true;
+                }
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (novaSenha.value !== confirmaSenha.value) return;
+
+                submitBtn.innerText = "Criptografando... 🔒";
+                submitBtn.disabled = true;
+
+                try {
+                    const res = await fetch('/api/users/confirm-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token, senha: novaSenha.value })
+                    });
+                    const data = await res.json();
+
+                    if (data.sucesso) {
+                        localStorage.setItem('faculnext_user_id', data.userId);
+                        localStorage.setItem('faculnext_token', data.token);
+                        
+                        submitBtn.innerText = "SISTEMA DESBLOQUEADO ✅";
+                        submitBtn.style.color = "#000";
+                        statusBox.innerHTML = data.mensagem;
+                        statusBox.style.color = "var(--neon-lime)";
+                        
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1200);
+                    } else {
+                        erroFeedback.style.display = 'block';
+                        erroFeedback.innerText = data.erro || "Token inválido ou expirado.";
+                        submitBtn.innerText = "TENTAR NOVAMENTE";
+                        submitBtn.disabled = false;
+                    }
+                } catch(err) {
+                    erroFeedback.style.display = 'block';
+                    erroFeedback.innerText = "Erro ao contatar o servidor central.";
+                    submitBtn.innerText = "TENTAR NOVAMENTE";
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+
+        function togglePassword(inputId, el) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                el.innerText = '👓'; // Olho aberto ou óculos para indicar visibilidade
+            } else {
+                input.type = 'password';
+                el.innerText = '👁️';
+            }
+        }
+    </script>
+</body>
+</html>

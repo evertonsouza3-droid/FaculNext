@@ -1,0 +1,292 @@
+/* --- Página de Cadastro --- */
+.cadastro-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.static-nav {
+    position: static;
+    background: transparent;
+    border-bottom: none;
+    padding: 1.5rem 5%;
+}
+
+.static-nav .btn-small {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+}
+
+.cadastro-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 5%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background effects */
+.blob-3 {
+    width: 600px; height: 600px;
+    background: var(--primary-red);
+    top: -10%; left: -10%;
+    opacity: 0.1;
+    animation: drift 15s infinite alternate ease-in-out;
+}
+
+.blob-4 {
+    width: 500px; height: 500px;
+    background: rgba(255, 255, 255, 0.05);
+    bottom: -10%; right: -10%;
+    opacity: 0.1;
+    animation: drift 12s infinite alternate-reverse ease-in-out;
+}
+
+.cadastro-bg-glow {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(229, 9, 20, 0.1), transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.neon-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--primary-red);
+    border-radius: 50%;
+    margin-left: 2px;
+    box-shadow: 0 0 15px var(--primary-red);
+}
+
+.cadastro-container, .form-wrapper {
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 3.5rem;
+    z-index: 2;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    margin: 50px auto;
+    border-radius: 4px;
+}
+
+.cadastro-header { margin-bottom: 30px; }
+
+.cadastro-container h2, .form-wrapper h2 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.5px;
+}
+
+.cadastro-container p, .form-wrapper p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+}
+
+.primary-text {
+    color: var(--primary-red);
+}
+
+/* Form Styles */
+#cadastro-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.input-row, .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.input-group, .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 40px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    user-select: none;
+    transition: color 0.3s;
+    z-index: 5;
+}
+
+.toggle-password:hover {
+    color: #fff;
+}
+
+.input-group label, .form-group label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.input-group input, .form-group input {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.input-group input:focus, .form-group input:focus {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.2);
+    background: rgba(0,0,0,0.5);
+}
+
+.input-group input::placeholder, .form-group input::placeholder {
+    color: rgba(255,255,255,0.3);
+}
+
+.feedback-msg {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* --- Adicionado: Fluxo Tinder Vocacional --- */
+.vocacional-container {
+    max-width: 480px;
+    width: 100%;
+    margin: 30px auto;
+    z-index: 10;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tinder-card {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 0;
+    margin-bottom: 30px;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-glass);
+}
+
+.t-image {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.t-content {
+    padding: 2.5rem;
+    text-align: center;
+}
+
+.t-content h3 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.t-content p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.tinder-actions {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-tinder {
+    width: 120px;
+    height: 60px;
+    border-radius: 30px;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-no {
+    background: rgba(255, 82, 82, 0.1);
+    color: #ff5252;
+    border: 1px solid rgba(255, 82, 82, 0.3);
+}
+
+.btn-no:hover {
+    background: rgba(255, 82, 82, 0.2);
+    box-shadow: 0 0 20px rgba(255, 82, 82, 0.4);
+    transform: scale(1.05);
+}
+
+.btn-yes {
+    background: var(--primary-red);
+    color: #fff;
+    border: none;
+}
+
+.btn-yes:hover {
+    background: #ff0f1e;
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+    transform: scale(1.05);
+}
+
+.text-center { text-align: center; }
+.primary-text { color: var(--primary-red); font-weight: 800; }
+.red-glow { border: 1px solid var(--primary-red); color: var(--primary-red); background: rgba(229, 9, 20, 0.05); }
+
+@media (max-width: 600px) {
+    .cadastro-main { padding: 1rem 5%; align-items: flex-start; }
+    .cadastro-container, .form-wrapper { 
+        padding: 2rem 1.5rem; 
+        background: rgba(20, 20, 20, 0.8); 
+        margin: 20px auto;
+        border-radius: 8px;
+    }
+    .cadastro-container h2, .form-wrapper h2 { font-size: 1.8rem; }
+    .cadastro-container p, .form-wrapper p { font-size: 1rem; margin-bottom: 2rem; }
+    
+    .input-row, .form-row { grid-template-columns: 1fr; gap: 1rem; }
+    
+    .vocacional-container { padding: 0; margin-top: 10px; }
+    .t-image { height: 180px; font-size: 4rem; }
+    .t-content { padding: 1.5rem; }
+    .t-content h3 { font-size: 1.4rem; }
+    .t-content p { font-size: 1rem; }
+    
+    .btn-tinder { width: 100px; height: 50px; font-size: 1rem; }
+}

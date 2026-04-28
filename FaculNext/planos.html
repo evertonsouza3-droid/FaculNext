@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planos | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        .planos-main { text-align: center; }
+        .planos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .plano-card {
+            padding: 40px 30px;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+        }
+        .plano-card:hover { 
+            transform: translateY(-12px); 
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+        .plano-card h2 { font-size: 1.8rem; margin-bottom: 10px; font-weight: 800; }
+        .plano-card .price { font-size: 3.5rem; font-weight: 900; margin: 20px 0; letter-spacing: -2px; }
+        .plano-card .price span { font-size: 1.2rem; font-weight: 400; opacity: 0.7; letter-spacing: 0; }
+        .plano-features { 
+            list-style: none; 
+            padding: 0; 
+            margin-bottom: 30px; 
+            text-align: left; 
+            flex-grow: 1; 
+        }
+        .plano-features li { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.95rem; }
+        .plano-features li.check { color: #fff; font-weight: 600; }
+        .plano-features li.check::before { content: "✓"; color: var(--primary-red); font-weight: 900; }
+        .plano-features li.cross::before { content: "✕"; opacity: 0.3; }
+        
+        .destaque-premium {
+            border: 2px solid var(--primary-red);
+            box-shadow: 0 0 40px rgba(229,9,20,0.2);
+            background: linear-gradient(135deg, rgba(20,20,20,0.8), rgba(229, 9, 20, 0.05));
+        }
+        .destaque-premium .price { color: #fff; }
+        
+        .badge-absolute {
+            position: absolute;
+            top: -15px; left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        /* --- Responsividade Planos --- */
+        @media (max-width: 1024px) {
+            .planos-grid { grid-template-columns: 1fr; gap: 30px; max-width: 450px; margin: 40px auto; }
+            .destaque-premium { transform: none; }
+        }
+    </style>
+    <script src="js/auth.js"></script>
+</head>
+<body class="dashboard-body">
+    <div id="noise-overlay"></div>
+
+    <aside class="sidebar">
+        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="neon-dot"></span></div>
+        <nav class="side-nav">
+            <a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a>
+            <a href="trilhas.html"><span class="icon">📚</span> Trilhas</a>
+            <a href="simulados.html"><span class="icon">📝</span> Simulados</a>
+            <a href="redacao.html"><span class="icon">🔥</span> Redação</a>
+            <a href="carreiras.html"><span class="icon">🎯</span> Carreiras</a>
+            <a href="#" id="logout-btn" style="margin-top: 15px; color: #ff5e62;"><span class="icon">🚪</span> Sair do Sistema</a>
+            <a href="planos.html" class="active" style="margin-top:auto; color: var(--primary-red); border-left-color: var(--primary-red);"><span class="icon">💳</span> Meu Plano</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar">👨‍🎓</div>
+            <div class="user-info">
+                <strong>Estudante</strong>
+                <span id="current-plan-badge">Membro da Elite</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="dashboard-main planos-main">
+        <header class="dash-header" style="justify-content: center; text-align:center;">
+            <div>
+                <h1>A Elite da <span class="primary-text">Aprovação</span> 🚀</h1>
+                <p>Escolha o plano que vai transformar sua nota e garantir sua vaga na federal.</p>
+                <p style="color: var(--gold); font-weight: 800; margin-top: 10px;">✨ Desconto progressivo aplicado via Hotmart!</p>
+            </div>
+        </header>
+
+        <section class="planos-grid">
+            <!-- Starter (Free) -->
+            <div class="glass-card plano-card">
+                <h2>Plano Starter</h2>
+                <div class="price">Grátis<span>/7 dias</span></div>
+                <ul class="plano-features">
+                    <li class="check">Teste Vocacional Completo</li>
+                    <li class="check">1 Simulado Nacional</li>
+                    <li class="check">1 Correção de Redação</li>
+                    <li class="cross">Acesso Total às Trilhas</li>
+                    <li class="cross">Mentor de Elite 24h</li>
+                </ul>
+                <button class="btn-secondary btn-block" style="margin-top: auto;" onclick="assinarPlano('FREE')">Começar Grátis</button>
+            </div>
+
+            <!-- Elite (Recommended) -->
+            <div class="glass-card plano-card destaque-premium">
+                <span class="badge absolute-badge uppercase" style="background: var(--primary-red); color: #fff; border: none;">Recomendado</span>
+                <h2>Plano Elite</h2>
+                <div class="price">R$ 39<span>/mês</span></div>
+                <ul class="plano-features">
+                    <li class="check">Tudo do Starter</li>
+                    <li class="check">Simulados Ilimitados</li>
+                    <li class="check">Redações Ilimitadas (I.A.)</li>
+                    <li class="check">Todas as Trilhas de Estudo</li>
+                    <li class="check">Mentor de Elite 24h</li>
+                </ul>
+                <button class="btn-primary btn-block" style="margin-top: auto;" onclick="assinarPlano('STARTER')">Garantir Minha Vaga</button>
+            </div>
+
+            <!-- Premium -->
+            <div class="glass-card plano-card" style="border-color: var(--gold); box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);">
+                <span class="badge absolute-badge uppercase" style="background: var(--gold); color: var(--bg-dark); border: none;">Até a Formatura</span>
+                <h2>Plano Premium</h2>
+                <div class="price">R$ 69<span>/mês</span></div>
+                <ul class="plano-features">
+                    <li class="check">Tudo do Plano Elite</li>
+                    <li class="check">Acesso Vitalício (Pré + Pós-venda)</li>
+                    <li class="check">Módulos Universitários (Cálculo/Bio)</li>
+                    <li class="check">Acompanhamento Individual</li>
+                    <li class="check">Certificado de Conclusão</li>
+                </ul>
+                <button class="btn-secondary btn-block" style="margin-top: auto; border-color: var(--gold); color: var(--gold);" onclick="assinarPlano('PREMIUM')">Assinar Vitalício</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/planos.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>
+

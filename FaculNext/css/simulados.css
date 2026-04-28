@@ -1,0 +1,275 @@
+/* --- Simulados CSS --- */
+.simulados-main::before {
+    background: var(--primary-red); /* Glow focado em Red */
+    top: -50px;
+    right: 50%;
+    transform: translateX(30%);
+    width: 600px;
+    height: 600px;
+    opacity: 0.1;
+    z-index: -1;
+}
+
+.primary-text {
+    color: var(--primary-red);
+    font-weight: 800;
+}
+
+.uppercase { text-transform: uppercase; letter-spacing: 2px; }
+
+.section-title {
+    font-size: 1.8rem;
+    margin: 3.5rem 0 1.5rem 0;
+    font-weight: 900;
+}
+
+/* Spotlight Card (Simulado Nacional Grande) */
+.spotlight-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(255,255,255,0.02));
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    border-radius: 4px;
+    gap: 2rem;
+}
+
+.spotlight-content {
+    flex: 1;
+}
+
+.spotlight-content h2 {
+    font-size: 2.4rem;
+    font-weight: 900;
+    margin: 1rem 0;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.spotlight-content p {
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    margin-bottom: 2rem;
+    max-width: 90%;
+}
+
+.stats-row {
+    display: flex;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-red);
+    font-size: 1.05rem;
+}
+
+.spotlight-visual {
+    width: 150px;
+    height: 150px;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(229, 9, 20, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 40px rgba(229, 9, 20, 0.2);
+}
+
+.timer-mock {
+    font-size: 2.2rem;
+    font-weight: 900;
+    font-family: monospace;
+    color: #fff;
+    text-shadow: 0 0 15px var(--primary-red);
+    letter-spacing: -1px;
+}
+
+/* Bateria Grid Embaixo */
+.simulados-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.mini-card {
+    padding: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.mini-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+
+.mini-icon {
+    width: 55px; height: 55px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+}
+
+.mini-card h4 { font-size: 1.4rem; margin-bottom: 0.8rem; font-weight: 800; }
+.mini-card p { color: var(--text-muted); margin-bottom: 2rem; flex: 1; font-size: 1.05rem;}
+
+/* Modal Questão que abre quando inicia a prova */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(7, 9, 15, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 850px;
+    background: var(--bg-surface);
+    border: 1px solid rgba(229, 9, 20, 0.4);
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+    border-radius: 4px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-glass);
+    padding-bottom: 1.5rem;
+}
+
+.close-btn {
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 1.8rem;
+    border: none;
+}
+.close-btn:hover { color: #ff5252; transform: scale(1.2); }
+
+.enunciado {
+    font-size: 1.3rem;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    font-weight: 500;
+}
+
+.alternativas {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.alt-label {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-glass);
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    line-height: 1.4;
+}
+
+.alt-letter {
+    font-weight: 900;
+    color: var(--primary-red);
+}
+
+.alt-label:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); transform: translateX(8px); box-shadow: -5px 5px 15px rgba(0,0,0,0.2); }
+
+.alt-label input[type="radio"] {
+    width: 22px; height: 22px;
+    accent-color: var(--primary-red);
+    cursor: pointer;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* Pseudo-classe moderna para detectar formulário selecionado sem injetar JS no HTML nativo (Suporte excelente na atualidade) */
+.alt-label:has(input:checked) {
+    background: rgba(229, 9, 20, 0.1);
+    border-color: var(--primary-red);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: inset 0 0 10px rgba(229, 9, 20, 0.2);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--border-glass);
+    padding-top: 2rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 900px) {
+    .spotlight-card { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
+    .spotlight-content h2 { font-size: 1.8rem; }
+    .spotlight-content p { max-width: 100%; font-size: 1rem; }
+    .stats-row { justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+    
+    .modal-content { 
+        width: 100%; height: 100%; 
+        border-radius: 0; padding: 2rem 1.5rem; 
+        justify-content: flex-start; 
+        overflow-y: auto;
+    }
+    
+    .enunciado { font-size: 1.1rem; line-height: 1.6; }
+    .alt-label { padding: 1rem; font-size: 1rem; }
+    
+    .modal-footer { flex-direction: column; gap: 1rem; }
+    .modal-footer button { width: 100%; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.gabarito-item {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.gabarito-item-anim {
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+    to { opacity: 1; transform: scale(1); }
+}
+
+.result-nota.pulse {
+    animation: scorePulse 0.5s ease-out;
+}
+
+@keyframes scorePulse {
+    0% { transform: scale(1); text-shadow: 0 0 0 rgba(229,9,20,0); }
+    50% { transform: scale(1.1); text-shadow: 0 0 30px rgba(229,9,20,0.6); }
+    100% { transform: scale(1); text-shadow: 0 0 15px rgba(229,9,20,0.3); }
+}
+
+
+@media (max-width: 480px) {
+    .section-title { font-size: 1.5rem; margin: 2rem 0 1rem 0; }
+    .mini-card { padding: 1.5rem; }
+    .mini-icon { width: 45px; height: 45px; font-size: 1.5rem; }
+    .mini-card h4 { font-size: 1.2rem; }
+    .mini-card p { font-size: 0.95rem; margin-bottom: 1.5rem; }
+}

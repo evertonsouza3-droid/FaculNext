@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cadastro.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="cadastro-body">
+    <div id="noise-overlay"></div>
+    <div class="cadastro-bg-glow" id="glow-bg" style="background: radial-gradient(circle at 50% 50%, var(--dark-red), transparent 70%);"></div>
+
+    <div class="cadastro-container glass-card" id="login-box">
+        <!-- HEADER -->
+        <div class="login-header">
+            <a href="index.html" class="logo">FaculNext<span class="neon-dot">.</span></a>
+            <p>Bem-vindo de volta à elite. Sua aprovação está cada dia mais próxima.</p>
+        </div>
+
+        <!-- FORMULARIO DE LOGIN -->
+        <form id="login-form" class="cadastro-form">
+            <div class="input-group">
+                <label>E-mail</label>
+                <input type="email" id="email-input" placeholder="seuemail@elite.com" required>
+            </div>
+
+            <div class="input-group">
+                <label>Senha</label>
+                <input type="password" id="senha-input" placeholder="••••••••" required>
+                <span class="toggle-password" onclick="togglePassword('senha-input', this)">👁️</span>
+            </div>
+
+            <div id="erro-feedback" class="feedback-msg" style="color: #ff5252; display: none; text-align: center; margin-bottom: 15px;"></div>
+
+            <button type="submit" class="btn-primary btn-block" id="submit-btn" style="background: var(--primary-red);">Entrar na Elite</button>
+            <p class="login-link">Ainda não faz parte? <a href="cadastro.html">Torne-se Elite</a></p>
+        </form>
+    </div>
+
+    <script src="js/login.js?v=2"></script>
+</body>
+</html>
+
