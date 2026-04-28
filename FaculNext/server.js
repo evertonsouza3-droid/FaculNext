@@ -1262,8 +1262,9 @@ app.post('/api/ai/chat', (req, res) => {
             
             res.json({ sucesso: true, reply: completion.choices[0].message.content });
         } catch (e) {
-            console.error("Erro na I.A.:", e);
-            res.status(500).json({ sucesso: false, erro: 'A I.A. Tutor está indisponível no momento devido à instabilidade na API.' });
+            const errorDetail = e.response?.data?.error?.message || e.message;
+            console.error("Erro na I.A.:", errorDetail);
+            res.status(500).json({ sucesso: false, error: errorDetail });
         }
     });
 });
