@@ -11,4 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Opcional: Decode do JWT para fins visuais (nome, logout, etc)
     // No frontend não é seguro validar assinatura de JWT, mas serve para UX
+    
+    // Lógica de Logout Global
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('faculnext_token');
+            localStorage.removeItem('faculnext_user_id');
+            window.location.href = 'index.html';
+        });
+    }
 });

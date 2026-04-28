@@ -44,7 +44,12 @@ async function sendMessage() {
         if(typingDiv.parentNode) messages.removeChild(typingDiv);
         const botDiv = document.createElement('div');
         botDiv.className = 'msg bot';
-        botDiv.innerText = data.reply;
+        
+        if (data.sucesso && data.reply) {
+            botDiv.innerText = data.reply;
+        } else {
+            botDiv.innerText = "Desculpe, tive um pequeno lapso de conexão. Pode repetir a pergunta?";
+        }
         messages.appendChild(botDiv);
     } catch (e) {
         if(typingDiv.parentNode) messages.removeChild(typingDiv);
