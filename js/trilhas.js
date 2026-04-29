@@ -62,10 +62,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function acessarTrilha(nome) {
     showToast(`🚀 Preparando módulo de <strong>${nome}</strong>...`);
-    // Aqui no futuro redirecionaria para aula.html?trilha=id
+    
+    // Redireciona para a página de aula simulada
     setTimeout(() => {
-        showToast(`📚 Módulo <strong>${nome}</strong> carregado! Boa aula.`);
-    }, 1500);
+        window.location.href = `aula.html?trilha=${encodeURIComponent(nome)}`;
+    }, 1200);
 }
 
 function showToast(message) {

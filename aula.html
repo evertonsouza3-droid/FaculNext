@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula | FaculNext</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        .aula-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 24px;
+            background: #000;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: 0;
+        }
+        .aula-content {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .aula-content h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 20px; letter-spacing: -1px; }
+        .aula-text { line-height: 1.8; color: var(--text-muted); font-size: 1.1rem; }
+        
+        .aula-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+    </style>
+    <script src="js/auth.js"></script>
+</head>
+<body class="dashboard-body">
+    <div id="noise-overlay"></div>
+
+    <aside class="sidebar">
+        <div class="logo logo-small" onclick="window.location.href='index.html'" style="cursor:pointer;">FaculNext<span class="neon-dot"></span></div>
+        <nav class="side-nav">
+            <a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a>
+            <a href="trilhas.html" class="active"><span class="icon">📚</span> Trilhas</a>
+            <a href="simulados.html"><span class="icon">📝</span> Simulados</a>
+            <a href="redacao.html"><span class="icon">🔥</span> Redação</a>
+            <a href="carreiras.html"><span class="icon">🎯</span> Carreiras</a>
+            <a href="ranking.html"><span class="icon">🏆</span> Ranking</a>
+            <div style="margin-top: auto;">
+                <a href="planos.html" style="color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
+                <a href="#" id="logout-btn" style="color: #ff5e62;"><span class="icon">🚪</span> Sair do Sistema</a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- IA TUTOR WIDGET -->
+    <div id="ai-chat-widget" class="ai-chat-closed" onclick="toggleChat()">
+        <span class="chat-icon">🤖</span>
+        <span class="chat-label">Dúvida? Chama a IA</span>
+    </div>
+
+    <div id="ai-chat-window" class="chat-hidden">
+        <div class="chat-header">
+            <h3>AI Tutor FaculNext 🎓</h3>
+            <button onclick="toggleChat()" style="font-size: 1.5rem; line-height: 1;">&times;</button>
+        </div>
+        <div id="chat-messages" class="chat-body">
+            <div class="msg bot">Estou acompanhando sua aula. Alguma dúvida sobre o conteúdo?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="user-msg-input" placeholder="Tire sua dúvida agora...">
+            <button onclick="sendMessage()">➔</button>
+        </div>
+    </div>
+
+    <main class="dashboard-main">
+        <div class="aula-container">
+            <div class="video-wrapper">
+                <iframe id="aula-video" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <div class="aula-content">
+                <h1 id="aula-titulo">Carregando aula...</h1>
+                <div class="aula-text" id="aula-desc">
+                    Aguarde enquanto preparamos seu conteúdo de elite.
+                </div>
+
+                <div id="exercicios-section" style="margin-top: 40px; display: none;">
+                    <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 20px;">⚡ Prática de Elite</h2>
+                    <div id="lista-exercicios"></div>
+                </div>
+
+                <div class="aula-actions">
+                    <button class="btn-secondary" onclick="window.location.href='trilhas.html'">⬅ Voltar para Trilhas</button>
+                    <button id="concluir-btn" class="btn-primary" onclick="marcarComoConcluida()">Marcar como Concluída ✅</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const trilhaNome = urlParams.get('trilha');
+            
+            try {
+                // Busca uma aula mockada baseada na trilha
+                const res = await fetch(`/api/trilhas/aula/1`);
+                const data = await res.json();
+                
+                if (data.sucesso) {
+                    document.getElementById('aula-titulo').innerText = `${trilhaNome}: ${data.titulo}`;
+                    document.getElementById('aula-desc').innerText = data.conteudo;
+                    document.getElementById('aula-video').src = data.videoUrl;
+
+                    // Carrega exercícios se houver
+                    if (data.exercicios && data.exercicios.length > 0) {
+                        const section = document.getElementById('exercicios-section');
+                        const lista = document.getElementById('lista-exercicios');
+                        section.style.display = 'block';
+                        
+                        data.exercicios.forEach((ex, idx) => {
+                            const exDiv = document.createElement('div');
+                            exDiv.className = 'glass-card';
+                            exDiv.style.padding = '20px';
+                            exDiv.style.marginBottom = '20px';
+                            exDiv.innerHTML = `
+                                <p style="font-weight: 600; margin-bottom: 15px;">Q${idx+1}: ${ex.enunciado}</p>
+                                <div style="display: flex; flex-direction: column; gap: 10px;">
+                                    ${ex.alternativas.map((alt, i) => `
+                                        <button class="btn-secondary" style="text-align: left; padding: 12px;" onclick="checkAnswer(this, '${String.fromCharCode(65+i)}', '${ex.correta}')">
+                                            ${String.fromCharCode(65+i)}) ${alt}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            `;
+                            lista.appendChild(exDiv);
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error("Erro ao carregar aula:", e);
+            }
+        });
+
+        function checkAnswer(btn, escolhida, correta) {
+            const options = btn.parentNode.querySelectorAll('button');
+            options.forEach(opt => opt.disabled = true);
+            
+            if (escolhida === correta) {
+                btn.style.background = "#00c864";
+                btn.style.color = "#fff";
+                alert("✨ Resposta CORRETA! Você está no caminho da aprovação.");
+            } else {
+                btn.style.background = "var(--primary-red)";
+                btn.style.color = "#fff";
+                alert(`❌ Ops! A resposta correta era a letra ${correta}.`);
+            }
+        }
+
+        function marcarComoConcluida() {
+            alert("Aula marcada como concluída! Seu progresso foi atualizado.");
+            window.location.href = 'trilhas.html';
+        }
+    </script>
+    <script src="js/chat.js"></script>
+</body>
+</html>

@@ -277,6 +277,48 @@ db.serialize(() => {
     )`);
     console.log('✅ Tabela de Alternativas [EXAM_ALTERNATIVES] verificada.');
 
+    // --- NOVA TABELA DE TRILHAS ---
+    db.run(`CREATE TABLE IF NOT EXISTS trilhas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        titulo TEXT,
+        descricao TEXT,
+        categoria TEXT,
+        aulas INTEGER,
+        exercicios INTEGER,
+        cor TEXT
+    )`);
+    console.log('✅ Tabela de Trilhas [TRILHAS] verificada.');
+
+    db.run(`CREATE TABLE IF NOT EXISTS user_trilhas (
+        user_id INTEGER,
+        trilha_id INTEGER,
+        progresso INTEGER DEFAULT 0,
+        status TEXT DEFAULT 'Iniciar',
+        PRIMARY KEY (user_id, trilha_id)
+    )`);
+    console.log('✅ Tabela de Progresso [USER_TRILHAS] verificada.');
+
+    db.run(`CREATE TABLE IF NOT EXISTS trilha_aulas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trilha_id INTEGER,
+        titulo TEXT,
+        conteudo TEXT,
+        video_url TEXT,
+        ordem INTEGER,
+        FOREIGN KEY (trilha_id) REFERENCES trilhas (id)
+    )`);
+    console.log('✅ Tabela de Aulas [TRILHA_AULAS] verificada.');
+
+    db.run(`CREATE TABLE IF NOT EXISTS trilha_exercicios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        aula_id INTEGER,
+        enunciado TEXT,
+        alternativas TEXT, -- JSON String
+        correta TEXT,
+        FOREIGN KEY (aula_id) REFERENCES trilha_aulas (id)
+    )`);
+    console.log('✅ Tabela de Exercícios [TRILHA_EXERCICIOS] verificada.');
+
     // Inserir fixtures se não existirem
     db.get("SELECT COUNT(*) as count FROM exams", (err, row) => {
         if (err) console.error('Erro ao verificar fixtures:', err);
@@ -454,6 +496,61 @@ db.serialize(() => {
         }
     });
 
+    // --- FIXTURES DE TRILHAS ---
+    db.get("SELECT COUNT(*) as count FROM trilhas", (err, row) => {
+        if (!err && row.count === 0) {
+            console.log('🔄 Inserindo trilhas padrão...');
+            db.run("INSERT INTO trilhas (titulo, descricao, categoria, aulas, exercicios, cor) VALUES (?, ?, ?, ?, ?, ?)", 
+                ['Matemática 📐', 'Funções, Geometria e Probabilidade com foco no ENEM.', 'Exatas', 24, 150, 'var(--primary-red)']);
+            db.run("INSERT INTO trilhas (titulo, descricao, categoria, aulas, exercicios, cor) VALUES (?, ?, ?, ?, ?, ?)", 
+                ['Redação ✍️', 'Domine as 5 competências da Redação nota 1000.', 'Humanas', 10, 50, 'cyan']);
+            db.run("INSERT INTO trilhas (titulo, descricao, categoria, aulas, exercicios, cor) VALUES (?, ?, ?, ?, ?, ?)", 
+                ['Biologia 🧬', 'Ecologia, Genética e Citologia visual e extrema.', 'Natureza', 18, 80, 'lime']);
+            
+            // Inserir Aulas e Exercícios Iniciais
+            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Matemática%'", (err, t) => {
+                if (t) {
+                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
+                        [t.id, 'Funções de 1º Grau', 'Nesta aula vamos dominar como o ENEM cobra funções lineares e interpretação de gráficos.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
+                            if (!err) {
+                                const aId = this.lastID;
+                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                    [aId, 'Qual a raiz da função f(x) = 2x - 10?', JSON.stringify(['2', '5', '10', '20']), 'B']);
+                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                    [aId, 'O gráfico de uma função de 1º grau é sempre:', JSON.stringify(['Uma parábola', 'Uma circunferência', 'Uma reta', 'Um ponto']), 'C']);
+                            }
+                        });
+                }
+            });
+
+            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Redação%'", (err, t) => {
+                if (t) {
+                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
+                        [t.id, 'Competência 1: Domínio da Norma Culta', 'Aprenda a evitar os erros gramaticais mais comuns que tiram pontos na sua redação.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
+                            if (!err) {
+                                const aId = this.lastID;
+                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                    [aId, 'Qual o número máximo de erros de sintaxe permitidos para a nota 200 na C1?', JSON.stringify(['Nenhum', 'Até 2 erros', 'Apenas 1 erro leve', 'Não há limite']), 'B']);
+                            }
+                        });
+                }
+            });
+
+            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Biologia%'", (err, t) => {
+                if (t) {
+                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
+                        [t.id, 'Introdução à Citologia', 'Descubra como as células funcionam e a diferença entre células animais e vegetais.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
+                            if (!err) {
+                                const aId = this.lastID;
+                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                    [aId, 'Qual organela é responsável pela respiração celular?', JSON.stringify(['Lisossomo', 'Complexo de Golgi', 'Mitocôndria', 'Ribossomo']), 'C']);
+                            }
+                        });
+                }
+            });
+        }
+    });
+
     // 🎮 CRIAR CONTAS DE TESTE AUTOMATICAMENTE
     const accounts = [
         { nome: 'Aluno Demo Elite', email: 'demo@faculnext.com', senha: 'elite123', plano: 'ELITE' },
@@ -490,6 +587,50 @@ app.get('/', (req, res) => {
         service: 'FaculNext API',
         version: '1.0.0',
         timestamp: new Date().toISOString()
+    });
+});
+
+// Endpoint para carregar as Trilhas do Usuário
+app.get('/api/trilhas/user/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    db.all(`
+        SELECT t.*, COALESCE(ut.progresso, 0) as progresso, COALESCE(ut.status, 'Iniciar') as status
+        FROM trilhas t
+        LEFT JOIN user_trilhas ut ON t.id = ut.trilha_id AND ut.user_id = ?
+    `, [userId], (err, rows) => {
+        if (err) {
+            console.error("Erro ao buscar trilhas:", err.message);
+            return res.status(500).json({ sucesso: false, erro: err.message });
+        }
+        
+        const trilhasTraduzidas = rows.map(r => ({
+            id: r.id,
+            titulo: r.titulo,
+            desc: r.descricao,
+            status: r.progresso > 0 ? (r.progresso >= 100 ? 'Concluída' : 'Em Andamento') : 'Iniciar',
+            aulas: r.aulas,
+            ex: r.exercicios,
+            progresso: r.progresso,
+            cor: r.cor
+        }));
+
+        res.json({ sucesso: true, trilhas: trilhasTraduzidas });
+    });
+});
+
+// Endpoint para carregar uma aula específica (Mock por enquanto)
+app.get('/api/trilhas/aula/:aulaId', (req, res) => {
+    // No futuro isso viria do banco, por enquanto retornamos um conteúdo rico mockado
+    const aulaId = req.params.aulaId;
+    res.json({
+        sucesso: true,
+        titulo: "Aula Inaugural: O Segredo da Aprovação",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Link de exemplo
+        conteudo: "Nesta aula, vamos explorar como o Score ENEM pode ser seu maior aliado na busca pela vaga dos sonhos...",
+        exercicios: [
+            { id: 1, enunciado: "Quanto é 2+2?", alternativas: ["1", "2", "3", "4"], correta: "D" }
+        ]
     });
 });
 
@@ -1263,9 +1404,19 @@ app.post('/api/ai/chat', (req, res) => {
             
             res.json({ sucesso: true, reply: completion.choices[0].message.content });
         } catch (e) {
-            const errorDetail = e.response?.data?.error?.message || e.message;
+            const errorDetail = e.message || "";
             console.error("Erro na I.A.:", errorDetail);
-            res.status(500).json({ sucesso: false, error: errorDetail });
+
+            // Se for erro de cota (429) ou erro de chave, usamos o Fallback Inteligente
+            if (errorDetail.includes("429") || errorDetail.includes("quota") || errorDetail.includes("billing")) {
+                let fallbackReply = "Oi! Sou seu Tutor FaculNext. No momento, estou em 'Modo de Economia de Energia' (minha API atingiu o limite de créditos), mas ainda posso te ajudar com o básico! Foque em manter a constância nos simulados e não esqueça de revisar os temas de redação da semana. Bora conquistar essa vaga?";
+                
+                if (msgLower.includes("redação")) fallbackReply = "Para a redação, foque na estrutura: Tese clara, Argumentos sólidos e Proposta de Intervenção completa. Mesmo em modo simplificado, te garanto que a prática diária é o segredo do 1000!";
+                
+                return res.json({ sucesso: true, reply: "⚠️ [MODO LIMITADO]: " + fallbackReply });
+            }
+
+            res.status(500).json({ sucesso: false, error: "Tive um probleminha técnico, mas já estou voltando! Tente novamente em instantes." });
         }
     });
 });
