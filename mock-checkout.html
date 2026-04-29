@@ -34,7 +34,7 @@
         }
 
         .checkout-card {
-            padding: 50px 40px;
+            padding: 35px 25px;
             text-align: center;
             border-radius: 24px;
             border: 1px solid var(--border-glass);
@@ -43,6 +43,8 @@
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             position: relative;
             overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .checkout-card::before {
@@ -57,46 +59,46 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 50px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-muted);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-transform: uppercase;
             letter-spacing: 1px;
             border: 1px solid var(--border-glass);
         }
 
         .plan-info {
-            margin: 30px 0;
+            margin: 20px 0;
         }
 
         .plan-label {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--text-muted);
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         #plan-name {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 900;
             color: #fff;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             display: block;
         }
 
         .price-tag {
-            font-size: 3.5rem;
+            font-size: 2.8rem;
             font-weight: 900;
             color: #fff;
-            margin: 25px 0;
-            letter-spacing: -2px;
+            margin: 15px 0;
+            letter-spacing: -1px;
         }
 
         .price-tag span {
-            font-size: 1.2rem;
+            font-size: 1rem;
             opacity: 0.5;
             font-weight: 400;
             letter-spacing: 0;
@@ -105,9 +107,9 @@
         .benefits-summary {
             text-align: left;
             background: rgba(255, 255, 255, 0.02);
-            padding: 20px;
+            padding: 15px;
             border-radius: 12px;
-            margin-bottom: 35px;
+            margin-bottom: 25px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
@@ -115,26 +117,26 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
             color: #ccc;
         }
 
         .benefits-summary div:last-child { margin-bottom: 0; }
 
         .sandbox-warning {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: rgba(255, 255, 255, 0.3);
             margin-top: 20px;
         }
 
         .logo-box {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             cursor: pointer;
         }
 
         .logo-box .logo {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             justify-content: center;
         }
 
@@ -142,9 +144,9 @@
             background: var(--primary-red);
             color: #fff;
             border: none;
-            padding: 20px;
+            padding: 18px;
             border-radius: 12px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 800;
             width: 100%;
             cursor: pointer;
@@ -155,7 +157,7 @@
         }
 
         .btn-pay:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 15px 40px rgba(229, 9, 20, 0.5);
             filter: brightness(1.1);
         }
@@ -164,12 +166,13 @@
             background: transparent;
             color: var(--text-muted);
             border: 1px solid var(--border-glass);
-            padding: 15px;
+            padding: 12px;
             border-radius: 12px;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 12px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 0.9rem;
             transition: all 0.3s;
         }
 
@@ -219,7 +222,7 @@
         const userId = urlParams.get('userId');
 
         const planNames = {
-            'FREE': 'Plano Starter (Free)',
+            'FREE': 'Plano Starter',
             'STARTER': 'Plano Elite',
             'PREMIUM': 'Plano Premium'
         };

@@ -24,8 +24,10 @@
             <a href="redacao.html" class="active"><span class="icon">🔥</span> Redação</a>
             <a href="carreiras.html"><span class="icon">🎯</span> Carreiras</a>
             <a href="ranking.html"><span class="icon">🏆</span> Ranking</a>
-            <a href="#" id="logout-btn" style="margin-top: 15px; color: #ff5e62;"><span class="icon">🚪</span> Sair do Sistema</a>
-            <a href="planos.html" style="margin-top:auto; color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
+            <div style="margin-top: auto;">
+                <a href="planos.html" style="color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
+                <a href="#" id="logout-btn" style="color: #ff5e62;"><span class="icon">🚪</span> Sair do Sistema</a>
+            </div>
         </nav>
 
         <div class="wallet-card">
@@ -136,15 +138,15 @@
     </div>
 
     <!-- Janela de Chat -->
-    <div id="chat-window" class="chat-hidden">
+    <div id="ai-chat-window" class="chat-hidden">
         <div class="chat-header">
-            <strong>FaculNext AI Tutor 🪄</strong>
-            <button onclick="toggleChat()">✖</button>
+            <h3>AI Tutor FaculNext 🎓</h3>
+            <button onclick="toggleChat()" style="font-size: 1.5rem; line-height: 1;">&times;</button>
         </div>
         <div id="chat-messages" class="chat-body">
             <div class="msg bot">A Redação nota 1000 exige planejamento. Em que posso te ajudar hoje?</div>
         </div>
-        <div class="chat-footer">
+        <div class="chat-input-area">
             <input type="text" id="user-msg-input" placeholder="Pergunte qualquer coisa...">
             <button onclick="sendMessage()">➔</button>
         </div>

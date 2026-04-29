@@ -1,5 +1,5 @@
 function toggleChat() {
-    const chat = document.getElementById('chat-window');
+    const chat = document.getElementById('ai-chat-window');
     chat.classList.toggle('chat-hidden');
     
     // Remove pulse se estiver abrindo
@@ -48,7 +48,12 @@ async function sendMessage() {
         if (data.sucesso && data.reply) {
             botDiv.innerText = data.reply;
         } else {
-            botDiv.innerText = "Desculpe, tive um pequeno lapso de conexão. Pode repetir a pergunta?";
+            const errorMsg = data.error || '';
+            if (errorMsg.includes('insufficient_quota') || errorMsg.includes('429')) {
+                botDiv.innerHTML = "⚠️ <strong>Aviso de Cota:</strong> O saldo da API da OpenAI esgotou. Adicione créditos ou verifique sua conta para retomar as conversas.";
+            } else {
+                botDiv.innerText = "Desculpe, tive um pequeno lapso de conexão. Pode repetir a pergunta?";
+            }
         }
         messages.appendChild(botDiv);
     } catch (e) {
@@ -77,7 +82,7 @@ function sendProactiveMessage(text) {
     messages.scrollTop = messages.scrollHeight;
 
     // Alerta Visual se o chat estiver fechado
-    const chatWindow = document.getElementById('chat-window');
+    const chatWindow = document.getElementById('ai-chat-window');
     const widget = document.getElementById('ai-chat-widget');
     if(chatWindow.classList.contains('chat-hidden')) {
         widget.classList.add('ai-chat-active');

@@ -24,8 +24,10 @@
             <a href="redacao.html"><span class="icon">🔥</span> Redação</a>
             <a href="carreiras.html"><span class="icon">🎯</span> Carreiras</a>
             <a href="ranking.html"><span class="icon">🏆</span> Ranking</a>
-            <a href="#" id="logout-btn" style="margin-top: 15px; color: #ff5e62;"><span class="icon">🚪</span> Sair do Sistema</a>
-            <a href="planos.html" style="margin-top:auto; color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
+            <div style="margin-top: auto;">
+                <a href="planos.html" style="color: var(--primary-red); border-left-color: transparent;"><span class="icon">💳</span> Meu Plano</a>
+                <a href="#" id="logout-btn" style="color: #ff5e62;"><span class="icon">🚪</span> Sair do Sistema</a>
+            </div>
         </nav>
 
         <!-- Cashback Wallet Sidebar -->
@@ -45,6 +47,26 @@
             </div>
         </div>
     </aside>
+
+    <!-- IA TUTOR WIDGET -->
+    <div id="ai-chat-widget" class="ai-chat-closed" onclick="toggleChat()">
+        <span class="chat-icon">🤖</span>
+        <span class="chat-label">Dúvida? Chama a IA</span>
+    </div>
+
+    <div id="ai-chat-window" class="chat-hidden">
+        <div class="chat-header">
+            <h3>AI Tutor FaculNext 🎓</h3>
+            <button onclick="toggleChat()" style="font-size: 1.5rem; line-height: 1;">&times;</button>
+        </div>
+        <div id="chat-messages" class="chat-body">
+            <div class="msg bot">Olá! As trilhas de estudo são o mapa para sua aprovação. Qual a dúvida de hoje?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="user-msg-input" placeholder="Pergunte sobre qualquer matéria...">
+            <button onclick="sendMessage()">➔</button>
+        </div>
+    </div>
 
     <main class="dashboard-main trilhas-main">
         <header class="dash-header">
