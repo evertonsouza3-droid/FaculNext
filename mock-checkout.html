@@ -10,7 +10,7 @@
     <style>
         :root {
             --primary-red: #E50914;
-            --bg-dark: #000;
+            --bg-dark: #07090F;
             --text-muted: rgba(255, 255, 255, 0.6);
             --border-glass: rgba(255, 255, 255, 0.1);
         }
@@ -23,196 +23,260 @@
             justify-content: center;
             min-height: 100vh;
             background: var(--bg-dark);
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
             overflow-x: hidden;
+        }
+
+        /* Fundo com Brilho Estético */
+        .glow-bg {
+            position: fixed;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(229, 9, 20, 0.12) 0%, transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            filter: blur(80px);
+            z-index: 1;
+            pointer-events: none;
         }
 
         .checkout-wrapper {
             width: 100%;
-            max-width: 480px;
+            max-width: 520px;
             padding: 20px;
             z-index: 10;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        .checkout-card {
-            padding: 35px 25px;
-            text-align: center;
-            border-radius: 24px;
-            border: 1px solid var(--border-glass);
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .checkout-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
-        }
-
-        .secure-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border: 1px solid var(--border-glass);
-        }
-
-        .plan-info {
-            margin: 20px 0;
-        }
-
-        .plan-label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-        }
-
-        #plan-name {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #fff;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .price-tag {
-            font-size: 2.8rem;
-            font-weight: 900;
-            color: #fff;
-            margin: 15px 0;
-            letter-spacing: -1px;
-        }
-
-        .price-tag span {
-            font-size: 1rem;
-            opacity: 0.5;
-            font-weight: 400;
-            letter-spacing: 0;
-        }
-
-        .benefits-summary {
-            text-align: left;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .benefits-summary div {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            color: #ccc;
-        }
-
-        .benefits-summary div:last-child { margin-bottom: 0; }
-
-        .sandbox-warning {
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.3);
-            margin-top: 20px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .logo-box {
-            margin-bottom: 30px;
-            cursor: pointer;
+            text-align: center;
+            margin-bottom: 40px;
         }
 
-        .logo-box .logo {
-            font-size: 1.6rem;
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            display: flex;
+            align-items: center;
             justify-content: center;
+            gap: 2px;
+        }
+
+        .neon-dot {
+            width: 10px; height: 10px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--primary-red);
+        }
+
+        .checkout-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border-glass);
+            border-radius: 32px;
+            padding: 40px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .checkout-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 6px;
+            background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+        }
+
+        .secure-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .secure-tag {
+            background: rgba(0, 230, 118, 0.1);
+            color: #00E676;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .plan-header {
+            margin-bottom: 30px;
+        }
+
+        .plan-header span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .plan-header h2 {
+            font-size: 2.4rem;
+            font-weight: 900;
+            margin: 10px 0 0 0;
+            letter-spacing: -1px;
+        }
+
+        .price-display {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-val {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .price-val span {
+            font-size: 1.1rem;
+            font-weight: 400;
+            opacity: 0.6;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 35px 0;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .features-list li .dot {
+            width: 6px; height: 6px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--primary-red);
         }
 
         .btn-pay {
             background: var(--primary-red);
             color: #fff;
             border: none;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 800;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 900;
             width: 100%;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.3);
+            letter-spacing: 1.5px;
+            box-shadow: 0 15px 40px rgba(229, 9, 20, 0.4);
         }
 
         .btn-pay:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(229, 9, 20, 0.5);
-            filter: brightness(1.1);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(229, 9, 20, 0.6);
+            filter: brightness(1.2);
         }
 
-        .btn-cancel {
-            background: transparent;
+        .trust-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            opacity: 0.4;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
             color: var(--text-muted);
-            border: 1px solid var(--border-glass);
-            padding: 12px;
-            border-radius: 12px;
+            margin-top: 20px;
             width: 100%;
-            margin-top: 12px;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.9rem;
-            transition: all 0.3s;
+            transition: color 0.3s;
         }
 
-        .btn-cancel:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-        }
+        .btn-back:hover { color: #fff; }
     </style>
 </head>
 <body>
     <div id="noise-overlay"></div>
-    <div class="cadastro-bg-glow" style="opacity: 0.4;"></div>
+    <div class="glow-bg"></div>
     
     <div class="checkout-wrapper">
         <div class="logo-box" onclick="window.location.href='index.html'">
             <div class="logo">FaculNext<span class="neon-dot"></span></div>
         </div>
 
-        <div class="checkout-card glass-card">
-            <div class="secure-badge">
-                <span>🔒</span> Conexão Criptografada
+        <div class="checkout-card">
+            <div class="secure-header">
+                <div class="secure-tag">
+                    🛡️ Pagamento Seguro
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">
+                    GATEWAY HOTMART
+                </div>
             </div>
 
-            <div class="plan-info">
-                <div class="plan-label">Você está assinando o</div>
-                <strong id="plan-name">Plano Elite</strong>
+            <div class="plan-header">
+                <span>Plano Selecionado</span>
+                <h2 id="plan-name">Plano Elite</h2>
             </div>
 
-            <div class="price-tag" id="plan-price">R$ 39,00<span>/mês</span></div>
+            <div class="price-display">
+                <div class="price-val" id="plan-price">R$ 39<span>/mês</span></div>
+                <div style="text-align: right; font-size: 0.75rem; color: var(--text-muted); font-weight: 800;">
+                    COBRANÇA<br>RECORRENTE
+                </div>
+            </div>
 
-            <div class="benefits-summary">
-                <div>✓ Acesso Ilimitado à Plataforma</div>
-                <div>✓ Mentor I.A. 24h Disponível</div>
-                <div>✓ Correções de Redação em Tempo Real</div>
+            <ul class="features-list">
+                <li><div class="dot"></div> Acesso Ilimitado a todas as Trilhas</li>
+                <li><div class="dot"></div> Mentor I.A. Ilimitado 24h</li>
+                <li><div class="dot"></div> Correções de Redação em Tempo Real</li>
+                <li><div class="dot"></div> Simulados Nacionais e Rankings</li>
+            </ul>
+            
+            <button id="pay-btn" class="btn-pay">Ativar Minha Assinatura</button>
+            
+            <button class="btn-back" onclick="window.location.href='planos.html'">Escolher outro plano</button>
+
+            <div class="trust-footer">
+                <span>💳 Cartão de Crédito</span>
+                <span>📄 Pix</span>
+                <span>🔒 SSL 256-bit</span>
             </div>
             
-            <button id="pay-btn" class="btn-pay">Finalizar Pagamento</button>
-            <button class="btn-cancel" onclick="window.location.href='planos.html'">Voltar e alterar plano</button>
-
-            <p class="sandbox-warning">Gateway em modo de teste. Nenhuma cobrança real será feita.</p>
+            <p style="font-size: 0.65rem; color: rgba(255,255,255,0.2); text-align: center; margin-top: 25px;">
+                Modo de teste ativado. Nenhuma cobrança real será processada hoje.
+            </p>
         </div>
     </div>
 

@@ -591,13 +591,17 @@
     right: 30px;
     width: 350px;
     height: 500px;
+    background: var(--bg-surface);
     display: flex;
     flex-direction: column;
     z-index: 999;
-    border: 1px solid rgba(229, 9, 20, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
     transition: all 0.4s ease;
     opacity: 1;
     transform: translateY(0);
+    overflow: hidden;
 }
 
 .chat-hidden {

@@ -454,25 +454,26 @@ db.serialize(() => {
         }
     });
 
-    // 🎮 CRIAR CONTA DEMO AUTOMATICAMENTE (Dentro do fluxo garantido)
-    const demoEmail = 'demo@faculnext.com';
-    const demoSenha = 'elite123';
-    
-    db.get("SELECT id FROM users WHERE email = ?", [demoEmail], async (err, row) => {
-        if (err) {
-            console.error("⚠️ Erro ao verificar conta demo:", err.message);
-            return;
-        }
-        if (!row) {
-            const hash = await bcrypt.hash(demoSenha, 10);
-            db.run("INSERT INTO users (nome, email, senha_hash, plano_ativo, verificado) VALUES (?, ?, ?, ?, ?)", 
-            ['Aluno Demo Elite', demoEmail, hash, 'ELITE', 1], (err) => {
-                if (!err) console.log(`🚀 [DEMO ACCOUNT]: Conta ${demoEmail} criada com sucesso (Senha: ${demoSenha})`);
-                else console.error("❌ Erro ao criar conta demo:", err.message);
-            });
-        } else {
-            console.log(`✅ [DEMO ACCOUNT]: Conta ${demoEmail} já existe.`);
-        }
+    // 🎮 CRIAR CONTAS DE TESTE AUTOMATICAMENTE
+    const accounts = [
+        { nome: 'Aluno Demo Elite', email: 'demo@faculnext.com', senha: 'elite123', plano: 'ELITE' },
+        { nome: 'Aluno Trial Premium', email: 'trial@faculnext.com', senha: 'premium123', plano: 'PREMIUM' }
+    ];
+
+    accounts.forEach(acc => {
+        db.get("SELECT id FROM users WHERE email = ?", [acc.email], async (err, row) => {
+            if (!row && !err) {
+                const hash = await bcrypt.hash(acc.senha, 10);
+                db.run("INSERT INTO users (nome, email, senha_hash, plano_ativo, verificado) VALUES (?, ?, ?, ?, ?)", 
+                [acc.nome, acc.email, hash, acc.plano, 1], (err) => {
+                    if (!err) console.log(`🚀 [TEST ACCOUNT]: Conta ${acc.email} criada (${acc.plano}) - Senha: ${acc.senha}`);
+                });
+            } else {
+                // Se já existe, garantir que o plano esteja correto para o teste
+                db.run("UPDATE users SET plano_ativo = ? WHERE email = ?", [acc.plano, acc.email]);
+                console.log(`✅ [TEST ACCOUNT]: Conta ${acc.email} validada.`);
+            }
+        });
     });
 });
 
