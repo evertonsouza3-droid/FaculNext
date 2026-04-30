@@ -725,96 +725,155 @@ db.serialize(() => {
                 }
             });
 
-            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Redação%'", (err, t) => {
-                if (t) {
-                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
-                        [t.id, 'Competência 1: Domínio da Norma Culta', 'Aprenda a evitar os erros gramaticais mais comuns que tiram pontos na sua redação.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
-                            if (!err) {
-                                const aId = this.lastID;
-                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
-                                    [aId, 'Qual o número máximo de erros de sintaxe permitidos para a nota 200 na C1?', JSON.stringify(['Nenhum', 'Até 2 erros', 'Apenas 1 erro leve', 'Não há limite']), 'B']);
-                            }
+            function populateSubject(trilhaPattern, lessonsArray) {
+                db.get("SELECT id FROM trilhas WHERE titulo LIKE ?", [`${trilhaPattern}%`], (err, t) => {
+                    if (t && lessonsArray) {
+                        lessonsArray.forEach((aula, idx) => {
+                            db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
+                                [t.id, aula.titulo, aula.conteudo, 'https://www.youtube.com/embed/dQw4w9WgXcQ', idx + 1], function(err) {
+                                    if (!err) {
+                                        const aId = this.lastID;
+                                        if (aula.exercicios) {
+                                            aula.exercicios.forEach(ex => {
+                                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                                    [aId, ex.q, JSON.stringify(ex.alts), ex.c]);
+                                            });
+                                        }
+                                    }
+                                });
                         });
-                }
-            });
+                    }
+                });
+            }
 
-            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Biologia%'", (err, t) => {
-                if (t) {
-                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
-                        [t.id, 'Introdução à Citologia', 'Descubra como as células funcionam e a diferença entre células animais e vegetais.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
-                            if (!err) {
-                                const aId = this.lastID;
-                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
-                                    [aId, 'Qual organela é responsável pela respiração celular?', JSON.stringify(['Lisossomo', 'Complexo de Golgi', 'Mitocôndria', 'Ribossomo']), 'C']);
-                            }
-                        });
+            // Arrays de Lições para o Currículo
+            const redaLessons = [
+                {
+                    titulo: 'Competência 1: Domínio da Norma Culta',
+                    conteudo: 'Aprenda a evitar os erros gramaticais mais comuns que tiram pontos na sua redação.',
+                    exercicios: [
+                        { q: 'Qual o número máximo de erros de sintaxe permitidos para a nota 200 na C1?', alts: ['Nenhum', 'Até 2 erros', 'Apenas 1 erro leve', 'Não há limite'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Competência 2: Compreensão do Tema',
+                    conteudo: 'Não fuja do tema! Descubra como interpretar a frase temática e usar seu repertório sociocultural.',
+                    exercicios: [
+                        { q: 'A fuga total do tema resulta em:', alts: ['Desconto de 200 pontos', 'Nota zero na redação', 'Revisão por banca especial', 'Desconto apenas na C2'], c: 'B' }
+                    ]
                 }
-            });
+            ];
 
-            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'História%'", (err, t) => {
-                if (t) {
-                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
-                        [t.id, 'Era Vargas: O Estado Novo', 'Entenda como Getúlio Vargas consolidou seu poder e as mudanças sociais no Brasil.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
-                            if (!err) {
-                                const aId = this.lastID;
-                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
-                                    [aId, 'Qual órgão foi criado por Vargas para controlar a propaganda e censura?', JSON.stringify(['DIP', 'CLT', 'BNDES', 'SNI']), 'A']);
-                            }
-                        });
+            const bioLessons = [
+                {
+                    titulo: 'Introdução à Citologia',
+                    conteudo: 'Descubra como as células funcionam e a diferença entre células animais e vegetais.',
+                    exercicios: [
+                        { q: 'Qual organela é responsável pela respiração celular?', alts: ['Lisossomo', 'Complexo de Golgi', 'Mitocôndria', 'Ribossomo'], c: 'C' }
+                    ]
+                },
+                {
+                    titulo: 'Genética: Leis de Mendel',
+                    conteudo: 'Azão e azinho! Entenda como as características são herdadas e probabilidade genética.',
+                    exercicios: [
+                        { q: 'A primeira lei de Mendel também é chamada de Lei da:', alts: ['Segregação Independente', 'Pureza dos Gametas', 'Dominância Incompleta', 'Pleiotropia'], c: 'B' }
+                    ]
                 }
-            });
+            ];
 
-            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Geografia%'", (err, t) => {
-                if (t) {
-                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
-                        [t.id, 'Globalização e Meio Ambiente', 'Como o avanço tecnológico impacta as relações internacionais e a natureza.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
-                            if (!err) {
-                                const aId = this.lastID;
-                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
-                                    [aId, 'O conceito de "Aldeia Global" refere-se a:', JSON.stringify(['Isolamento cultural', 'Integração mundial via tecnologia', 'Fim das cidades', 'Aumento de fronteiras']), 'B']);
-                            }
-                        });
+            const histLessons = [
+                {
+                    titulo: 'Era Vargas: O Estado Novo',
+                    conteudo: 'Entenda como Getúlio Vargas consolidou seu poder e as mudanças sociais no Brasil.',
+                    exercicios: [
+                        { q: 'Qual órgão foi criado por Vargas para controlar a propaganda e censura?', alts: ['DIP', 'CLT', 'BNDES', 'SNI'], c: 'A' }
+                    ]
+                },
+                {
+                    titulo: 'Ditadura Civil-Militar',
+                    conteudo: 'Os anos de chumbo, o milagre econômico e os atos institucionais, especialmente o AI-5.',
+                    exercicios: [
+                        { q: 'O AI-5 foi decretado no governo de qual presidente militar?', alts: ['Castello Branco', 'Costa e Silva', 'Médici', 'Geisel'], c: 'B' }
+                    ]
                 }
-            });
+            ];
 
-            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Física%'", (err, t) => {
-                if (t) {
-                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
-                        [t.id, 'Leis de Ohm e Circuitos', 'Domine o comportamento da corrente elétrica, tensão e resistência.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
-                            if (!err) {
-                                const aId = this.lastID;
-                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
-                                    [aId, 'Qual a resistência de um chuveiro de 4400W ligado em 220V?', JSON.stringify(['5 Ω', '11 Ω', '20 Ω', '44 Ω']), 'B']);
-                            }
-                        });
+            const geoLessons = [
+                {
+                    titulo: 'Globalização e Meio Ambiente',
+                    conteudo: 'Como o avanço tecnológico impacta as relações internacionais e a natureza.',
+                    exercicios: [
+                        { q: 'O conceito de "Aldeia Global" refere-se a:', alts: ['Isolamento cultural', 'Integração mundial via tecnologia', 'Fim das cidades', 'Aumento de fronteiras'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Geopolítica do Petróleo',
+                    conteudo: 'Conflitos no Oriente Médio, a OPEP e a importância das matrizes energéticas não renováveis.',
+                    exercicios: [
+                        { q: 'Qual destas organizações foi criada para unificar as políticas petrolíferas?', alts: ['ONU', 'OPEP', 'OTAN', 'MERCOSUL'], c: 'B' }
+                    ]
                 }
-            });
+            ];
 
-            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Química%'", (err, t) => {
-                if (t) {
-                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
-                        [t.id, 'Estequiometria Básica', 'Aprenda a calcular as quantidades de reagentes e produtos em uma reação.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
-                            if (!err) {
-                                const aId = this.lastID;
-                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
-                                    [aId, 'Em 1 mol de qualquer substância, existem quantos átomos/moléculas?', JSON.stringify(['6,02 x 10²³', '10 x 10⁶', '1,6 x 10⁻¹⁹', '3 x 10⁸']), 'A']);
-                            }
-                        });
+            const fisLessons = [
+                {
+                    titulo: 'Leis de Ohm e Circuitos',
+                    conteudo: 'Domine o comportamento da corrente elétrica, tensão e resistência.',
+                    exercicios: [
+                        { q: 'Qual a resistência de um chuveiro de 4400W ligado em 220V?', alts: ['5 Ω', '11 Ω', '20 Ω', '44 Ω'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Cinemática Escalar',
+                    conteudo: 'Velocidade média, MRU e MRUV. A base para entender o movimento.',
+                    exercicios: [
+                        { q: 'A fórmula V = V0 + a.t pertence ao:', alts: ['MRU', 'MRUV', 'Movimento Circular', 'Lançamento Oblíquo'], c: 'B' }
+                    ]
                 }
-            });
+            ];
 
-            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Português%'", (err, t) => {
-                if (t) {
-                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
-                        [t.id, 'Funções da Linguagem', 'Identifique as intenções comunicativas nos diversos tipos de texto.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
-                            if (!err) {
-                                const aId = this.lastID;
-                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
-                                    [aId, 'Qual função foca no receptor, tentando convencê-lo de algo?', JSON.stringify(['Emotiva', 'Referencial', 'Conativa/Apelativa', 'Fática']), 'C']);
-                            }
-                        });
+            const quiLessons = [
+                {
+                    titulo: 'Estequiometria Básica',
+                    conteudo: 'Aprenda a calcular as quantidades de reagentes e produtos em uma reação.',
+                    exercicios: [
+                        { q: 'Em 1 mol de qualquer substância, existem quantos átomos/moléculas?', alts: ['6,02 x 10²³', '10 x 10⁶', '1,6 x 10⁻¹⁹', '3 x 10⁸'], c: 'A' }
+                    ]
+                },
+                {
+                    titulo: 'Funções Orgânicas',
+                    conteudo: 'Álcool, Fenol, Éter, Aldeído... Reconheça as principais funções cobradas no ENEM.',
+                    exercicios: [
+                        { q: 'A presença de uma hidroxila (-OH) ligada a um carbono saturado caracteriza um:', alts: ['Fenol', 'Ácido Carboxílico', 'Álcool', 'Cetona'], c: 'C' }
+                    ]
                 }
-            });
+            ];
+
+            const portLessons = [
+                {
+                    titulo: 'Funções da Linguagem',
+                    conteudo: 'Identifique as intenções comunicativas nos diversos tipos de texto.',
+                    exercicios: [
+                        { q: 'Qual função foca no receptor, tentando convencê-lo de algo?', alts: ['Emotiva', 'Referencial', 'Conativa/Apelativa', 'Fática'], c: 'C' }
+                    ]
+                },
+                {
+                    titulo: 'Figuras de Linguagem',
+                    conteudo: 'Metáfora, Metonímia, Ironia e Eufemismo: como os autores brincam com as palavras.',
+                    exercicios: [
+                        { q: 'Dizer "ele partiu para sempre" em vez de "ele morreu" é um exemplo de:', alts: ['Ironia', 'Hipérbole', 'Eufemismo', 'Metáfora'], c: 'C' }
+                    ]
+                }
+            ];
+
+            // Inserir todas as matérias usando o helper
+            populateSubject('Redação', redaLessons);
+            populateSubject('Biologia', bioLessons);
+            populateSubject('História', histLessons);
+            populateSubject('Geografia', geoLessons);
+            populateSubject('Física', fisLessons);
+            populateSubject('Química', quiLessons);
+            populateSubject('Português', portLessons);
         }
     });
 

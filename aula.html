@@ -48,6 +48,115 @@
             padding-top: 30px;
             border-top: 1px solid rgba(255,255,255,0.05);
         }
+
+        /* Multiple Choice Styles */
+        .question-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .question-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .alt-option {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .alt-option:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+        }
+        .alt-option:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        .alt-option .letter {
+            background: rgba(255, 255, 255, 0.1);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin-right: 16px;
+            font-weight: 800;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .alt-option.correct {
+            background: rgba(46, 213, 115, 0.15);
+            border-color: #2ed573;
+            color: #fff;
+        }
+        .alt-option.correct .letter {
+            background: #2ed573;
+            color: #000;
+        }
+        .alt-option.wrong {
+            background: rgba(255, 71, 87, 0.15);
+            border-color: #ff4757;
+            color: #fff;
+        }
+        .alt-option.wrong .letter {
+            background: #ff4757;
+            color: #000;
+        }
+        .alt-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        .toast {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid #2ed573;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideInRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .alt-option {
+                padding: 20px;
+                font-size: 1.1rem;
+            }
+            .question-text {
+                font-size: 1.15rem;
+            }
+        }
     </style>
     <script src="js/auth.js"></script>
 </head>
@@ -114,6 +223,7 @@
             </div>
         </div>
     </main>
+    <div id="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
