@@ -138,15 +138,14 @@
                         
                         data.exercicios.forEach((ex, idx) => {
                             const exDiv = document.createElement('div');
-                            exDiv.className = 'glass-card';
-                            exDiv.style.padding = '20px';
-                            exDiv.style.marginBottom = '20px';
+                            exDiv.className = 'question-container';
                             exDiv.innerHTML = `
-                                <p style="font-weight: 600; margin-bottom: 15px;">Q${idx+1}: ${ex.enunciado}</p>
-                                <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <p class="question-text">Q${idx+1}: ${ex.enunciado}</p>
+                                <div class="options-grid">
                                     ${ex.alternativas.map((alt, i) => `
-                                        <button class="btn-secondary" style="text-align: left; padding: 12px;" onclick="checkAnswer(this, '${String.fromCharCode(65+i)}', '${ex.correta}')">
-                                            ${String.fromCharCode(65+i)}) ${alt}
+                                        <button class="alt-option" onclick="checkAnswer(this, '${String.fromCharCode(65+i)}', '${ex.correta}')">
+                                            <span class="letter">${String.fromCharCode(65+i)}</span>
+                                            <span>${alt}</span>
                                         </button>
                                     `).join('')}
                                 </div>
@@ -161,18 +160,32 @@
         });
 
         function checkAnswer(btn, escolhida, correta) {
-            const options = btn.parentNode.querySelectorAll('button');
+            const options = btn.parentNode.querySelectorAll('.alt-option');
             options.forEach(opt => opt.disabled = true);
             
             if (escolhida === correta) {
-                btn.style.background = "#00c864";
-                btn.style.color = "#fff";
-                alert("✨ Resposta CORRETA! Você está no caminho da aprovação.");
+                btn.classList.add('correct');
+                showToast("✨ Resposta CORRETA! Você está no caminho da aprovação.");
             } else {
-                btn.style.background = "var(--primary-red)";
-                btn.style.color = "#fff";
-                alert(`❌ Ops! A resposta correta era a letra ${correta}.`);
+                btn.classList.add('wrong');
+                // Destacar a correta também
+                options.forEach(opt => {
+                    if (opt.innerText.trim().startsWith(correta)) {
+                        opt.classList.add('correct');
+                    }
+                });
+                showToast(`❌ Ops! A resposta correta era a letra ${correta}.`, "error");
             }
+        }
+
+        function showToast(msg, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if (type === "error") toast.style.borderColor = "var(--primary-red)";
+            toast.innerHTML = `<span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
         }
 
         function marcarComoConcluida() {

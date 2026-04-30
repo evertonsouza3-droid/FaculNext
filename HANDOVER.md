@@ -1,29 +1,35 @@
-# 🚀 Handover do Projeto: FaculNext (FINAL GOLD)
-**Data da última atualização:** 28 de Abril de 2026
+# 🚀 Handover FaculNext - 29/04
 
-Este arquivo marca a conclusão da fase de refinamento e rebranding. A plataforma está pronta para o lançamento comercial.
+Este documento resume o estado atual do projeto e o que precisa ser feito na próxima sessão.
 
-## 🟢 O que já foi concluído (Status Final)
-1. **Rebranding Completo (FaculNext):**
-   - Nome, Logotipos e Metadados restaurados para FaculNext.
-   - **Chaves Técnicas:** Chaves de `localStorage` voltaram para `faculnext_*`.
-2. **UI/UX de Alta Fidelidade (Premium):**
-   - **Simulados:** Efeito de cascata no gabarito, animação de pulso na nota TRI e transições suaves entre questões.
-   - **Redação:** Efeito visual de "Scanner I.A." e feedback textual com efeito "Typewriter" (máquina de escrever).
-   - **Carreiras:** Teste vocacional estilo Tinder com animações de "swipe" elásticas e resultado com efeito de revelação "Match".
-   - **Ranking:** Design "Liga Diamante" com gradientes e brilho dinâmico para os top 3.
-3. **Monetização & Pós-Venda:**
-   - Integração Hotmart validada. Preços sincronizados (R$ 39 Elite / R$ 69 Vitalício).
-   - Página de Sucesso (`sucesso.html`) polida com animação de confetes e boas-vindas premium.
-   - Fluxo de "Welcome Toast" no Dashboard para novos assinantes Premium ativado.
-4. **Backend & Segurança:**
-   - E-mails transacionais (Resend) configurados com a nova marca.
-   - Segredos JWT e logs do servidor atualizados para FaculNext.
+## ✅ O que foi concluído hoje
+1.  **🤖 Chat de IA (Resiliência)**:
+    *   Padronização de IDs finalizada.
+    *   Fundo do chat corrigido (não está mais transparente).
+    *   **Fallback "Modo Limitado"**: O servidor agora detecta se a conta da OpenAI está sem créditos e responde com orientações pré-definidas em vez de dar erro.
+2.  **💎 Experiência Premium**:
+    *   **Checkout Redesenhado**: A página de pagamento agora tem visual Apple/Netflix (ultra-premium).
+    *   **Página de Planos**: Mais moderna e com micro-animações.
+3.  **📚 Trilhas Operacionais**:
+    *   Sistema de trilhas agora é dinâmico (carregado via API).
+    *   Criada a **Página de Aula (`aula.html`)** com player de vídeo e **Exercícios Interativos**.
+    *   Inseridas aulas e exercícios reais de Matemática, Redação e Biologia no banco de dados.
+4.  **🔐 Contas de Teste**:
+    *   `demo@faculnext.com` (elite123) - Plano Elite.
+    *   `trial@faculnext.com` (premium123) - Plano Premium.
 
-## 🟡 Próximos Passos Recomendados
-- **Deploy de Produção:** Realizar o `git push` para o repositório principal conectado ao Render.com.
-- **Teste de Webhook Real:** Utilizar o script na `/Lixeira/test_hotmart.js` apontando para a URL de produção para validar o desbloqueio em tempo real.
-- **Campanha de Influenciadores:** Utilizar o material de Pitch na `/Lixeira` para atrair os primeiros parceiros da nova fase.
+## 📝 Próximos Passos (Amanhã)
+1.  **📝 Operacionalizar Simulados**:
+    *   Atualmente os simulados estão em layout estático. Precisamos fazer com que o botão "Iniciar" carregue as questões reais do banco de dados na página de simulados.
+2.  **🏆 Finalização do Ranking**:
+    *   Garantir que a lógica de "Top 12%" e posições no ranking reflita os dados reais dos usuários no banco.
+3.  **📊 Dashboard Stats**:
+    *   Sincronizar os contadores de "Questões Resolvidas" com o banco de dados.
+4.  **🚀 Deploy Final**:
+    *   Realizar o `git push` definitivo e validar tudo no ambiente de produção (Render).
+
+## 💡 Lembrete de Infra
+- **OpenAI**: Para o chat voltar a ter inteligência total (fora do modo limitado), é necessário adicionar créditos em [platform.openai.com](https://platform.openai.com).
 
 ---
-**FaculNext - Domine o Exame, Conquiste a Vaga.**
+**Até amanhã! O sistema está em um estado excelente, com o fluxo principal do aluno totalmente funcional.**

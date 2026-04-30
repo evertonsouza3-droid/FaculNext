@@ -1,6 +1,4 @@
-# 📝 FaculNext: Resumo da Sessão e Próximos Passos
-
-Este arquivo foi criado para retomarmos o trabalho exatamente de onde paramos.
+# 📝 FaculNext: Resumo da Sessão e Próximos Passos (Sessão 30/04)
 
 ## ✅ O que foi feito nesta sessão:
 1.  **Infraestrutura (Postgres):** Corrigida a criação automática da conta demo (`demo@faculnext.com` / `elite123`) para funcionar corretamente no PostgreSQL do Render.

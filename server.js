@@ -447,6 +447,10 @@ db.serialize(() => {
             // Inserir exames adicionais
             db.run("INSERT INTO exams (id, titulo, duracao, dificuldade) VALUES (?, ?, ?, ?)", ['nat_02', 'Natureza FUVEST', '2h', 'Média']);
             db.run("INSERT INTO exams (id, titulo, duracao, dificuldade) VALUES (?, ?, ?, ?)", ['hum_03', 'Letras e Lógica', '1h30', 'Alta']);
+            db.run("INSERT INTO exams (id, titulo, duracao, dificuldade) VALUES (?, ?, ?, ?)", ['hist_01', 'Brasil: Da Colônia ao Império', '20 min', 'Média']);
+            db.run("INSERT INTO exams (id, titulo, duracao, dificuldade) VALUES (?, ?, ?, ?)", ['geo_01', 'Foco em Urbanização', '15 min', 'Baixa']);
+            db.run("INSERT INTO exams (id, titulo, duracao, dificuldade) VALUES (?, ?, ?, ?)", ['fis_01', 'Sprint Mecânica', '25 min', 'Alta']);
+            db.run("INSERT INTO exams (id, titulo, duracao, dificuldade) VALUES (?, ?, ?, ?)", ['qui_01', 'Química Orgânica Rápida', '20 min', 'Média']);
 
             // Questões para nat_02
             db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['nat_02', 'Qual é a função principal da mitocôndria na célula?', 'B'], function(err) {
@@ -493,6 +497,102 @@ db.serialize(() => {
                     db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Uma unidade de medida']);
                 }
             });
+            
+            // Questões para hist_01
+            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['hist_01', 'O Tratado de Tordesilhas (1494) dividiu as terras descobertas entre:', 'A'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Portugal e Espanha']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'Inglaterra e França']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'Holanda e Portugal']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Espanha e França']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Roma e Cartago']);
+                }
+            });
+
+            // Questões para geo_01
+            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['geo_01', 'O processo de crescimento das cidades em ritmo superior ao das zonas rurais é:', 'B'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Gentrificação']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'Urbanização']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'Conurbação']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Segregação socioespacial']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Metropolização']);
+                }
+            });
+
+            // Questões para fis_01
+            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['fis_01', 'A Primeira Lei de Newton também é conhecida como Lei da:', 'C'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Ação e Reação']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'Força']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'Inércia']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Gravidade']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Energia']);
+                }
+            });
+
+            // Questões para qui_01
+            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['qui_01', 'Qual elemento é a base de todas as moléculas orgânicas?', 'A'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Carbono']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'Oxigênio']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'Nitrogênio']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Hidrogênio']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Enxofre']);
+                }
+            });
+            
+            // Questões para hist_01
+            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['hist_01', 'O Tratado de Tordesilhas (1494) dividiu as terras descobertas entre:', 'A'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Portugal e Espanha']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'Inglaterra e França']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'Holanda e Portugal']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Espanha e França']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Roma e Cartago']);
+                }
+            });
+
+            // Questões para geo_01
+            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['geo_01', 'O processo de crescimento das cidades em ritmo superior ao das zonas rurais é:', 'B'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Gentrificação']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'Urbanização']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'Conurbação']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Segregação socioespacial']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Metropolização']);
+                }
+            });
+
+            // Questões para fis_01
+            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['fis_01', 'A Primeira Lei de Newton também é conhecida como Lei da:', 'C'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Ação e Reação']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'Força']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'Inércia']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Gravidade']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Energia']);
+                }
+            });
+
+            // Questões para qui_01
+            db.run("INSERT INTO exam_questions (exam_id, enunciado, correta) VALUES (?, ?, ?)", ['qui_01', 'Qual elemento é a base de todas as moléculas orgânicas?', 'A'], function(err) {
+                if (!err) {
+                    const qId = this.lastID;
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'A', 'Carbono']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'B', 'Oxigênio']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'C', 'Nitrogênio']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'D', 'Hidrogênio']);
+                    db.run("INSERT INTO exam_alternatives (question_id, letra, texto) VALUES (?, ?, ?)", [qId, 'E', 'Enxofre']);
+                }
+            });
         }
     });
 
@@ -506,6 +606,16 @@ db.serialize(() => {
                 ['Redação ✍️', 'Domine as 5 competências da Redação nota 1000.', 'Humanas', 10, 50, 'cyan']);
             db.run("INSERT INTO trilhas (titulo, descricao, categoria, aulas, exercicios, cor) VALUES (?, ?, ?, ?, ?, ?)", 
                 ['Biologia 🧬', 'Ecologia, Genética e Citologia visual e extrema.', 'Natureza', 18, 80, 'lime']);
+            db.run("INSERT INTO trilhas (titulo, descricao, categoria, aulas, exercicios, cor) VALUES (?, ?, ?, ?, ?, ?)", 
+                ['História 📜', 'Brasil Colônia, Era Vargas e Geopolítica Mundial.', 'Humanas', 20, 100, 'orange']);
+            db.run("INSERT INTO trilhas (titulo, descricao, categoria, aulas, exercicios, cor) VALUES (?, ?, ?, ?, ?, ?)", 
+                ['Geografia 🌍', 'Globalização, Meio Ambiente e Urbanização.', 'Humanas', 18, 90, '#4FACFE']);
+            db.run("INSERT INTO trilhas (titulo, descricao, categoria, aulas, exercicios, cor) VALUES (?, ?, ?, ?, ?, ?)", 
+                ['Física ⚡', 'Mecânica, Eletrodinâmica e Termologia.', 'Exatas', 22, 110, '#f9d423']);
+            db.run("INSERT INTO trilhas (titulo, descricao, categoria, aulas, exercicios, cor) VALUES (?, ?, ?, ?, ?, ?)", 
+                ['Química 🧪', 'Estequiometria, Funções Orgânicas e Atomística.', 'Exatas', 20, 100, '#ff00cc']);
+            db.run("INSERT INTO trilhas (titulo, descricao, categoria, aulas, exercicios, cor) VALUES (?, ?, ?, ?, ?, ?)", 
+                ['Português 📚', 'Interpretação, Gramática e Funções da Linguagem.', 'Linguagens', 25, 120, '#00dbde']);
             
             // Inserir Aulas e Exercícios Iniciais
             db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Matemática%'", (err, t) => {
@@ -544,6 +654,71 @@ db.serialize(() => {
                                 const aId = this.lastID;
                                 db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
                                     [aId, 'Qual organela é responsável pela respiração celular?', JSON.stringify(['Lisossomo', 'Complexo de Golgi', 'Mitocôndria', 'Ribossomo']), 'C']);
+                            }
+                        });
+                }
+            });
+
+            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'História%'", (err, t) => {
+                if (t) {
+                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
+                        [t.id, 'Era Vargas: O Estado Novo', 'Entenda como Getúlio Vargas consolidou seu poder e as mudanças sociais no Brasil.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
+                            if (!err) {
+                                const aId = this.lastID;
+                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                    [aId, 'Qual órgão foi criado por Vargas para controlar a propaganda e censura?', JSON.stringify(['DIP', 'CLT', 'BNDES', 'SNI']), 'A']);
+                            }
+                        });
+                }
+            });
+
+            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Geografia%'", (err, t) => {
+                if (t) {
+                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
+                        [t.id, 'Globalização e Meio Ambiente', 'Como o avanço tecnológico impacta as relações internacionais e a natureza.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
+                            if (!err) {
+                                const aId = this.lastID;
+                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                    [aId, 'O conceito de "Aldeia Global" refere-se a:', JSON.stringify(['Isolamento cultural', 'Integração mundial via tecnologia', 'Fim das cidades', 'Aumento de fronteiras']), 'B']);
+                            }
+                        });
+                }
+            });
+
+            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Física%'", (err, t) => {
+                if (t) {
+                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
+                        [t.id, 'Leis de Ohm e Circuitos', 'Domine o comportamento da corrente elétrica, tensão e resistência.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
+                            if (!err) {
+                                const aId = this.lastID;
+                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                    [aId, 'Qual a resistência de um chuveiro de 4400W ligado em 220V?', JSON.stringify(['5 Ω', '11 Ω', '20 Ω', '44 Ω']), 'B']);
+                            }
+                        });
+                }
+            });
+
+            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Química%'", (err, t) => {
+                if (t) {
+                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
+                        [t.id, 'Estequiometria Básica', 'Aprenda a calcular as quantidades de reagentes e produtos em uma reação.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
+                            if (!err) {
+                                const aId = this.lastID;
+                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                    [aId, 'Em 1 mol de qualquer substância, existem quantos átomos/moléculas?', JSON.stringify(['6,02 x 10²³', '10 x 10⁶', '1,6 x 10⁻¹⁹', '3 x 10⁸']), 'A']);
+                            }
+                        });
+                }
+            });
+
+            db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Português%'", (err, t) => {
+                if (t) {
+                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
+                        [t.id, 'Funções da Linguagem', 'Identifique as intenções comunicativas nos diversos tipos de texto.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
+                            if (!err) {
+                                const aId = this.lastID;
+                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                    [aId, 'Qual função foca no receptor, tentando convencê-lo de algo?', JSON.stringify(['Emotiva', 'Referencial', 'Conativa/Apelativa', 'Fática']), 'C']);
                             }
                         });
                 }
