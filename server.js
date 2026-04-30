@@ -617,19 +617,111 @@ db.serialize(() => {
             db.run("INSERT INTO trilhas (titulo, descricao, categoria, aulas, exercicios, cor) VALUES (?, ?, ?, ?, ?, ?)", 
                 ['Português 📚', 'Interpretação, Gramática e Funções da Linguagem.', 'Linguagens', 25, 120, '#00dbde']);
             
-            // Inserir Aulas e Exercícios Iniciais
+            // 🏆 CONTEÚDO ROBUSTO: MATEMÁTICA PARA O ENEM
+            const mathLessons = [
+                {
+                    titulo: 'Razão e Proporção',
+                    conteudo: 'A razão é a comparação entre duas grandezas, enquanto a proporção é a igualdade entre duas razões. No ENEM, isso é a base para escalas e velocidades.',
+                    exercicios: [
+                        { q: 'Em um mapa de escala 1:100.000, 5cm representam quantos km na vida real?', alts: ['0,5 km', '5 km', '50 km', '500 km'], c: 'B' },
+                        { q: 'A razão entre 200g e 1kg é:', alts: ['1/2', '1/5', '1/10', '2'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Porcentagem e Juros',
+                    conteudo: 'Porcentagem é uma razão com denominador 100. Domine descontos, aumentos e a diferença entre juros simples e compostos.',
+                    exercicios: [
+                        { q: 'Um produto de R$ 200 com 15% de desconto custará:', alts: ['R$ 170', 'R$ 185', 'R$ 150', 'R$ 190'], c: 'A' },
+                        { q: 'Um aumento de 10% seguido de outro de 10% equivale a um aumento único de:', alts: ['20%', '21%', '110%', '22%'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Regra de Três',
+                    conteudo: 'A regra de três simples e composta permite resolver problemas que envolvem grandezas direta ou inversamente proporcionais.',
+                    exercicios: [
+                        { q: 'Se 5 pedreiros constroem um muro em 10 dias, 10 pedreiros construirão em:', alts: ['20 dias', '5 dias', '15 dias', '2 dias'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Estatística: Médias, Moda e Mediana',
+                    conteudo: 'Estatística é um dos temas mais cobrados. Saiba calcular média simples e ponderada, identificar a moda e encontrar a mediana.',
+                    exercicios: [
+                        { q: 'Qual a mediana dos valores: 2, 5, 8, 10, 15?', alts: ['5', '8', '10', '2'], c: 'B' },
+                        { q: 'A média aritmética de 10, 20 e 30 é:', alts: ['15', '20', '25', '30'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Geometria Plana: Áreas',
+                    conteudo: 'Domine as fórmulas de área para triângulos, quadriláteros e círculos. O ENEM adora problemas de ladrilhamento e cercamento.',
+                    exercicios: [
+                        { q: 'A área de um triângulo de base 10cm e altura 6cm é:', alts: ['60 cm²', '30 cm²', '16 cm²', '20 cm²'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Geometria Espacial: Volumes',
+                    conteudo: 'Cálculo de volume para prismas, cilindros, cones e esferas. Lembre-se: Volume = Área da Base x Altura (para a maioria).',
+                    exercicios: [
+                        { q: 'O volume de um cubo de aresta 3cm é:', alts: ['9 cm³', '18 cm³', '27 cm³', '81 cm³'], c: 'C' }
+                    ]
+                },
+                {
+                    titulo: 'Função do 1º Grau (Afim)',
+                    conteudo: 'Modelagem de situações com crescimento constante. A função é do tipo f(x) = ax + b, onde "a" é o coeficiente angular.',
+                    exercicios: [
+                        { q: 'Qual a raiz da função f(x) = 2x - 10?', alts: ['2', '5', '10', '20'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Função do 2º Grau (Quadrática)',
+                    conteudo: 'Gráficos em parábola. O ENEM foca em pontos de máximo e mínimo (Vértice da parábola).',
+                    exercicios: [
+                        { q: 'O gráfico de uma função quadrática é uma:', alts: ['Reta', 'Circunferência', 'Parábola', 'Hipérbole'], c: 'C' }
+                    ]
+                },
+                {
+                    titulo: 'Probabilidade',
+                    conteudo: 'Cálculo de chances: Casos Favoráveis / Casos Totais. Domine eventos independentes e probabilidade condicional.',
+                    exercicios: [
+                        { q: 'Ao lançar um dado, qual a chance de sair um número par?', alts: ['1/6', '1/3', '1/2', '2/3'], c: 'C' }
+                    ]
+                },
+                {
+                    titulo: 'Análise Combinatória',
+                    conteudo: 'Princípio Fundamental da Contagem. Saiba quando usar Permutação (ordem importa) e Combinação (ordem não importa).',
+                    exercicios: [
+                        { q: 'De quantas formas posso escolher 2 frutas entre 4 disponíveis?', alts: ['4', '6', '8', '12'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Progressões (PA e PG)',
+                    conteudo: 'Sequências numéricas. PA (soma constante) e PG (multiplicação constante).',
+                    exercicios: [
+                        { q: 'O próximo termo da PA (2, 5, 8, ...) é:', alts: ['10', '11', '12', '13'], c: 'B' }
+                    ]
+                },
+                {
+                    titulo: 'Trigonometria Básica',
+                    conteudo: 'Seno, Cosseno e Tangente no Triângulo Retângulo. Lembre-se da tabela dos ângulos notáveis (30º, 45º, 60º).',
+                    exercicios: [
+                        { q: 'Em um triângulo retângulo, o seno é a razão entre:', alts: ['Cateto oposto e Hipotenusa', 'Cateto adjacente e Hipotenusa', 'Oposto e Adjacente', 'Hipotenusa e Oposto'], c: 'A' }
+                    ]
+                }
+            ];
+
             db.get("SELECT id FROM trilhas WHERE titulo LIKE 'Matemática%'", (err, t) => {
                 if (t) {
-                    db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
-                        [t.id, 'Funções de 1º Grau', 'Nesta aula vamos dominar como o ENEM cobra funções lineares e interpretação de gráficos.', 'https://www.youtube.com/embed/dQw4w9WgXcQ', 1], function(err) {
-                            if (!err) {
-                                const aId = this.lastID;
-                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
-                                    [aId, 'Qual a raiz da função f(x) = 2x - 10?', JSON.stringify(['2', '5', '10', '20']), 'B']);
-                                db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
-                                    [aId, 'O gráfico de uma função de 1º grau é sempre:', JSON.stringify(['Uma parábola', 'Uma circunferência', 'Uma reta', 'Um ponto']), 'C']);
-                            }
-                        });
+                    mathLessons.forEach((aula, idx) => {
+                        db.run("INSERT INTO trilha_aulas (trilha_id, titulo, conteudo, video_url, ordem) VALUES (?, ?, ?, ?, ?)", 
+                            [t.id, aula.titulo, aula.conteudo, 'https://www.youtube.com/embed/dQw4w9WgXcQ', idx + 1], function(err) {
+                                if (!err) {
+                                    const aId = this.lastID;
+                                    aula.exercicios.forEach(ex => {
+                                        db.run("INSERT INTO trilha_exercicios (aula_id, enunciado, alternativas, correta) VALUES (?, ?, ?, ?)", 
+                                            [aId, ex.q, JSON.stringify(ex.alts), ex.c]);
+                                    });
+                                }
+                            });
+                    });
                 }
             });
 
